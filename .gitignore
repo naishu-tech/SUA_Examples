@@ -1,0 +1,11 @@
+**/__pycache__/
+/.vscode/
+/.idea
+/scpi/Examples/Digitizer_result/
+/scpi/Examples/file/
+/scpi/Examples/result/
+/scpi/Examples/ttf_result/
+/scpi/Examples/wave_file/
+/scpi/Demos/result/
+/scpi/Demos/fft_result/
+/scpi/Demos/wave_file/
