@@ -1,0 +1,28 @@
+{
+  "board_name": "default",
+  "ivi": "ivi.json",
+  "cr_target":"sim",
+  "cs_target":"sim",
+  "ds_target":"sim",
+  "default_param": {
+    "cmd_sent_base": 0,
+    "cmd_recv_base": 31457280,
+    "cmd_irq_base": 32505900,
+    "cmd_sent_down_base": 32505904,
+    "icd_path": "icd.json"
+  },
+  "en_cpx_chid": true,
+  "cpx_chnl_fmt": "CH{chnl_idx}",
+  "out_start_num": 0,
+  "in_start_num": 0,
+  "mode_functions": ["AWG", "Digitizer"],
+  "nsqc": "@nw.kernel\ndef program(wlist: dict[str, np.ndarray]):\n    seg1: nw.ArbWave = nw.init_arbwave(wlist, 'seg1')\n    while True:\n        nw.wait_for_trigger()  # 等待触发\n        nw.play_arb(seg1)  # 播放片段1\n    return nw.Kernel()",
+  "ad_channels": [
+    {"chnl_id": 0},
+    {"chnl_id": 1}
+  ],
+  "da_channels": [
+    {"chnl_id": 0, "biasing": 0},
+    {"chnl_id": 1, "biasing": 0}
+  ]
+}

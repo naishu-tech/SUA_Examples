@@ -1,0 +1,4 @@
+ivi:
+  sim: false
+  sim_resourceDB_path: "resourceDBSim.json"
+  resourceDB_path: "resourceDB.json"

@@ -1,0 +1,47 @@
+{
+  "board_name": "BTY",
+  "ivi": "ivi_4901XXXX-80.json",
+  "cr_target":"xdma",
+  "cs_target":"xdma",
+  "ds_target":"xdma",
+  "ivi_attr": [
+    {
+    "model": "Digitizer",
+    "type":  "ViReal64",
+    "channel": "0",
+    "name": "IVIDIGITIZER_ATTR_ADC_SAMPLE_RATE",
+    "value": 2000000000.0
+    }
+  ],
+  "default_param": {
+    "cmd_sent_base": 0,
+    "cmd_recv_base": 31457280,
+    "cmd_irq_base": 32505900,
+    "cmd_sent_down_base": 32505904,
+    "icd_path": "icd.json"
+  },
+  "mode_name": {
+    "DAQ": {
+      "Stream": "0x11802300",
+      "RingBuffer": "0x11800300"
+    }
+  },
+  "en_cpx_chid": true,
+  "cpx_chnl_fmt": "CH{chnl_idx}",
+  "out_start_num": 0,
+  "in_start_num": 0,
+  "mode_functions": ["Digitizer"],
+  "nsqc": "",
+  "ad_channels": [
+    {"chnl_id": 0},
+    {"chnl_id": 1},
+    {"chnl_id": 2},
+    {"chnl_id": 3},
+    {"chnl_id": 4},
+    {"chnl_id": 5},
+    {"chnl_id": 6},
+    {"chnl_id": 7}
+  ],
+  "da_channels": [
+  ]
+}
