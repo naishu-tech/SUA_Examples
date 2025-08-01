@@ -112,7 +112,7 @@ def program(wlist: dict[str, np.ndarray]):
 
             for (int j = 0; j < i; j++) {
                 nsqc += "        nw.wait_for_trigger_with_source(1)  # Wait for trigger\n";
-                nsqc += "        nw.wait(" + std::to_string(triggerPeriod/10) + ")  # Delay one-tenth of the cycle\n";
+                nsqc += "        nw.wait(0.001)  # Delay one-tenth of the cycle\n";
                 nsqc += "        nw.play_arb(seg" + std::to_string(j) + ")  # Play segment\n";
             }
             break;
@@ -122,7 +122,7 @@ def program(wlist: dict[str, np.ndarray]):
                 nsqc += "    seg" + std::to_string(i) + ": nw.ArbWave = nw.init_arbwave(wlist, '" + seg + "')\n";
                 i++;
             }
-
+            nsqc += "    i:nw.Reg\n";
             for (int j = 0; j < i; j++) {
                 nsqc += "    for i in nw.loop(10):  # Loop iteration\n";
                 nsqc += "        nw.wait_for_trigger_with_source(1)  # Wait for trigger\n";
@@ -135,7 +135,7 @@ def program(wlist: dict[str, np.ndarray]):
                 nsqc += "    seg" + std::to_string(i) + ": nw.ArbWave = nw.init_arbwave(wlist, '" + seg + "')\n";
                 i++;
             }
-
+            nsqc += "    i:nw.Reg\n";
             nsqc += "    while True:\n";
 
             for (int j = 0; j < i; j++) {

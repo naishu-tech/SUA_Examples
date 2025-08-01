@@ -56,7 +56,7 @@ int main() {
     s = IviSyncATrig_GetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ_RESULT, &res);
     std::cout << "IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ res is " << res << std::endl;
 
-    std::cout << "\n=== Digitizer Clock Config ===" << std::endl;
+    std::cout << "\n=== Fgen Clock Config ===" << std::endl;
     s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIBASE_ATTR_REF_CLOCK_SOURCE, IVIBASE_VAL_REF_CLOCK_EXTERNAL);
     s = IviFgen_SetAttributeViReal64(iviFgen_vi, "0", IVIBASE_ATTR_REF_FREQ_FREQUENCY, 100000000.0);
 
@@ -86,7 +86,6 @@ int main() {
 
     std::cout << "\n=== Chnl EN ===" << std::endl;
     s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "-1", IVIFGEN_ATTR_SYSTEM_STATUS_ENABLE, 1);
-
 
     std::cout << "\n=== Create NSWave ===" << std::endl;
     // 顺序播放
@@ -146,8 +145,8 @@ def program(wlist: dict[str, np.ndarray]):
         }
         fileWfm.close();
 
+        memcpy(bufferWfm, buffer, wfmSize);
         auto *wfmHandle = new waveformHandle;
-
         std::cout << "Create Arb Waveform: " << (wfmSize / sizeof(ViInt16)) << std::endl;
         isFAIL(IviFgen_CreateArbWaveformViInt16(iviFgen_vi, wfmSize / sizeof(ViInt16), bufferWfm, wfmHandle));
 
