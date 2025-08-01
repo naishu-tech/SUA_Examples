@@ -6,6 +6,19 @@
 #include "IviFgen.h"
 #include "tool_config.h"
 
+ViStatus preAWG(iviFgen_ViSession* iviFgen_vi){
+    ViStatus error = VI_STATE_SUCCESS;
+//    error = IviFgen_SetAttributeViInt32(iviFgen_vi, "0", IVIFGEN_ATTR_TRIGGER_SOURCE_EXE, 0);
+    ViReal64 DAC_sample_rate;
+    error = IviFgen_GetAttributeViReal64(iviFgen_vi, "0", IVIFGEN_ATTR_DAC_SAMPLE_RATE, &DAC_sample_rate);
+    error = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIBASE_ATTR_LSDADC_SET_CHNL_TYPE, 1);
+    error = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIBASE_ATTR_LSDADC_SET_SAMPLE_RATE, int(DAC_sample_rate / 1e6 ));
+    error = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIBASE_ATTR_LSDADC_SET_OUTPUT_GEAR, 250);
+    error = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIBASE_ATTR_LSDADC_SET_VOLTAGE, 0);
+    error = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIBASE_ATTR_LSDADC_SET_EXE, 0);
+    return error;
+}
+
 int main() {
     std::cout << "=== AWG wfm Play Test ===" << std::endl;
 
@@ -18,6 +31,15 @@ int main() {
 
     auto iviFgen_vi = new iviFgen_ViSession;
     s = IviFgen_Initialize("PXI::0::INSTR", VI_STATE_FALSE, VI_STATE_TRUE, iviFgen_vi, resource_db_path);
+
+    std::cout << "\n=== LSDADC Config ===" << std::endl;
+    s = preAWG(iviFgen_vi);
+
+    std::cout << "\n=== RF Config ===" << std::endl;
+    s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIFGEN_ATTR_DAC_INTERNAL_MULTIPLE, 1);
+    s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIFGEN_ATTR_DAC_SAMPLE_RATE, 4000);
+    s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIBASE_ATTR_OFFLINE_WORK, 1);
+    s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIBASE_ATTR_RF_CONFIG, 0);
 
     auto iviSyncATrig_vi = new iviSyncATrig_ViSession;
     s = IviSyncATrig_Initialize("PXI::1::INSTR", VI_STATE_FALSE, VI_STATE_TRUE, iviSyncATrig_vi, resource_db_path);
@@ -41,8 +63,7 @@ int main() {
         std::cout << "\n=== Trig Source Error ===" << std::endl;
 
     std::cout << "\n=== Chnl EN ===" << std::endl;
-    s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIFGEN_ATTR_SYSTEM_STATUS_ENABLE, 1);
-    s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "1", IVIFGEN_ATTR_SYSTEM_STATUS_ENABLE, 1);
+    s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "-1", IVIFGEN_ATTR_SYSTEM_STATUS_ENABLE, 1);
 
     std::cout << "\n=== DUC Config ===" << std::endl;
     s = DUCConfigAWG(iviFgen_vi, 0, "-1", 0);
@@ -129,6 +150,8 @@ def program(wlist: dict[str, np.ndarray]):
     std::cout << "\n=== Download NSWave & Waveform ===" << std::endl;
     int result = IviSUATools_NSWave(iviSUATools_vi, iviFgen_vi, "0", waveformHandle_map, nswave_code);
     result = IviSUATools_NSWave(iviSUATools_vi, iviFgen_vi, "1", waveformHandle_map, nswave_code);
+    result = IviSUATools_NSWave(iviSUATools_vi, iviFgen_vi, "2", waveformHandle_map, nswave_code);
+    result = IviSUATools_NSWave(iviSUATools_vi, iviFgen_vi, "3", waveformHandle_map, nswave_code);
 
     for (const auto& pair : waveformHandle_map) {
         const ViString& key = pair.first;

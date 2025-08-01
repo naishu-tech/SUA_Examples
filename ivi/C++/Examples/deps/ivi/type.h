@@ -7,9 +7,9 @@
 #ifdef __linux__
     #define _API_CALL
     #define DLLEXTERN
-    #define MYLIB_API
+    #define RIGOLLIB_API
 #else  // Windows, RTX
-    #define MYLIB_API __declspec(dllexport)
+    #define RIGOLLIB_API __declspec(dllexport)
     #define DLLEXTERN extern "C"
     #define NOMINMAX  // 防止Windows.h定义min/max宏
 #endif

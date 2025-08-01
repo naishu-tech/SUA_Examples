@@ -46,61 +46,38 @@ struct iviSUATools_ViSession{
     ViChar *NSQC = nullptr;
 };
 
-DLLEXTERN MYLIB_API ViStatus IviSUATools_Initialize (iviSUATools_ViSession *vi, const ViString& logicalName="", ViBoolean IDQuery=false, ViBoolean resetDevice=false, const ViString& resourceDBPath = "");
-DLLEXTERN MYLIB_API ViStatus IviSUATools_Reset (iviSUATools_ViSession *vi);
-DLLEXTERN MYLIB_API ViStatus IviSUATools_Close (iviSUATools_ViSession *vi);
+DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_Initialize (iviSUATools_ViSession *vi, const ViString& logicalName="", ViBoolean IDQuery=false, ViBoolean resetDevice=false, const ViString& resourceDBPath = "");
+DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_Reset (iviSUATools_ViSession *vi);
+DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_Close (iviSUATools_ViSession *vi);
 
-DLLEXTERN MYLIB_API ViString IviSUATools_ScanOnlineBoards(iviSUATools_ViSession *vi, const ViString& config_path="conf/config.yaml");
+DLLEXTERN RIGOLLIB_API ViString IviSUATools_ScanOnlineBoards(iviSUATools_ViSession *vi, const ViString& config_path="conf/config.yaml");
 
-DLLEXTERN MYLIB_API ViStatus IviSUATools_Sync(iviSUATools_ViSession *vi, iviSyncATrig_ViSession *iviSyncATrig_vi, const std::list<iviFgen_ViSession *>& iviFgen_vis, const std::list<iviDigitizer_ViSession *>&  iviDigitizer_vis);
+DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_Sync(iviSUATools_ViSession *vi, iviSyncATrig_ViSession *iviSyncATrig_vi, const std::list<iviFgen_ViSession *>& iviFgen_vis, const std::list<iviDigitizer_ViSession *>&  iviDigitizer_vis);
 
 // ===============================================================================
 // 信息获取函数
 // ===============================================================================
 
-/**
- * @brief 获取IviFgen模块信息
- * @param iviFgen_vi IviFgen会话句柄
- * @return IviDeviceInfoResult 包含操作状态和设备信息的结构体
- */
-DLLEXTERN MYLIB_API ViStatus IviSUATools_GetInfoFgen(iviSUATools_ViSession *vi, iviFgen_ViSession *iviFgen_vi);
-
-/**
- * @brief 获取IviDigitizer模块信息
- * @param iviDigitizer_vi IviDigitizer会话句柄
- * @return IviDeviceInfoResult 包含操作状态和设备信息的结构体
- */
-DLLEXTERN MYLIB_API ViStatus IviSUATools_GetInfoDigitizer(iviSUATools_ViSession *vi, iviDigitizer_ViSession *iviDigitizer_vi);
-
-/**
- * @brief 获取IviSyncATrig模块信息
- * @param iviSyncATrig_vi IviSyncATrig会话句柄
- * @return IviDeviceInfoResult 包含操作状态和设备信息的结构体
- */
-DLLEXTERN MYLIB_API ViStatus IviSUATools_GetInfoSyncATrig(iviSUATools_ViSession *vi, iviSyncATrig_ViSession *iviSyncATrig_vi);
-
-/**
- * @brief 获取IviPXIMainBoard模块信息
- * @param iviPXIMainBoard_vi IviPXIMainBoard会话句柄
- * @return IviDeviceInfoResult 包含操作状态和设备信息的结构体
- */
-DLLEXTERN MYLIB_API ViStatus IviSUATools_GetInfoPXIMainBoard(iviSUATools_ViSession *vi, iviPXIMainBoard_ViSession *iviPXIMainBoard_vi);
+DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_GetInfoFgen(iviSUATools_ViSession *vi, iviFgen_ViSession *iviFgen_vi);
+DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_GetInfoDigitizer(iviSUATools_ViSession *vi, iviDigitizer_ViSession *iviDigitizer_vi);
+DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_GetInfoSyncATrig(iviSUATools_ViSession *vi, iviSyncATrig_ViSession *iviSyncATrig_vi);
+DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_GetInfoPXIMainBoard(iviSUATools_ViSession *vi, iviPXIMainBoard_ViSession *iviPXIMainBoard_vi);
 
 // ===============================================================================
 // Python 集成函数
 // ===============================================================================
 
 // Python 集成函数
-DLLEXTERN MYLIB_API ViStatus IviSUATools_NSWave(iviSUATools_ViSession *vi, iviFgen_ViSession *iviFgen_vi, ViConstString channel, std::map<ViString, waveformHandle *> waveformHandle_map, const ViString& NSWaveData);
+DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_NSWave(iviSUATools_ViSession *vi, iviFgen_ViSession *iviFgen_vi, ViConstString channel, std::map<ViString, waveformHandle *> waveformHandle_map, const ViString& NSWaveData);
 
 // ===============================================================================
 // 运行控制函数
 // ===============================================================================
 
 // 运行控制函数
-DLLEXTERN MYLIB_API ViStatus IviSUATools_RunFgen(iviSUATools_ViSession *vi, iviSyncATrig_ViSession *iviSyncATrig_vi, iviFgen_ViSession *iviFgen_vi);
-DLLEXTERN MYLIB_API ViStatus IviSUATools_StopFgen(iviSUATools_ViSession *vi, iviSyncATrig_ViSession *iviSyncATrig_vi, iviFgen_ViSession *iviFgen_vi);
-DLLEXTERN MYLIB_API ViStatus IviSUATools_RunDigitizer(iviSUATools_ViSession *vi, iviSyncATrig_ViSession *iviSyncATrig_vi, iviDigitizer_ViSession *iviDigitizer_vi);
-DLLEXTERN MYLIB_API ViStatus IviSUATools_StopDigitizer(iviSUATools_ViSession *vi, iviSyncATrig_ViSession *iviSyncATrig_vi, iviDigitizer_ViSession *iviDigitizer_vi);
+DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_RunFgen(iviSUATools_ViSession *vi, iviSyncATrig_ViSession *iviSyncATrig_vi, iviFgen_ViSession *iviFgen_vi);
+DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_StopFgen(iviSUATools_ViSession *vi, iviSyncATrig_ViSession *iviSyncATrig_vi, iviFgen_ViSession *iviFgen_vi);
+DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_RunDigitizer(iviSUATools_ViSession *vi, iviSyncATrig_ViSession *iviSyncATrig_vi, iviDigitizer_ViSession *iviDigitizer_vi);
+DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_StopDigitizer(iviSUATools_ViSession *vi, iviSyncATrig_ViSession *iviSyncATrig_vi, iviDigitizer_ViSession *iviDigitizer_vi);
 
 #endif //C_SUA_TOOLS_H

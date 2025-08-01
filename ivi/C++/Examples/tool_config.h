@@ -9,7 +9,7 @@
 
 ViStatus DUCConfigAWG(iviFgen_ViSession *vi, ViInt32 DUC_Enable, ViConstString channelName, ViReal64 DUC_NCO_Frequency){
     auto s = IviFgen_SetAttributeViUInt32(vi, "0", IVIFGEN_ATTR_DAC_DUC_ENABLE, DUC_Enable);
-    s = IviFgen_SetAttributeViReal64(vi, "-1", IVIFGEN_ATTR_DAC_NCO_FREQUENCY, DUC_NCO_Frequency);
+    s = IviFgen_SetAttributeViReal64(vi, channelName, IVIFGEN_ATTR_DAC_NCO_FREQUENCY, DUC_NCO_Frequency);
     s = IviFgen_SetAttributeViInt32(vi, "0", IVIFGEN_ATTR_DAC_DUC_EXE, 1);
     ViUInt32 result = 0;
     s = IviFgen_GetAttributeViUInt32(vi, "0", IVIFGEN_ATTR_DAC_DUC_RESULT, &result);
@@ -68,22 +68,16 @@ ViStatus NYQ_ZONEAWG(iviFgen_ViSession *vi, ViConstString channelName, ViInt32 N
 }
 
 ViStatus internalTriggerConfigSAT(iviSyncATrig_ViSession *vi, ViUInt32 triggerSource, ViUInt32 triggerPeriod = 6400, ViUInt32 triggerRepetSize=4294967295, ViUInt32 triggerPulseWidthy=1600){
-
     auto s = IviSyncATrig_SetAttributeViUInt32(vi, "0", IVISYNCATRIG_ATTR_TRIGGER_SOURCE, triggerSource);
     s = IviSyncATrig_SetAttributeViUInt32(vi, "0", IVISYNCATRIG_ATTR_INTERNAL_TRIGGER_PERIOD, triggerPeriod);
     s = IviSyncATrig_SetAttributeViUInt32(vi, "0", IVISYNCATRIG_ATTR_INTERNAL_TRIGGER_REPEAT_SIZE, triggerRepetSize);
     s = IviSyncATrig_SetAttributeViUInt32(vi, "0", IVISYNCATRIG_ATTR_INTERNAL_TRIGGER_PULSE_WIDTH, triggerPulseWidthy);
-    s = IviSyncATrig_SetAttributeViUInt32(vi, "0", IVISYNCATRIG_ATTR_INTERNAL_TRIGGER_EXE, 0);
-
     ViUInt32 result = 0;
-    s = IviSyncATrig_GetAttributeViUInt32(vi, "0", IVISYNCATRIG_ATTR_INTERNAL_TRIGGER_RESULT, &result);
-    std::cout << "internalTriggerConfigSAT result is " << result << std::endl;
     if (result){
         return VI_STATE_FAIL;
     } else {
         return VI_STATE_SUCCESS;
     }
-
 }
 
 ViString create_nswave_code(std::map<ViString, waveformHandle *> waveformHandle_map ,ViInt32 nswaveType, ViUInt32 triggerPeriod = 6400){
@@ -173,7 +167,7 @@ def program(wlist: dict[str, np.ndarray]):
 ViStatus DDConfigDAQ(iviDigitizer_ViSession *vi, ViInt32 DDC_Enable, ViConstString channelName, ViReal64 DDC_NCO_Frequency){
 
     auto s = IviDigitizer_SetAttributeViUInt32(vi, "0", IVIDIGITIZER_ATTR_ADC_DDC_ENABLE, DDC_Enable);
-    s = IviDigitizer_SetAttributeViReal64(vi, "-1", IVIDIGITIZER_ATTR_ADC_NCO_FREQUENCY, DDC_NCO_Frequency);
+    s = IviDigitizer_SetAttributeViReal64(vi, channelName, IVIDIGITIZER_ATTR_ADC_NCO_FREQUENCY, DDC_NCO_Frequency);
     s = IviDigitizer_SetAttributeViInt32(vi, "0", IVIDIGITIZER_ATTR_ADC_DDC_EXE, 1);
     ViUInt32 result;
     s = IviDigitizer_GetAttributeViUInt32(vi, "0", IVIDIGITIZER_ATTR_ADC_DDC_RESULT, &result);
