@@ -20,8 +20,7 @@ ViStatus preAWG(iviFgen_ViSession* iviFgen_vi){
 }
 
 int main() {
-    std::cout << "=== AWG wfm Play Test ===" << std::endl;
-
+    ViUInt32 res = 0;
     auto iviSUATools_vi = new iviSUATools_ViSession;
     auto s = IviSUATools_Initialize(iviSUATools_vi);
 
@@ -36,34 +35,11 @@ int main() {
     s = preAWG(iviFgen_vi);
 
     std::cout << "\n=== RF Config ===" << std::endl;
-    s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIFGEN_ATTR_DAC_INTERNAL_MULTIPLE, 1);
-    s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIFGEN_ATTR_DAC_SAMPLE_RATE, 4000);
     s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIBASE_ATTR_OFFLINE_WORK, 1);
     s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIBASE_ATTR_RF_CONFIG, 0);
 
     auto iviSyncATrig_vi = new iviSyncATrig_ViSession;
     s = IviSyncATrig_Initialize("PXI::1::INSTR", VI_STATE_FALSE, VI_STATE_TRUE, iviSyncATrig_vi, resource_db_path);
-
-    std::cout << "\n=== Trig Config ===" << std::endl;
-    ViUInt32 triggerSource = IVISYNCATRIG_VAL_TRIGGER_SOURCE_P_PXI_STAR_INTERNAL; //来源
-    ViUInt32 triggerPeriod = 6400; // 周期(需要被800整除)
-    ViUInt32 triggerRepetSize = 4294967295;// 触发数量
-    ViUInt32 triggerPulseWidth = 1600; // 脉宽(为周期的一半)
-
-    if (triggerSource == IVISYNCATRIG_VAL_TRIGGER_SOURCE_P_PXI_STAR_INTERNAL){
-        s = triggerConfigAWG(iviFgen_vi, IVIFGEN_VAL_TRIGGER_SOURCE_PXI_STAR_TRIG);
-        s = IviSyncATrig_SetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_TRIGGER_SOURCE_P_PXI_STAR, triggerSource);
-        s = internalTriggerConfigSAT(iviSyncATrig_vi, triggerSource, triggerPeriod, triggerRepetSize, triggerPulseWidth);
-    } else if (triggerSource == IVISYNCATRIG_VAL_TRIGGER_SOURCE_P_PXI_STAR_EXTERNAL){
-        s = triggerConfigAWG(iviFgen_vi, IVIFGEN_VAL_TRIGGER_SOURCE_PXI_STAR_TRIG);
-        s = IviSyncATrig_SetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_TRIGGER_SOURCE_P_PXI_STAR, triggerSource);
-        s = internalTriggerConfigSAT(iviSyncATrig_vi, triggerSource);
-    }
-    else
-        std::cout << "\n=== Trig Source Error ===" << std::endl;
-
-    std::cout << "\n=== Chnl EN ===" << std::endl;
-    s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "-1", IVIFGEN_ATTR_SYSTEM_STATUS_ENABLE, 1);
 
     std::cout << "\n=== DUC Config ===" << std::endl;
     s = DUCConfigAWG(iviFgen_vi, 0, "-1", 0);
@@ -72,14 +48,45 @@ int main() {
     s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIFGEN_ATTR_DAC_INTERNAL_MULTIPLE, 1);
 
     std::cout << "\n=== Sample Rate Config ===" << std::endl;
-    s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIFGEN_ATTR_DAC_SAMPLE_RATE, 4000);
+    s = IviFgen_SetAttributeViReal64(iviFgen_vi, "0", IVIFGEN_ATTR_DAC_SAMPLE_RATE, 4000000000);
 
+    std::cout << "\n=== SAT Clock Config ===" << std::endl;
+    s = IviSyncATrig_SetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ, IVISYNCATRIG_VAL_100MHZ_SOURCE_INTERNAL);
+    s = IviSyncATrig_SetAttributeViInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ_EXE, 0);
+    s = IviSyncATrig_GetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ_RESULT, &res);
+    std::cout << "IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ res is " << res << std::endl;
+
+    std::cout << "\n=== Digitizer Clock Config ===" << std::endl;
+    s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIBASE_ATTR_REF_CLOCK_SOURCE, IVIBASE_VAL_REF_CLOCK_EXTERNAL);
+    s = IviFgen_SetAttributeViReal64(iviFgen_vi, "0", IVIBASE_ATTR_REF_FREQ_FREQUENCY, 100000000.0);
 
     std::cout << "\n=== SYNC Config ===" << std::endl;
     std::list<iviFgen_ViSession *> iviFgen_vi_list;
     std::list<iviDigitizer_ViSession *> iviDigitizer_vi_list;
     iviFgen_vi_list.push_back(iviFgen_vi);
     s = IviSUATools_Sync(iviSUATools_vi, iviSyncATrig_vi, iviFgen_vi_list, iviDigitizer_vi_list);
+
+    std::cout << "\n=== Trig Config ===" << std::endl;
+    ViUInt32 triggerSource = IVISYNCATRIG_VAL_TRIGGER_SOURCE_P_PXI_STAR_INTERNAL; //来源
+    ViUInt32 triggerPeriod = 40000000; // 周期(需要被800整除)
+    ViUInt32 triggerRepetSize = 4294967295;// 触发数量
+    ViUInt32 triggerPulseWidth = 20000000; // 脉宽(为周期的一半)
+
+    if (triggerSource == IVISYNCATRIG_VAL_TRIGGER_SOURCE_P_PXI_STAR_INTERNAL){
+        s = triggerConfigAWG(iviFgen_vi, IVIFGEN_VAL_TRIGGER_SOURCE_PXI_STAR_TRIG);
+        s = internalTriggerConfigSAT(iviSyncATrig_vi, triggerSource, triggerPeriod, triggerRepetSize, triggerPulseWidth);
+        s = IviSyncATrig_SetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_TRIGGER_SOURCE_P_PXI_STAR, triggerSource);
+    } else if (triggerSource == IVISYNCATRIG_VAL_TRIGGER_SOURCE_P_PXI_STAR_EXTERNAL){
+        s = triggerConfigAWG(iviFgen_vi, IVIFGEN_VAL_TRIGGER_SOURCE_PXI_STAR_TRIG);
+        s = internalTriggerConfigSAT(iviSyncATrig_vi, triggerSource);
+        s = IviSyncATrig_SetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_TRIGGER_SOURCE_P_PXI_STAR, triggerSource);
+    }
+    else
+        std::cout << "\n=== Trig Source Error ===" << std::endl;
+
+    std::cout << "\n=== Chnl EN ===" << std::endl;
+    s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "-1", IVIFGEN_ATTR_SYSTEM_STATUS_ENABLE, 1);
+
 
     std::cout << "\n=== Create NSWave ===" << std::endl;
     // 顺序播放

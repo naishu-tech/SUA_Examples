@@ -2,7 +2,7 @@
 # IVI 测试程序 CMake 配置
 # ===============================================================================
 cmake_minimum_required(VERSION 3.16.3)
-project(ivi_tests)
+project(ivi_examples)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

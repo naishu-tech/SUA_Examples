@@ -2,13 +2,8 @@
 // Created by sn06129 on 2025/7/25.
 //
 
-# include "iostream"
 # include "IviDigitizer.h"
-# include <filesystem>
-# include <fstream>
-
 # include "IviSUATools.h"
-# include "IviDigitizer.h"
 # include "tool_config.h"
 
 ViStatus preDAQ(iviDigitizer_ViSession* iviDigitizer_vi){
@@ -36,12 +31,21 @@ int main(int argc, char *argv[]){
     auto iviDigitizer_vi = new iviDigitizer_ViSession;
     s = IviDigitizer_Initialize("PXI::0::INSTR", VI_STATE_FALSE, VI_STATE_TRUE, iviDigitizer_vi, resource_db_path);
 
+    ViInt32 mode;
+    s = IviDigitizer_GetAttributeViInt32(iviDigitizer_vi, "0", IVIDIGITIZER_ATTR_SAMPLE_WORK_MODE, &mode);
+    if (mode != IVIDIGITIZER_VAL_WORK_MODE_RING_BUFFER) {
+        std::cout << "Error: The Digitizer Work Mode is not RingBuffer!" << std::endl;
+        isFAIL(IviDigitizer_Close(iviDigitizer_vi));
+        isFAIL(IviSUATools_Close(iviSUATools_vi));
+        delete iviDigitizer_vi;
+        delete iviSUATools_vi;
+        return 0;
+    }
+
     std::cout << "\n=== LSDADC Config ===" << std::endl;
     s = preDAQ(iviDigitizer_vi);
 
     std::cout << "\n=== RF Config ===" << std::endl;
-    s = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIDIGITIZER_ATTR_ADC_EXTRACT_MULTIPLE, 1);
-    s = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIDIGITIZER_ATTR_ADC_SAMPLE_RATE, 2000);
     s = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIBASE_ATTR_OFFLINE_WORK, 1);
     s = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIBASE_ATTR_RF_CONFIG, 0);
 
@@ -55,15 +59,17 @@ int main(int argc, char *argv[]){
     s = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIDIGITIZER_ATTR_ADC_EXTRACT_MULTIPLE, 1);
 
     std::cout << "\n=== Sample Rate Config ===" << std::endl;
-    s = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIDIGITIZER_ATTR_ADC_SAMPLE_RATE, 2000);
+    s = IviDigitizer_SetAttributeViReal64(iviDigitizer_vi, "0", IVIDIGITIZER_ATTR_ADC_SAMPLE_RATE, 2000000000);
 
     std::cout << "\n=== SAT Clock Config ===" << std::endl;
-    s = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIDIGITIZER_ATTR_ADC_EXTRACT_MULTIPLE, 1);
     s = IviSyncATrig_SetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ, IVISYNCATRIG_VAL_100MHZ_SOURCE_INTERNAL);
     s = IviSyncATrig_SetAttributeViInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ_EXE, 0);
-
     s = IviSyncATrig_GetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ_RESULT, &res);
     std::cout << "IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ res is " << res << std::endl;
+
+    std::cout << "\n=== Digitizer Clock Config ===" << std::endl;
+    s = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIBASE_ATTR_REF_CLOCK_SOURCE, IVIBASE_VAL_REF_CLOCK_EXTERNAL);
+    s = IviDigitizer_SetAttributeViReal64(iviDigitizer_vi, "0", IVIBASE_ATTR_REF_FREQ_FREQUENCY, 100000000.0);
 
     std::cout << "\n=== SYNC Config ===" << std::endl;
     std::list<iviFgen_ViSession *> iviFgen_vi_list;
@@ -76,24 +82,19 @@ int main(int argc, char *argv[]){
     ViUInt32 triggerPeriod = 40000000; // 周期(需要被800整除)
     ViUInt32 triggerRepetSize = 4294967295;// 触发数量
     ViUInt32 triggerPulseWidth = 20000000; // 脉宽(为周期的一半)
-
     if (triggerSource == IVISYNCATRIG_VAL_TRIGGER_SOURCE_P_PXI_STAR_INTERNAL){
         s = triggerConfigDAQ(iviDigitizer_vi, IVIDIGITIZER_VAL_TRIGGER_SOURCE_PXI_STAR_TRIG);
-        s = internalTriggerConfigSAT(iviSyncATrig_vi, 0, triggerPeriod, triggerRepetSize, triggerPulseWidth);
+        s = internalTriggerConfigSAT(iviSyncATrig_vi, triggerSource, triggerPeriod, triggerRepetSize, triggerPulseWidth);
         s = IviSyncATrig_SetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_TRIGGER_SOURCE_P_PXI_STAR, triggerSource);
-        std::cout << "IVISYNCATRIG_ATTR_TEST_TRIGGER_SOURCE_P_PXI_STAR res is " << res << std::endl;
-
     } else if (triggerSource == IVISYNCATRIG_VAL_TRIGGER_SOURCE_P_PXI_STAR_EXTERNAL){
         s = triggerConfigDAQ(iviDigitizer_vi, IVIDIGITIZER_VAL_TRIGGER_SOURCE_PXI_STAR_TRIG);
         s = internalTriggerConfigSAT(iviSyncATrig_vi, triggerSource);
         s = IviSyncATrig_SetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_TRIGGER_SOURCE_P_PXI_STAR, triggerSource);
-        std::cout << "IVISYNCATRIG_ATTR_TEST_TRIGGER_SOURCE_P_PXI_STAR res is " << res << std::endl;
     }
     else
         std::cout << "\n=== Trig Source Error ===" << std::endl;
 
     std::cout << "\n=== Sample Config ===" << std::endl;
-
     ViConstString sampleEnableChannel = "-1";
     ViInt32 sampleEnable = 1;
     ViConstString sampleStrageDepthChannel = "-1";
@@ -108,7 +109,6 @@ int main(int argc, char *argv[]){
     ViUInt32 sampleCollectDataTruncation = 0;
     ViConstString sampleCollectDataTypeChannel = "-1";
     ViUInt32 sampleCollectDataType = 0;
-
     sampleConfigDAQ(iviDigitizer_vi,
          sampleEnableChannel, sampleEnable,
          sampleStrageDepthChannel, sampleStrageDepth,
@@ -130,7 +130,7 @@ int main(int argc, char *argv[]){
         std::filesystem::create_directories(directoryPath);
     }
 
-    ViUInt32 waveformArraySize = 65552;
+    ViUInt32 waveformArraySize = sampleStrageDepth + 16;
     ViReal64 maximumTime_s = 0.1;
     ViReal64 times = 20;
 
@@ -162,7 +162,7 @@ int main(int argc, char *argv[]){
         s = IviDigitizer_FetchWaveformMemInt16 (iviDigitizer_vi, "1", waveformArraySize, waveformArray);
         s = IviDigitizer_TriggerStart (iviDigitizer_vi, "1");
 
-        outFile_0.write(waveformArray->memDataHandle, (waveformArraySize*sizeof(ViInt16)));
+        outFile_1.write(waveformArray->memDataHandle, (waveformArraySize*sizeof(ViInt16)));
 
         m ++;
         speed_count += waveformArraySize * 2;

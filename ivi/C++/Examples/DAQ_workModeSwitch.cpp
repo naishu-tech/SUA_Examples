@@ -2,7 +2,6 @@
 // Created by sn06129 on 2025/7/25.
 //
 
-# include "iostream"
 # include "IviSUATools.h"
 # include "IviDigitizer.h"
 # include "tool_config.h"
@@ -10,8 +9,12 @@
 int main(int argc, char *argv[]){
 
     std::map<ViString, ViUInt32> workModeSwitch = {
-            {"Stream", 287449856}, //"0x11222300"
-            {"RingBuffer", 287441664} //"0x11220300"
+            {"Stream_22", 287449856}, //"0x11222300"
+            {"RingBuffer_22", 287441664}, //"0x11220300"
+            {"Stream_40", 289415936}, //"0x11402300"
+            {"RingBuffer_40", 289407744}, //"0x11400300"
+            {"Stream_80", 293610240}, //"0x11802300"
+            {"RingBuffer_80", 293602048} //"0x11800300"
     };
 
     auto iviSUATools_vi = new iviSUATools_ViSession;
@@ -24,7 +27,7 @@ int main(int argc, char *argv[]){
     auto iviDigitizer_vi = new iviDigitizer_ViSession;
     s = IviDigitizer_Initialize("PXI::0::INSTR", VI_STATE_FALSE, VI_STATE_TRUE, iviDigitizer_vi, resource_db_path);
 
-    s = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIBASE_ATTR_BIT_SWITCH_FILE_NAME, workModeSwitch["Stream"]);
+    s = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIBASE_ATTR_BIT_SWITCH_FILE_NAME, workModeSwitch["Stream_80"]);
     s = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIBASE_ATTR_BIT_SWITCH_EXE, 0);
 
     ViUInt32 result;
@@ -44,5 +47,4 @@ int main(int argc, char *argv[]){
     delete iviSUATools_vi;
     delete iviDigitizer_vi;
     return 0;
-
 }
