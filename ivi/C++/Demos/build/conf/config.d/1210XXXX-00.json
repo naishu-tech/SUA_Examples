@@ -1,0 +1,21 @@
+{
+  "board_name": "BTY",
+  "ivi": "ivi_1210XXXX-00.json",
+  "cr_target":"xdma",
+  "cs_target":"vps",
+  "ds_target":"sim",
+  "default_param": {
+    "icd_path": "icd.json"
+  },
+  "mode_name": {  },
+  "en_cpx_chid": true,
+  "cpx_chnl_fmt": "CH{chnl_idx}",
+  "out_start_num": 0,
+  "in_start_num": 0,
+  "mode_functions": ["SAT"],
+  "nsqc": "",
+  "ad_channels": [
+  ],
+  "da_channels": [
+  ]
+}
