@@ -88,6 +88,15 @@ function(add_simple_test target_name source_file)
 endfunction()
 
 # ===============================================================================
+# Cheakout attr范围判断测试
+# ===============================================================================
+
+add_simple_test(checkoutAWG "AWG_Checkout.cpp" "tool_config.h")
+add_simple_test(checkoutDAQ "DAQ_Checkout.cpp" "tool_config.h")
+add_simple_test(checkoutSAT "SAT_Checkout.cpp" "tool_config.h")
+
+
+# ===============================================================================
 # AWG (任意波形发生器) 测试
 # ===============================================================================
 
