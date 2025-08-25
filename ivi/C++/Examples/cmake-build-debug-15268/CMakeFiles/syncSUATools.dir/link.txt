@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/syncSUATools.dir/SUATools_sync.cpp.o  -o syncSUATools  -livi -lNSUKit -lxdma_api -livi -lNSUKit -lxdma_api -lpthread 

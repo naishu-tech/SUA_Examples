@@ -1,0 +1,762 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="ivi_examples"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test_all">
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 test_all"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="wfmQIPlayAWG">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/wfmQIPlayAWG" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 wfmQIPlayAWG"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="wfmQIPlayAWG/fast">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/wfmQIPlayAWG" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 wfmQIPlayAWG/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="getInfoSUATools">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/getInfoSUATools" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 getInfoSUATools"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="getInfoSUATools/fast">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/getInfoSUATools" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 getInfoSUATools/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="wfmSequencePlayAWG">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/wfmSequencePlayAWG" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 wfmSequencePlayAWG"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="wfmSequencePlayAWG/fast">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/wfmSequencePlayAWG" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 wfmSequencePlayAWG/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="RingBufferQIDAQ">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/RingBufferQIDAQ" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 RingBufferQIDAQ"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="RingBufferQIDAQ/fast">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/RingBufferQIDAQ" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 RingBufferQIDAQ/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="runSUATools">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/runSUATools" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 runSUATools"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="runSUATools/fast">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/runSUATools" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 runSUATools/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="RingBufferDAQ">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/RingBufferDAQ" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 RingBufferDAQ"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="RingBufferDAQ/fast">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/RingBufferDAQ" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 RingBufferDAQ/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="workModeSwitchDAQ">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/workModeSwitchDAQ" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 workModeSwitchDAQ"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="workModeSwitchDAQ/fast">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/workModeSwitchDAQ" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 workModeSwitchDAQ/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="wfmPlayAWG">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/wfmPlayAWG" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 wfmPlayAWG"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="wfmPlayAWG/fast">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/wfmPlayAWG" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 wfmPlayAWG/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="StreamDAQ">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/StreamDAQ" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 StreamDAQ"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="StreamDAQ/fast">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/StreamDAQ" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 StreamDAQ/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test_daq_all">
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 test_daq_all"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test_awg_all">
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 test_awg_all"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="syncSUATools">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/syncSUATools" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 syncSUATools"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="syncSUATools/fast">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/syncSUATools" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 syncSUATools/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="resourceDBSUATools">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/resourceDBSUATools" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 resourceDBSUATools"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="resourceDBSUATools/fast">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/resourceDBSUATools" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 resourceDBSUATools/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="stopSUATools">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/stopSUATools" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 stopSUATools"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="stopSUATools/fast">
+				<Option output="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/stopSUATools" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./include"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/ivi"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./src"/>
+					<Add directory="/home/digilab/SUA_Examples/ivi/C++/Examples/./deps/nsukitcpp"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 stopSUATools/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/digilab/SUA_Examples/ivi/C++/Examples/AWG_wfmPlay.cpp">
+			<Option target="wfmPlayAWG"/>
+		</Unit>
+		<Unit filename="/home/digilab/SUA_Examples/ivi/C++/Examples/AWG_wfmQIPlay.cpp">
+			<Option target="wfmQIPlayAWG"/>
+		</Unit>
+		<Unit filename="/home/digilab/SUA_Examples/ivi/C++/Examples/AWG_wfmSequencePlay.cpp">
+			<Option target="wfmSequencePlayAWG"/>
+		</Unit>
+		<Unit filename="/home/digilab/SUA_Examples/ivi/C++/Examples/DAQ_RingBuffer.cpp">
+			<Option target="RingBufferDAQ"/>
+		</Unit>
+		<Unit filename="/home/digilab/SUA_Examples/ivi/C++/Examples/DAQ_RingBufferQI.cpp">
+			<Option target="RingBufferQIDAQ"/>
+		</Unit>
+		<Unit filename="/home/digilab/SUA_Examples/ivi/C++/Examples/DAQ_Stream.cpp">
+			<Option target="StreamDAQ"/>
+		</Unit>
+		<Unit filename="/home/digilab/SUA_Examples/ivi/C++/Examples/DAQ_workModeSwitch.cpp">
+			<Option target="workModeSwitchDAQ"/>
+		</Unit>
+		<Unit filename="/home/digilab/SUA_Examples/ivi/C++/Examples/SUATools_getInfo.cpp">
+			<Option target="getInfoSUATools"/>
+		</Unit>
+		<Unit filename="/home/digilab/SUA_Examples/ivi/C++/Examples/SUATools_resourceDB.cpp">
+			<Option target="resourceDBSUATools"/>
+		</Unit>
+		<Unit filename="/home/digilab/SUA_Examples/ivi/C++/Examples/SUATools_run.cpp">
+			<Option target="runSUATools"/>
+		</Unit>
+		<Unit filename="/home/digilab/SUA_Examples/ivi/C++/Examples/SUATools_stop.cpp">
+			<Option target="stopSUATools"/>
+		</Unit>
+		<Unit filename="/home/digilab/SUA_Examples/ivi/C++/Examples/SUATools_sync.cpp">
+			<Option target="syncSUATools"/>
+		</Unit>
+		<Unit filename="/home/digilab/SUA_Examples/ivi/C++/Examples/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/digilab/SUA_Examples/ivi/C++/Examples/version.h.in">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

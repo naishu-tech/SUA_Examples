@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/workModeSwitchDAQ.dir/DAQ_workModeSwitch.cpp.o  -o workModeSwitchDAQ  -livi -lNSUKit -lxdma_api -livi -lNSUKit -lxdma_api -lpthread 

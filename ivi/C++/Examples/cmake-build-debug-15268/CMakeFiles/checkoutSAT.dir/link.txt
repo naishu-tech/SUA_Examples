@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/checkoutSAT.dir/SAT_Checkout.cpp.o  -o checkoutSAT  -livi -lNSUKit -lxdma_api -livi -lNSUKit -lxdma_api -lpthread 

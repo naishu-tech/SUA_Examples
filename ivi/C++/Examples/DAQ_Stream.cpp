@@ -74,7 +74,6 @@ void write_file_thread(iviDigitizer_ViSession *vi, Deque *q, std::string channel
     iviDigitizer_memData* mem;
     std::ofstream outF;
 //    outF.open(path + channelName + ".data", std::ofstream::binary);
-
     int cnt = 0;
     nsuSize_t speed_count = 0;
     auto st = std::chrono::steady_clock::now();
@@ -93,7 +92,7 @@ void write_file_thread(iviDigitizer_ViSession *vi, Deque *q, std::string channel
         }
 
         mem = reinterpret_cast<iviDigitizer_memData *>(q->full.Pop());
-        outF.write(mem->memDataHandle, (waveformArraySize*sizeof(ViInt16)));
+        outF.write(mem->memDataHandle, (waveformArraySize * sizeof(ViInt16)));
         q->empty.Push(reinterpret_cast<nsuMemory_p>(mem));
         lock = new std::unique_lock<std::mutex>(*mu);
         q->dataNum -= 1;
@@ -104,16 +103,16 @@ void write_file_thread(iviDigitizer_ViSession *vi, Deque *q, std::string channel
     outF.close();
 }
 
-void upload_thread(iviDigitizer_ViSession *vi, Deque *q, std::string channelName, ViUInt32 waveformArraySize, ViUInt32 times, std::mutex *mu) {
+void upload_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& channelName, ViUInt32 waveformArraySize, ViUInt32 times, std::mutex *mu) {
     std::unique_lock<std::mutex> *lock;
     iviDigitizer_memData* mem;
     std::cout << "upload thread start: " << waveformArraySize << std::endl;
     ViStatus s;
-    ViInt32 numChannel;
     std::vector<int> channelsInt;
     int dictionary = 0;
     int cnt = 0;
     nsuSize_t speed_count = 0;
+    ViInt32 * m[30];
 
     auto st = std::chrono::steady_clock::now();
 
@@ -123,14 +122,19 @@ void upload_thread(iviDigitizer_ViSession *vi, Deque *q, std::string channelName
         }
 
         mem = reinterpret_cast<iviDigitizer_memData*>(q->empty.Pop());
-        std::cout << "channel: " << channelName << " upData start " << std::endl;
+        //std::cout << "channel: " << channelName << " upData start " << std::endl;
         s = IviDigitizer_ReadWaveformInt16(vi, channelName.c_str(), waveformArraySize, mem, 0);
+        if (s != VI_STATE_SUCCESS){
+            q->empty.Push(reinterpret_cast<nsuMemory_p>(mem));
+            continue;
+        }
         dictionary += 1;
+        std::cout << "channel: " << channelName << " dictionary: " << dictionary << std::endl;
         speed_count += waveformArraySize;
 
         if (cnt % 20 == 0) {
             auto count = std::chrono::steady_clock::now() - st;
-            std::cout << std::flush << '\r' << "current write file speed: " << speed_count*1000./(count.count()) << "MB/s" << std::endl;
+            //std::cout << std::flush << '\r' << "current write file speed: " << speed_count*1000./(count.count()) << "MB/s" << std::endl;
             speed_count = 0;
             st = std::chrono::steady_clock::now();
         }
@@ -139,7 +143,7 @@ void upload_thread(iviDigitizer_ViSession *vi, Deque *q, std::string channelName
         lock = new std::unique_lock<std::mutex>(*mu);
         q->dataNum += 1;
         delete lock;
-        std::cout << "channel: " << channelName << " upData successful!!!!!!!!!!!!" << std::endl;
+        //std::cout << "channel: " << channelName << " upData successful!!!!!!!!!!!!" << std::endl;
     }
     lock = new std::unique_lock<std::mutex>(*mu);
     q->stopFlag = 1;
@@ -251,7 +255,7 @@ int main(int argc, char *argv[]){
     std::tm* localTime = std::localtime(&currentTime);
     std::ostringstream oss;
     oss << std::put_time(localTime, "%Y%m%d%H%M%S");
-    std::string directoryPath = "./DAQ-14Bit-" + oss.str();
+    std::string directoryPath = "/UserSpace/DAQ-14Bit-" + oss.str();
     if (!std::filesystem::exists(directoryPath)) {
         std::filesystem::create_directories(directoryPath);
     }
@@ -262,10 +266,10 @@ int main(int argc, char *argv[]){
     std::unordered_map<int, std::thread> chnl_up_trd;
     std::unordered_map<int, std::thread> chnl_write_trd;
 
-    std::cout << "\n=== Stream Start Get the Data ===" << std::endl;
-    s = IviSUATools_RunDigitizer(iviSUATools_vi, iviSyncATrig_vi, iviDigitizer_vi);
+    std::cout << "\n=== Config ===" << std::endl;
 
     ViUInt32 waveformArraySize = 4 * 1024 * 1024;
+//    ViUInt32 waveformArraySize = 67125248;
     ViReal64 maximumTime_s = 0.1;
     ViReal64 times = 20;
     std::string channelName = "0,1";
@@ -277,8 +281,9 @@ int main(int argc, char *argv[]){
         string2int(channel.data(), numChannel, 10)
 
         if (chnl_Deque.find(numChannel) == chnl_Deque.end()) {
+            s = IviDigitizer_ConfigureChannelDataDepthInt16(iviDigitizer_vi, channel, waveformArraySize);
             for (int i=0; i<10; i++) {
-                s = IviDigitizer_ConfigureChannelDataDepthInt16(iviDigitizer_vi, channel.data(), waveformArraySize);
+
                 auto mem = reinterpret_cast<nsuMemory_p>(IviDigitizer_CreateMemInt16(iviDigitizer_vi, waveformArraySize));
                 chnl_Deque[numChannel].empty.Push(mem);
             }
@@ -287,6 +292,9 @@ int main(int argc, char *argv[]){
         chnl_up_trd.emplace(numChannel, std::thread(upload_thread, iviDigitizer_vi, &chnl_Deque[numChannel], channel, waveformArraySize, times, &chnl_mutex[numChannel]));
         chnl_write_trd.emplace(numChannel, std::thread(write_file_thread, iviDigitizer_vi, &chnl_Deque[numChannel], channel, waveformArraySize, directoryPath +"/up-res-14Bit_", &chnl_mutex[numChannel]));
     }
+
+    std::cout << "\n=== Stream Start Get the Data ===" << std::endl;
+    s = IviSUATools_RunDigitizer(iviSUATools_vi, iviSyncATrig_vi, iviDigitizer_vi);
 
     for (const auto &channel: channels) {
 

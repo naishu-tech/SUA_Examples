@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/resourceDBSUATools.dir/SUATools_resourceDB.cpp.o  -o resourceDBSUATools  -livi -lNSUKit -lxdma_api -livi -lNSUKit -lxdma_api -lpthread 

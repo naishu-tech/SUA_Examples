@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="152.68 (50ff633f-bb2e-4937-b4d4-5b53d2ab935d)" remoteFilesAllowedToDisappearOnAutoupload="false" confirmBeforeDeletion="false">
+    <option name="confirmBeforeDeletion" value="false" />
+    <serverData>
+      <paths name="152.68 (50ff633f-bb2e-4937-b4d4-5b53d2ab935d)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/digilab/SUA_Examples/ivi/C++/Examples/" local="$PROJECT_DIR$" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-15268" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-15268" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+      <paths name="152.87 (f86e4188-a9e7-4b1e-9459-4050e4dbd208)">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>

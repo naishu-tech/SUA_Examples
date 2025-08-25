@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/RingBufferQIDAQ.dir/DAQ_RingBufferQI.cpp.o  -o RingBufferQIDAQ  -livi -lNSUKit -lxdma_api -livi -lNSUKit -lxdma_api -lpthread 

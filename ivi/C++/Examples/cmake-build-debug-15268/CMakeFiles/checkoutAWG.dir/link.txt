@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/checkoutAWG.dir/AWG_Checkout.cpp.o  -o checkoutAWG  -livi -lNSUKit -lxdma_api -livi -lNSUKit -lxdma_api -lpthread 

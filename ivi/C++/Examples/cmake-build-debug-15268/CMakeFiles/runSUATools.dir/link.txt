@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/runSUATools.dir/SUATools_run.cpp.o  -o runSUATools  -livi -lNSUKit -lxdma_api -livi -lNSUKit -lxdma_api -lpthread 

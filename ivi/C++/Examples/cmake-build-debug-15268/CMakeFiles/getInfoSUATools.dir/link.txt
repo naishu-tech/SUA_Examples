@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/getInfoSUATools.dir/SUATools_getInfo.cpp.o  -o getInfoSUATools  -livi -lNSUKit -lxdma_api -livi -lNSUKit -lxdma_api -lpthread 

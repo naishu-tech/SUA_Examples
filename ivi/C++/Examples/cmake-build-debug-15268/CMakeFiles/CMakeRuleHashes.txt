@@ -1,0 +1,4 @@
+# Hashes of file build rules.
+9f8714390c0949519c0f96e00b08a171 CMakeFiles/test_all
+9f8714390c0949519c0f96e00b08a171 CMakeFiles/test_awg_all
+9f8714390c0949519c0f96e00b08a171 CMakeFiles/test_daq_all

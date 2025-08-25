@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/StreamDAQ.dir/DAQ_Stream.cpp.o  -o StreamDAQ  -livi -lNSUKit -lxdma_api -livi -lNSUKit -lxdma_api -lpthread 

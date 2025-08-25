@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/stopSUATools.dir/SUATools_stop.cpp.o  -o stopSUATools  -livi -lNSUKit -lxdma_api -livi -lNSUKit -lxdma_api -lpthread 

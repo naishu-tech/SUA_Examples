@@ -1,0 +1,10 @@
+/usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" -S /home/digilab/SUA_Examples/ivi/C++/Examples -B /home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268
+-- === IVI Test Configuration ===
+-- Total test programs: ~50+
+-- Python tests option: OFF
+-- Python support available: FALSE
+-- Threading support: TRUE
+-- ===============================
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/digilab/SUA_Examples/ivi/C++/Examples/cmake-build-debug-15268

@@ -1,0 +1,50 @@
+{
+    "SAT": {
+        "config": "./etc/bvc/conf/ivi_1210XXXX-00.json",
+        "ds_target": "sim://0",
+        "cr_target": "sim://0",
+        "cs_target": "sim://0",
+        "sim_info": {
+            "enable": true,
+            "IVIBASE_ATTR_FIRMWARE_SLOT_POSITION": 0,
+            "IVIBASE_ATTR_MODULE_DEVICE_ID_STR": "M4901",
+            "IVIBASE_ATTR_FPGA_VERSION_STR": "Ver-F00C44A0D010-AD370306-22a24901",
+            "IVIDIGITIZER_ATTR_SIM_SOURCE_RATE": 100000000.0,
+            "IVIDIGITIZER_ATTR_ADC_SAMPLE_RATE_MAX": 4000000000.0,
+            "IVIFGEN_ATTR_DAC_SAMPLE_RATE_MAX": 8000000000.0,
+            "IVIDIGITIZER_ATTR_TEST_SAMPLE_STATE": 3,
+            "IVIBASE_ATTR_MODULE_SERIAL_NUM": 1232991696,
+            "IVIBASE_ATTR_MODULE_DEVICE_ID": 4624,
+            "IVIBASE_ATTR_FPGA_FUNCTION_IDENTIFICATION": 0,
+            "IVIBASE_ATTR_FPGA_FIRMWARE_VERSION": 303039256,
+            "IVIBASE_ATTR_BASIC_CAPABILITY_IDENTIFICATION": 16843008
+        },
+        "param": {
+            "icd_path": "./etc/bvc/conf/icd.json"
+        }
+    },
+    "XDMA0": {
+        "config": "./etc/bvc/conf/ivi_4901XXXX-22.json",
+        "ds_target": "sim://0",
+        "cr_target": "sim://0",
+        "cs_target": "sim://0",
+        "sim_info": {
+            "enable": true,
+            "IVIBASE_ATTR_FIRMWARE_SLOT_POSITION": 1,
+            "IVIBASE_ATTR_MODULE_DEVICE_ID_STR": "M4901",
+            "IVIBASE_ATTR_FPGA_VERSION_STR": "Ver-F00C44A0D010-AD370306-22a24901",
+            "IVIDIGITIZER_ATTR_SIM_SOURCE_RATE": 100000000.0,
+            "IVIDIGITIZER_ATTR_ADC_SAMPLE_RATE_MAX": 4000000000.0,
+            "IVIFGEN_ATTR_DAC_SAMPLE_RATE_MAX": 8000000000.0,
+            "IVIDIGITIZER_ATTR_TEST_SAMPLE_STATE": 3,
+            "IVIBASE_ATTR_MODULE_SERIAL_NUM": 1232991696,
+            "IVIBASE_ATTR_MODULE_DEVICE_ID": 18689,
+            "IVIBASE_ATTR_FPGA_FUNCTION_IDENTIFICATION": 287441680,
+            "IVIBASE_ATTR_FPGA_FIRMWARE_VERSION": 1224806449,
+            "IVIBASE_ATTR_BASIC_CAPABILITY_IDENTIFICATION": 16843008
+        },
+        "param": {
+            "icd_path": "./etc/bvc/conf/icd.json"
+        }
+    }
+}

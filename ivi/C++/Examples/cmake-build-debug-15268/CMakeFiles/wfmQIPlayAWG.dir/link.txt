@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/wfmQIPlayAWG.dir/AWG_wfmQIPlay.cpp.o  -o wfmQIPlayAWG  -livi -lNSUKit -lxdma_api -livi -lNSUKit -lxdma_api -lpthread 

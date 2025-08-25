@@ -90,16 +90,12 @@ endfunction()
 # ===============================================================================
 # Cheakout attr范围判断测试
 # ===============================================================================
-
 add_simple_test(checkoutAWG "AWG_Checkout.cpp" "tool_config.h")
 add_simple_test(checkoutDAQ "DAQ_Checkout.cpp" "tool_config.h")
-add_simple_test(checkoutSAT "SAT_Checkout.cpp" "tool_config.h")
-
 
 # ===============================================================================
 # AWG (任意波形发生器) 测试
 # ===============================================================================
-
 add_simple_test(wfmQIPlayAWG "AWG_wfmQIPlay.cpp" "tool_config.h")
 add_simple_test(wfmSequencePlayAWG "AWG_wfmSequencePlay.cpp" "tool_config.h")
 add_simple_test(wfmPlayAWG "AWG_wfmPlay.cpp" "tool_config.h")
@@ -107,7 +103,6 @@ add_simple_test(wfmPlayAWG "AWG_wfmPlay.cpp" "tool_config.h")
 # ===============================================================================
 # DAQ (数据采集) 测试
 # ===============================================================================
-
 add_simple_test(RingBufferQIDAQ "DAQ_RingBufferQI.cpp" "tool_config.h")
 add_simple_test(RingBufferDAQ "DAQ_RingBuffer.cpp" "tool_config.h")
 add_simple_test(StreamDAQ "DAQ_Stream.cpp" "tool_config.h")
@@ -116,7 +111,6 @@ add_simple_test(workModeSwitchDAQ "DAQ_workModeSwitch.cpp" "tool_config.h")
 # ===============================================================================
 # SUATools () 测试
 # ===============================================================================
-
 add_simple_test(getInfoSUATools "SUATools_getInfo.cpp")
 add_simple_test(syncSUATools "SUATools_sync.cpp")
 add_simple_test(resourceDBSUATools "SUATools_resourceDB.cpp")

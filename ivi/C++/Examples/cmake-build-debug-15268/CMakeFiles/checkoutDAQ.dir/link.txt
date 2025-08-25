@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/checkoutDAQ.dir/DAQ_Checkout.cpp.o  -o checkoutDAQ  -livi -lNSUKit -lxdma_api -livi -lNSUKit -lxdma_api -lpthread 
