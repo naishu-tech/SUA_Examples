@@ -569,14 +569,3 @@ bvcTools.disconnect();
 fprintf('\n=== 数字转换器环形缓冲区数据采集完成 ===\n');
 
 end
-
-%% 辅助函数
-function str = logical_to_string(logical_val)
-    % 将逻辑值转换为字符串
-    if logical_val
-        str = 'True';
-    else
-        str = 'False';
-    end
-end
-

@@ -1,10 +1,10 @@
-function AWG_continuation()
-    % AWG_continuation - MATLAB版本AWG连续波形生成和控制
-    % 功能：生成波形、设备连接、波形上传、配置和控制
+function AWG_wait_for_trig()
+    % AWG_wait_for_trig - MATLAB版本AWG等待触发波形生成和控制
+    % 功能：生成波形、等待外部触发、设备连接、波形上传、配置和控制
     % 作者：基于Python版本转换
     % 日期：2024
     
-    fprintf('=== AWG连续波形生成和控制 (MATLAB版本) ===\n');
+    fprintf('=== AWG等待触发波形生成和控制 (MATLAB版本) ===\n');
     fprintf('所有依赖库已成功导入！\n\n');
     
     % 添加Tools目录到路径
@@ -41,6 +41,11 @@ function AWG_continuation()
     % 波形类型
     waveform_type = "sine"; % sine/cose/multi_tone/square/pulse/triangle/chirp
     
+    %% 触发参数
+    trigger_source = "Internal"; % Internal/External
+    in_trigger_repeat = hex2dec('FFFFFFFF');
+    in_trigger_cycle = 0.001;
+    
     %% 配置波形参数
     waveParams = SignalParams(waveform_type, 0.0001024, sample_rate * 10^9, 0.8, 100e6, 0.0, 0.0);
     
@@ -65,7 +70,6 @@ function AWG_continuation()
     %% 生成信号
     fprintf('生成信号...\n');
     try
-    
         [t, signal_data] = generator.generate_signal(waveParams);
         waveParams.wave_len = length(signal_data);
         
@@ -227,7 +231,7 @@ function AWG_continuation()
     %% 上传波形文件
     fprintf('上传波形文件...\n');
     try
-        wave_list = "seg1";
+        wave_list = "seg2";
         UltraBVC.send_command(sprintf(':AWG:WAVList:ADDList %s,%s,%d,Double', module_name, wave_list, length(signal_data)));
         
         % 使用HTTP POST上传波形文件
@@ -248,21 +252,23 @@ function AWG_continuation()
     %% 创建和上传NSWave
     fprintf('创建和上传NSWave...\n');
     try
-        NSWave_name = "sequence1";
+        NSWave_name = "sequence2";
         
         % 创建wave table
         UltraBVC.send_command(sprintf(':AWG:NSQC:ADD %s', NSWave_name));
         
-        % 准备NSWave数据
+        % 准备NSWave数据 - 等待外部触发播放
+        % nw.wait_for_trigger_with_source 将修改逻辑触发源
         nswave_program = ['@nw.kernel' newline ...
                          'def program(wlist: dict[str, np.ndarray]):' newline ...
-                         '    seg1: nw.ArbWave = nw.init_arbwave(wlist, ''seg1'')' newline ...
+                         '    seg2: nw.ArbWave = nw.init_arbwave(wlist, ''seg2'')' newline ...
                          '    while True:' newline ...
-                         '        nw.play_arb(seg1)' newline ...
+                         '        nw.wait_for_trigger_with_source(1)' newline ...
+                         '        nw.play_arb(seg2)' newline ...
                          '    return nw.Kernel()' newline ...
                          ];
         
-        % 上传NSWave（这里使用简化的方式，实际可能需要HTTP POST）
+        % 上传NSWave
         upload_nswave_success = upload_nswave_http(device_ip, NSWave_name, nswave_program);
     
         if upload_nswave_success
@@ -271,7 +277,6 @@ function AWG_continuation()
             fprintf('NSWave上传失败\n');
             return;
         end
-        % UltraBVC.send_command(sprintf(':AWG:NSQC:UPload %s,%s', NSWave_name, nswave_program));
         
         % 编译
         channel_keys = keys(channel_en);
@@ -291,6 +296,29 @@ function AWG_continuation()
         return;
     end
     
+    %% 配置触发
+    fprintf('配置触发...\n');
+    try
+        if strcmp(trigger_source, "Internal")
+            UltraBVC.send_command(sprintf(':SAT:TRIGger:SOURce %s,Internal', board_name));
+            UltraBVC.send_command(sprintf(':SAT:TRIGger:INTernal:REPeat %s,%d', board_name, in_trigger_repeat));
+            UltraBVC.send_command(sprintf(':SAT:TRIGger:INTernal:CYCle %s,%.6f', board_name, in_trigger_cycle));
+            
+            UltraBVC.send_command(sprintf(':AWG:TRIGger:SOURce %s,PXISTARTrig', module_name));
+            UltraBVC.send_command(sprintf(':AWG:TRIGger:INTernal:REPeat %s,%d', module_name, in_trigger_repeat));
+            UltraBVC.send_command(sprintf(':AWG:TRIGger:INTernal:CYCle %s,%.6f', module_name, in_trigger_cycle));
+        elseif strcmp(trigger_source, "External")
+            UltraBVC.send_command(sprintf(':SAT:TRIGger:SOURce %s,External', board_name));
+            UltraBVC.send_command(sprintf(':AWG:TRIGger:SOURce %s,PXISTARTrig', module_name));
+        else
+            fprintf('错误: %s 不存在\n', trigger_source);
+        end
+        
+        fprintf('触发配置完成\n');
+    catch ME
+        fprintf('触发配置失败: %s\n', ME.message);
+    end
+    
     %% 启动设备
     fprintf('启动设备...\n');
     try
@@ -303,11 +331,10 @@ function AWG_continuation()
         
         % 运行AWG
         UltraBVC.send_command(sprintf(':SYS:Control:RUN %s', module_name));
-        pause(5);
         
         % 启动内部触发
         UltraBVC.send_command(sprintf(':SAT:TRIGger:INTernal:Run %s', board_name));
-        fprintf('设备启动成功，开始生成波形\n');
+        fprintf('设备启动成功，等待外部触发\n');
         
     catch ME
         fprintf('设备启动失败: %s\n', ME.message);
@@ -330,6 +357,6 @@ function AWG_continuation()
     
     %% 断开连接
     bvcTools.disconnect();
-    fprintf('\n=== AWG连续波形控制完成 ===\n');
+    fprintf('\n=== AWG等待触发波形控制完成 ===\n');
 
 end

@@ -1,10 +1,10 @@
-function AWG_continuation()
-    % AWG_continuation - MATLAB版本AWG连续波形生成和控制
-    % 功能：生成波形、设备连接、波形上传、配置和控制
+function AWG_continuation_fromxlex()
+    % AWG_continuation_fromxlex - MATLAB版本AWG从预定义波形数据连续波形生成
+    % 功能：使用预定义的波形数据、设备连接、波形上传、配置和控制
     % 作者：基于Python版本转换
     % 日期：2024
     
-    fprintf('=== AWG连续波形生成和控制 (MATLAB版本) ===\n');
+    fprintf('=== AWG从预定义波形数据连续波形生成 (MATLAB版本) ===\n');
     fprintf('所有依赖库已成功导入！\n\n');
     
     % 添加Tools目录到路径
@@ -20,10 +20,8 @@ function AWG_continuation()
     addpath(tools_dir);
     fprintf('已添加Tools目录到路径: %s\n', tools_dir);
     
-    % 创建信号生成器和分析器实例
+    % 创建工具类实例
     try
-        generator = SignalGenerator();
-        analyzer = SignalAnalyzer(generator);
         bvcTools = BVC_Tools();
         fprintf('工具类导入成功！\n\n');
     catch ME
@@ -39,52 +37,42 @@ function AWG_continuation()
     sample_rate = 4; % 4GHz采样率
     
     % 波形类型
-    waveform_type = "sine"; % sine/cose/multi_tone/square/pulse/triangle/chirp
+    wave_type = "Int16"; % Int16/Float/Double/IQ(Int16)/IQ(Float32)/IQ(Double)
     
-    %% 配置波形参数
-    waveParams = SignalParams(waveform_type, 0.0001024, sample_rate * 10^9, 0.8, 100e6, 0.0, 0.0);
+    %% 预定义波形数据
+    wave = [13312, 14784, 14784, 2048, 2048, 14912, 14912, 10304, 10304, 1536, 1536, 4544, 4544, 8960, 8960, 15680, 15680, 15808, 15808, 2560, 2560, 15872, 15872, 15680, 15680, 7936, 7936, 13056, 13056, 2304, 2304, 6848, 6848, 14976, 14976, 12928, 12928, 15680, 15680, 10688, 10688, 576, 576, 13888, 13888, 15296, 15296, 11072, 11072, 12352, 12352, 12160, 12160, 6400, 6400, 10688, 10688, 2752, 2752, 11520, 11520, 512, 512, 4480, 4480, 704, 704, 1536, 1536, 13440, 13440, 11328, 11328, 5184, 5184, 15552, 15552, 512, 512, 7168, 7168, 6208, 6208, 12480, 12480, 12992, 12992, 3008, 3008, 8000, 8000, 7296, 7296, 10560, 10560, 11584, 11584, 12352, 12352, 4480, 4480, 11136, 11136, 10688, 10688, 2624, 2624, 1920, 1920, 8128, 8128, 15680, 15680, 5568, 5568, 9536, 9536, 3648, 3648, 12288, 12288, 4160, 4160, 8256, 8256, 11392, 11392, 14592, 14592, 15680, 15680, 8960, 8960, 2240, 2240, 2432, 2432, 4160, 4160, 13760, 13760, 4160, 4160, 13312, 13312, 3968, 3968, 15168, 15168, 5696, 5696, 3200, 3200, 4096, 4096, 10048, 10048, 7744, 7744, 5760, 5760, 13568, 13568, 9536, 9536, 8960, 8960, 14976, 14976, 4672, 4672, 12352, 12352, 12288, 12288, 6208, 6208, 9280, 9280, 1216, 1216, 832, 832, 8640, 8640, 12736, 12736, 15296, 15296, 2112, 2112, 9280, 9280, 7680, 7680, 192, 192, 5504, 5504, 2624, 2624, 12992, 12992, 5056, 5056, 8640, 8640, 2688, 2688, 9856, 9856, 4288, 4288, 10688, 10688, 11264, 11264, 12224, 12224, 7360, 7360, 1344, 1344, 3712, 3712, 14912, 14912, 2496, 2496, 13504, 13504, 8768, 8768, 16320, 16320, 1280, 1280, 7232, 7232, 1728, 1728, 15744, 15744, 64, 64, 12672, 12672, 13376, 13376, 14208, 14208, 1344, 1344, 6528, 6528, 4224, 4224, 13056, 13056, 7040, 7040, 14912, 14912, 2944, 2944, 4288, 4288, 2368, 2368, 2176, 2176, 14208, 14208, 9472, 9472, 8960, 8960, 2368, 2368, 13952, 13952, 10176, 10176, 5696, 5696, 8384, 8384, 6528, 6528, 1216, 1216, 3904, 3904, 1984, 1984, 3008, 3008, 3904, 3904, 6784, 6784, 768, 768, 14784, 14784, 15424, 15424, 8000, 8000, 8000, 8000, 5504, 5504, 14720, 14720, 6016, 6016, 1792, 1792, 12736, 12736, 6336, 6336, 3904, 3904, 6592, 6592, 1536, 1536, 2112, 2112, 15424, 15424, 15616, 15616, 9408, 9408, 960, 960, 3840, 3840, 5760, 5760, 13440, 13440, 192, 192, 704, 704, 2752, 2752, 10624, 10624, 11968, 11968, 10560, 10560, 7360, 7360, 8960, 8960, 4800, 4800, 12160, 12160, 3072, 3072, 11200, 11200, 2944, 2944, 6016, 6016, 10240, 10240, 12736, 12736, 1280, 1280, 15168, 15168, 12672, 12672, 7936, 7936, 7104, 7104, 7296, 7296, 4992, 4992, 8320, 8320, 8320, 8320, 13376, 13376, 12992, 12992, 10496, 10496, 6144, 6144, 13248, 13248, 8704, 8704, 5696, 5696, 15360, 15360, 14336, 14336, 8960, 8960, 10176, 10176, 9600, 9600, 3392, 3392, 4928, 4928, 7680, 7680, 3776, 3776, 13824, 13824, 3136, 3136, 3648, 3648, 2752, 2752, 3712, 3712, 7104, 7104, 5056, 5056, 15104, 15104, 7040, 7040, 3008, 3008, 14784, 14784, 16000, 16000, 7168, 7168, 1792, 1792, 4224, 4224, 6656, 6656, 9728, 9728, 4288, 4288, 9856, 9856, 11648, 11648, 3584, 3584, 1920, 1920, 4800, 4800, 5184, 5184, 6912, 6912, 8320, 8320, 1344, 1344, 4288, 4288, 13120, 13120, 448, 448, 15168, 15168, 11904, 11904, 8000, 8000, 9472, 9472, 3840, 3840, 7488, 7488, 7488];
     
-    % 设置其他参数
-    waveParams.duty_cycle = 0.5;                % 50%占空比
-    waveParams.frequencies = [100e6, 300e6, 400e6]; % 频率组合
-    waveParams.amplitudes = [0.6, 0.4, 0.2];   % 递减幅度
-    waveParams.phases = [0.0, 0.0, 0.0];        % 相同相位
-    waveParams.pulse_width = 1e-8;              % 10ns脉冲宽度
-    waveParams.pulse_period = 1e-7;             % 100ns脉冲周期
-    waveParams.f0 = 100e6;                      % 起始频率100MHz
-    waveParams.f1 = 500e6;                      % 结束频率500MHz
+    %% 处理波形数据
+    fprintf('处理波形数据...\n');
     
-    %% 调整持续时间以满足16384的倍数要求
-    duration_samples = round(waveParams.sample_rate * waveParams.duration);
-    aligned_samples = ceil((duration_samples - 1) / 16384) * 16384;
-    waveParams.duration = aligned_samples / waveParams.sample_rate;
+    % 获取当前长度和目标长度
+    current_length = length(wave);
+    target_length = ceil((current_length - 1) / 16384) * 16384;
     
-    fprintf('调整后的持续时间: %.9f 秒\n', waveParams.duration);
-    fprintf('样本数: %d\n', aligned_samples);
-    
-    %% 生成信号
-    fprintf('生成信号...\n');
-    try
-    
-        [t, signal_data] = generator.generate_signal(waveParams);
-        waveParams.wave_len = length(signal_data);
+    if current_length < target_length
+        padding_length = target_length - current_length;
+        fprintf('需要填充的零的数量: %d\n', padding_length);
         
-        % 计算显示点数
-        show_pts = round(waveParams.sample_rate / waveParams.frequency) * 20;
-        show_pts = min(show_pts, length(signal_data));
-        
-        % 显示信号
-        analyzer.plot_signal_inline(t(1:show_pts), signal_data(1:show_pts), waveParams, false);
-        
-        % 统计分析
-        stats = analyzer.analyze_signal_statistics(signal_data, waveParams);
-        
-        fprintf('信号生成成功，长度: %d 点\n', length(signal_data));
-        
-    catch ME
-        fprintf('信号生成失败: %s\n', ME.message);
-        return;
+        % 使用零填充
+        signal_data = [wave, zeros(1, padding_length)];
+    else
+        signal_data = wave;
     end
+    
+    % 绘制波形
+    figure;
+    plot(signal_data);
+    title('解包后的数据');
+    grid on;
+    
+    %% 数据类型映射
+    type_map = containers.Map();
+    type_map('Int16') = 'int16';
+    type_map('Float') = 'single';
+    type_map('Double') = 'double';
+    type_map('IQ(Int16)') = 'int32';
+    type_map('IQ(Float32)') = 'single';
+    type_map('IQ(Double)') = 'double';
     
     %% 保存波形文件
     wave_file_path = fullfile(current_dir, 'wave_file');
@@ -92,10 +80,7 @@ function AWG_continuation()
         mkdir(wave_file_path);
     end
     
-    file_name = sprintf('wave_%s_%d_%.0f_%.1f_%.0f_%.1f_%.1f.bin', ...
-        waveParams.waveform_type, length(signal_data), waveParams.sample_rate, ...
-        waveParams.amplitude, waveParams.frequency, waveParams.phase, waveParams.dc_offset);
-    file_path = fullfile(wave_file_path, file_name);
+    file_path = fullfile(wave_file_path, 'wave.bin');
     
     % 保存为二进制文件
     try
@@ -103,7 +88,21 @@ function AWG_continuation()
         if fid == -1
             error('无法创建波形文件');
         end
-        fwrite(fid, signal_data, 'double');
+        
+        % 根据数据类型保存
+        data_type = type_map(wave_type);
+        if strcmp(data_type, 'int16')
+            fwrite(fid, int16(signal_data), 'int16');
+        elseif strcmp(data_type, 'single')
+            fwrite(fid, single(signal_data), 'single');
+        elseif strcmp(data_type, 'double')
+            fwrite(fid, double(signal_data), 'double');
+        elseif strcmp(data_type, 'int32')
+            fwrite(fid, int32(signal_data), 'int32');
+        else
+            fwrite(fid, signal_data, 'double');
+        end
+        
         fclose(fid);
         fprintf('%s 波形文件保存成功\n', file_path);
     catch ME
@@ -228,7 +227,17 @@ function AWG_continuation()
     fprintf('上传波形文件...\n');
     try
         wave_list = "seg1";
-        UltraBVC.send_command(sprintf(':AWG:WAVList:ADDList %s,%s,%d,Double', module_name, wave_list, length(signal_data)));
+        
+        % SCPI类型映射
+        type_scpi_map = containers.Map();
+        type_scpi_map('Int16') = 'INT16';
+        type_scpi_map('Float') = 'FLOAT32';
+        type_scpi_map('Double') = 'DOUBLE';
+        type_scpi_map('IQ(Int16)') = 'COMPLEX32';
+        type_scpi_map('IQ(Float32)') = 'COMPLEX64';
+        type_scpi_map('IQ(Double)') = 'COMPLEX128';
+        
+        UltraBVC.send_command(sprintf(':AWG:WAVList:ADDList %s,%s,%d,%s', module_name, wave_list, length(signal_data), type_scpi_map(wave_type)));
         
         % 使用HTTP POST上传波形文件
         upload_success = upload_waveform_http(device_ip, module_name, wave_list, file_path, length(signal_data));
@@ -262,7 +271,7 @@ function AWG_continuation()
                          '    return nw.Kernel()' newline ...
                          ];
         
-        % 上传NSWave（这里使用简化的方式，实际可能需要HTTP POST）
+        % 上传NSWave
         upload_nswave_success = upload_nswave_http(device_ip, NSWave_name, nswave_program);
     
         if upload_nswave_success
@@ -271,7 +280,6 @@ function AWG_continuation()
             fprintf('NSWave上传失败\n');
             return;
         end
-        % UltraBVC.send_command(sprintf(':AWG:NSQC:UPload %s,%s', NSWave_name, nswave_program));
         
         % 编译
         channel_keys = keys(channel_en);
@@ -330,6 +338,6 @@ function AWG_continuation()
     
     %% 断开连接
     bvcTools.disconnect();
-    fprintf('\n=== AWG连续波形控制完成 ===\n');
+    fprintf('\n=== AWG从预定义波形数据连续波形控制完成 ===\n');
 
 end
