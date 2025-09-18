@@ -9,3 +9,5 @@
 /scpi/Demos/result/
 /scpi/Demos/fft_result/
 /scpi/Demos/wave_file/
+/.cache/
+**/build/

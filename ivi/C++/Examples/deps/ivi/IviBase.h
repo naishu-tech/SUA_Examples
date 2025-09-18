@@ -1,7 +1,7 @@
 #ifndef IVI_IVIBASE_H
 #define IVI_IVIBASE_H
 
-#include "../exprtk/exprtk.hpp"
+#include "exprtk/exprtk.hpp"
 #include "type.h"
 #include "configureNSUKit.h"
 #include "IviATTR.h"
@@ -30,18 +30,37 @@ struct actionGroup {
     ~actionGroup() = default;
 };
 
+
+//todo 检查最大采样率是否正确
+
+// 动态内存分配模式（移除静态分配，完全转为动态模式）
+// 注意：原有的静态分配模式已被移除，现在只支持动态分配
+
 struct channelXDMAInfor{
     ViUInt32 channelOpenNum = 2;
     ViUInt32 channelNum = 2;
+    
+    // === 动态内存分配字段 ===
+    ViUInt32 xdmaBaseAddr = 0;           // XDMA组的基础地址
+    ViUInt64 xdmaTotalMemory = 0;        // XDMA组的总内存大小（字节）
+    
     channelXDMAInfor(ViUInt32 channelOpenNum, ViUInt32 channelNum): channelOpenNum(channelOpenNum), channelNum(channelNum) {}
     ~channelXDMAInfor() = default;
 };
+
+
 
 struct channelInfor {
     ViBoolean channelEnable = true;
     ViInt32 channelXDMA = 1;
     ViUInt32 channelLen = 2147483648;
     ViReal64 channelMAXSampleRate = 4000000000.0;
+    
+    // === 动态内存分配字段（现为唯一模式） ===
+    ViUInt32 dynamicStartAddr = 0;        // 动态分配的起始地址
+    ViUInt32 dynamicMemSize = 0;          // 动态分配的内存大小
+    ViUInt32 baseBlockSize = 0;           // 基础内存块大小（用于动态分配计算）
+    
     channelInfor(ViBoolean channelEnable, ViInt32 channelXDMA, ViUInt32 channelLen, ViReal64 channelMAXSampleRate):
         channelEnable(channelEnable), channelXDMA(channelXDMA), channelLen(channelLen), channelMAXSampleRate(channelMAXSampleRate){}
     ~channelInfor() = default;

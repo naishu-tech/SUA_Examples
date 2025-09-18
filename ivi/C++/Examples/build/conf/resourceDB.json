@@ -1,50 +1,38 @@
 {
-    "SAT": {
-        "config": "./etc/bvc/conf/ivi_1210XXXX-00.json",
-        "ds_target": "sim://0",
-        "cr_target": "sim://0",
-        "cs_target": "sim://0",
-        "sim_info": {
-            "enable": true,
-            "IVIBASE_ATTR_FIRMWARE_SLOT_POSITION": 0,
-            "IVIBASE_ATTR_MODULE_DEVICE_ID_STR": "M4901",
-            "IVIBASE_ATTR_FPGA_VERSION_STR": "Ver-F00C44A0D010-AD370306-22a24901",
-            "IVIDIGITIZER_ATTR_SIM_SOURCE_RATE": 100000000.0,
-            "IVIDIGITIZER_ATTR_ADC_SAMPLE_RATE_MAX": 4000000000.0,
-            "IVIFGEN_ATTR_DAC_SAMPLE_RATE_MAX": 8000000000.0,
-            "IVIDIGITIZER_ATTR_TEST_SAMPLE_STATE": 3,
-            "IVIBASE_ATTR_MODULE_SERIAL_NUM": 1232991696,
-            "IVIBASE_ATTR_MODULE_DEVICE_ID": 4624,
-            "IVIBASE_ATTR_FPGA_FUNCTION_IDENTIFICATION": 0,
-            "IVIBASE_ATTR_FPGA_FIRMWARE_VERSION": 303039256,
-            "IVIBASE_ATTR_BASIC_CAPABILITY_IDENTIFICATION": 16843008
+    "PXI::0::INSTR" : 
+    {
+        "config" : "/home/digilab/SUA_Examples/ivi/C++/Examples/build/conf/ivi_3302XXXX-80.json",
+        "cr_target" : "xdma://0",
+        "cs_target" : "xdma://0",
+        "ds_target" : "xdma://0",
+        "param" : 
+        {
+            "cmd_irq_base" : 32505900,
+            "cmd_recv_base" : 31457280,
+            "cmd_sent_base" : 0,
+            "cmd_sent_down_base" : 32505904,
+            "icd_path" : "/home/digilab/SUA_Examples/ivi/C++/Examples/build/conf/icd.json"
         },
-        "param": {
-            "icd_path": "./etc/bvc/conf/icd.json"
+        "work_mode" : 
+        {
+            "AWG" : 3,
+            "DAQ" : 0
         }
     },
-    "XDMA0": {
-        "config": "./etc/bvc/conf/ivi_4901XXXX-22.json",
-        "ds_target": "sim://0",
-        "cr_target": "sim://0",
-        "cs_target": "sim://0",
-        "sim_info": {
-            "enable": true,
-            "IVIBASE_ATTR_FIRMWARE_SLOT_POSITION": 1,
-            "IVIBASE_ATTR_MODULE_DEVICE_ID_STR": "M4901",
-            "IVIBASE_ATTR_FPGA_VERSION_STR": "Ver-F00C44A0D010-AD370306-22a24901",
-            "IVIDIGITIZER_ATTR_SIM_SOURCE_RATE": 100000000.0,
-            "IVIDIGITIZER_ATTR_ADC_SAMPLE_RATE_MAX": 4000000000.0,
-            "IVIFGEN_ATTR_DAC_SAMPLE_RATE_MAX": 8000000000.0,
-            "IVIDIGITIZER_ATTR_TEST_SAMPLE_STATE": 3,
-            "IVIBASE_ATTR_MODULE_SERIAL_NUM": 1232991696,
-            "IVIBASE_ATTR_MODULE_DEVICE_ID": 18689,
-            "IVIBASE_ATTR_FPGA_FUNCTION_IDENTIFICATION": 287441680,
-            "IVIBASE_ATTR_FPGA_FIRMWARE_VERSION": 1224806449,
-            "IVIBASE_ATTR_BASIC_CAPABILITY_IDENTIFICATION": 16843008
+    "PXI::1::INSTR" : 
+    {
+        "config" : "/home/digilab/SUA_Examples/ivi/C++/Examples/build/conf/ivi_1210XXXX-00.json",
+        "cr_target" : "xdma://1",
+        "cs_target" : "vps://1",
+        "ds_target" : "sim://1",
+        "param" : 
+        {
+            "icd_path" : "/home/digilab/SUA_Examples/ivi/C++/Examples/build/conf/icd.json"
         },
-        "param": {
-            "icd_path": "./etc/bvc/conf/icd.json"
+        "work_mode" : 
+        {
+            "AWG" : 0,
+            "DAQ" : 0
         }
     }
 }

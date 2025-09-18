@@ -106,6 +106,7 @@ add_simple_test(wfmPlayAWG "AWG_wfmPlay.cpp" "tool_config.h")
 add_simple_test(RingBufferQIDAQ "DAQ_RingBufferQI.cpp" "tool_config.h")
 add_simple_test(RingBufferDAQ "DAQ_RingBuffer.cpp" "tool_config.h")
 add_simple_test(StreamDAQ "DAQ_Stream.cpp" "tool_config.h")
+add_simple_test(ReadRingBufferDAQ "DAQ_read_RingBuffer.cpp" "tool_config.h")
 add_simple_test(workModeSwitchDAQ "DAQ_workModeSwitch.cpp" "tool_config.h")
 
 # ===============================================================================
