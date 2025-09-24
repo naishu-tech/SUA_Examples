@@ -48,9 +48,15 @@ do{                                                                         \
             (param).stream_mode = nsuMwParam_t::StreamMode::VIRTUAL;        \
         }                                                                   \
     }                                                                       \
+    if ((name) == "vps_cmd_board"){                                         \
+            (param).vps_cmd_board = *static_cast<nsuRegAddr_t *>(value);\
+    }                                                                       \
     if ((name) == "vps_feedback_type"){                                     \
             (param).vps_feedback_type = *static_cast<nsuRegAddr_t *>(value);\
-        }                                                                   \
+    }                                                                       \
+    if ((name) == "base_addr"){                                             \
+            (param).base_addr = *static_cast<nsuRegAddr_t *>(value);\
+    }                                                                       \
 } while(0)                                                                  \
 
 # define create_NSUkit(name, kit)                                                                            \

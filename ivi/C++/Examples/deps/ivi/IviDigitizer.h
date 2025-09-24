@@ -213,6 +213,7 @@ struct iviDigitizer_ViSession{
     std::atomic<bool> forceWakeup{false};
     std::atomic<bool> quickExit{false};
 
+    ViUInt32 chnlLevelEnabled = 0b11111111;
 };
 
 struct iviDigitizer_memData{
@@ -294,4 +295,7 @@ DLLEXTERN RIGOLLIB_API ViStatus IviDigitizer_ConfigureChannelDataDepthInt16(iviD
 DLLEXTERN RIGOLLIB_API ViStatus IviDigitizer_ConfigureChannelDataDepthInt8(iviDigitizer_ViSession *vi, const std::string& channelsName, ViUInt32 dataDepth);
 DLLEXTERN RIGOLLIB_API ViStatus IviDigitizer_ReadWaveformInt16 (iviDigitizer_ViSession *vi, ViConstString channelName, ViUInt32 waveformArraySize, iviDigitizer_memData* waveformArray, ViReal64 maximumTime_s);
 DLLEXTERN RIGOLLIB_API ViStatus IviDigitizer_ReadWaveformInt8 (iviDigitizer_ViSession *vi, ViConstString channelName, ViUInt32 waveformArraySize, iviDigitizer_memData* waveformArray, ViReal64 maximumTime_s);
+
+DLLEXTERN RIGOLLIB_API ViStatus Ringbuffer_queryFunction(iviDigitizer_ViSession *vi,bool is_sync);
+DLLEXTERN RIGOLLIB_API ViStatus Ringbuffer_readFunction(iviDigitizer_ViSession *vi, ViConstString channelName, ViUInt32 waveformArraySize, iviDigitizer_memData *waveformArray, ViReal64 maximumTime_s, const char *dataTypeName);
 #endif //IVI_IVIDIGITIZER_H

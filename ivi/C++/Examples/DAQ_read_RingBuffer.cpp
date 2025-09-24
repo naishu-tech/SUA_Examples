@@ -151,6 +151,23 @@ void upload_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& chan
 }
 
 int main(int argc, char *argv[]){                                                // 主函数入口，接收命令行参数
+    // 解析命令行参数
+    bool is_sync = false; // 默认为异步模式
+    if (argc > 1) {
+        std::string arg = argv[1];
+        if (arg == "sync") {
+            is_sync = true;
+            std::cout << "设置为同步触发模式" << std::endl;
+        } else {
+            std::cout << "未知参数: " << arg << std::endl;
+            std::cout << "用法: " << argv[0] << " [sync]" << std::endl;
+            std::cout << "sync: 设置为同步触发模式，默认为异步模式" << std::endl;
+            return 1;
+        }
+    } else {
+        std::cout << "设置为异步触发模式（默认）" << std::endl;
+    }
+
     ViUInt32 res = 0;                                                            // 初始化结果变量为0
     auto iviSUATools_vi = new iviSUATools_ViSession;                            // 创建SUA工具会话对象指针
     auto s = IviSUATools_Initialize(iviSUATools_vi);                            // 初始化SUA工具会话
@@ -208,22 +225,38 @@ int main(int argc, char *argv[]){                                               
     iviDigitizer_vi_list.push_back(iviDigitizer_vi);                          // 将当前数字化仪会话添加到列表中
     s = IviSUATools_Sync(iviSUATools_vi, iviSyncATrig_vi, iviFgen_vi_list, iviDigitizer_vi_list);  // 执行设备间同步操作
 
+    //设置触发模式
+    ViUInt32 triggerSourcemask = 0; // 设置触发源为内部PXI_STAR触发
+    if (is_sync)triggerSourcemask=IVIDIGITIZER_VAL_TRIGGER_SOURCE_PXI_SYNC;
+
+    
     std::cout << "\n=== Trig Config ===" << std::endl;                         // 输出触发配置标题
     ViUInt32 triggerSource = IVISYNCATRIG_VAL_TRIGGER_SOURCE_P_PXI_STAR_INTERNAL; // 设置触发源为内部PXI_STAR触发
     ViUInt32 triggerPeriod = 40000000;                                         // 设置触发周期为40M个时钟周期(需要被800整除)
     ViUInt32 triggerRepetSize = 4294967295;                                    // 设置触发重复次数为最大值
     ViUInt32 triggerPulseWidth = 20000000;                                     // 设置触发脉冲宽度为20M个时钟周期(为周期的一半)
     if (triggerSource == IVISYNCATRIG_VAL_TRIGGER_SOURCE_P_PXI_STAR_INTERNAL){  // 判断触发源是否为内部PXI_STAR
-        s = triggerConfigDAQ(iviDigitizer_vi, IVIDIGITIZER_VAL_TRIGGER_SOURCE_PXI_STAR_TRIG);  // 配置数字化仪使用PXI_STAR触发
+        s = triggerConfigDAQ(iviDigitizer_vi, IVIDIGITIZER_VAL_TRIGGER_SOURCE_PXI_STAR_TRIG|triggerSourcemask);  // 配置数字化仪使用PXI_STAR触发
         s = internalTriggerConfigSAT(iviSyncATrig_vi, triggerSource, triggerPeriod, triggerRepetSize, triggerPulseWidth);  // 配置同步触发器的内部触发参数
         s = IviSyncATrig_SetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_TRIGGER_SOURCE_P_PXI_STAR, triggerSource);  // 设置PXI_STAR触发源测试属性
     } else if (triggerSource == IVISYNCATRIG_VAL_TRIGGER_SOURCE_P_PXI_STAR_EXTERNAL){  // 判断触发源是否为外部PXI_STAR
-        s = triggerConfigDAQ(iviDigitizer_vi, IVIDIGITIZER_VAL_TRIGGER_SOURCE_PXI_STAR_TRIG);  // 配置数字化仪使用PXI_STAR触发
+        s = triggerConfigDAQ(iviDigitizer_vi, IVIDIGITIZER_VAL_TRIGGER_SOURCE_PXI_STAR_TRIG|triggerSourcemask);  // 配置数字化仪使用PXI_STAR触发
         s = internalTriggerConfigSAT(iviSyncATrig_vi, triggerSource);          // 配置同步触发器的外部触发源
         s = IviSyncATrig_SetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_TRIGGER_SOURCE_P_PXI_STAR, triggerSource);  // 设置PXI_STAR触发源测试属性
     }
     else
         std::cout << "\n=== Trig Source Error ===" << std::endl;             // 输出触发源配置错误信息
+
+
+    //打印触发模式
+    ViUInt32 get_triggerSource = 0;
+    IviDigitizer_GetAttributeViUInt32(iviDigitizer_vi, "0", IVIDIGITIZER_ATTR_TRIGGER_SOURCE, &get_triggerSource);
+    if((get_triggerSource & IVIDIGITIZER_VAL_TRIGGER_SOURCE_PXI_SYNC)!=0){
+        std::cout << "\n===设置为同步触发模式 ==="  << std::endl;                         // 输出同步触发模式标题
+    }
+    else{
+        std::cout << "\n===设置为异步触发模式 ==="  << std::endl;                         // 输出异步触发模式标题
+    }
 
     std::cout << "\n=== Sample Config ===" << std::endl;                       // 输出采样配置标题
     ViConstString sampleEnableChannel = "-1";                                  // 设置采样使能通道为"-1"（表示所有通道）
@@ -275,7 +308,7 @@ int main(int argc, char *argv[]){                                               
     
     ViReal64 maximumTime_s = 0.1;                                             // 设置最大等待时间为0.1秒
     ViReal64 times = 20;                                                       // 设置数据采集次数为20次
-    std::string channelName = "0,1,2";                                          // 设置要使用的通道名称为"0,1"
+    std::string channelName = "0,1,2,3";                                          // 设置要使用的通道名称为"0,1"
 
     ViInt32 numChannel;                                                        // 定义通道号变量
     std::vector<std::string> channels = split(channelName, ',');              // 按逗号分割通道名称字符串
@@ -286,16 +319,16 @@ int main(int argc, char *argv[]){                                               
         if (chnl_Deque.find(numChannel) == chnl_Deque.end()) {               // 如果通道队列中不存在该通道
             s = IviDigitizer_ConfigureChannelDataDepthInt16(iviDigitizer_vi, channel, waveformArraySize);  // 配置通道数据深度
             for (int i=0; i<10; i++) {  
-                std::cout << " 0------------------" << std::endl;                                      // 循环10次创建内存缓冲区
+                // std::cout << " 0------------------" << std::endl;                                      // 循环10次创建内存缓冲区
 
                 auto mem = reinterpret_cast<nsuMemory_p>(IviDigitizer_CreateMemInt16(iviDigitizer_vi, waveformArraySize));  // 创建16位整数内存缓冲区
-                std::cout << " 00------------------" << std::endl;
+                // std::cout << " 00------------------" << std::endl;
                 chnl_Deque[numChannel].empty.Push(mem);                       // 将内存缓冲区推入空队列
             }
-            std::cout << " 1------------------" << std::endl;
+            // std::cout << " 1------------------" << std::endl;
         }
         chnl_mutex[numChannel];                                               // 初始化通道互斥锁
-        std::cout << " 2------------------" << std::endl;
+        // std::cout << " 2------------------" << std::endl;
         chnl_up_trd.emplace(numChannel, std::thread(upload_thread, iviDigitizer_vi, &chnl_Deque[numChannel], channel, waveformArraySize, times, &chnl_mutex[numChannel]));  // 创建上传线程
         chnl_write_trd.emplace(numChannel, std::thread(write_file_thread, iviDigitizer_vi, &chnl_Deque[numChannel], channel, waveformArraySize, directoryPath +"/up-res-14Bit_", &chnl_mutex[numChannel]));  // 创建写文件线程
     }

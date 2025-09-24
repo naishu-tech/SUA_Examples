@@ -151,6 +151,23 @@ void upload_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& chan
 }
 
 int main(int argc, char *argv[]){
+    // 解析命令行参数
+    bool is_sync = false; // 默认为异步模式
+    if (argc > 1) {
+        std::string arg = argv[1];
+        if (arg == "sync") {
+            is_sync = true;
+            std::cout << "设置为同步触发模式" << std::endl;
+        } else {
+            std::cout << "未知参数: " << arg << std::endl;
+            std::cout << "用法: " << argv[0] << " [sync]" << std::endl;
+            std::cout << "sync: 设置为同步触发模式，默认为异步模式" << std::endl;
+            return 1;
+        }
+    } else {
+        std::cout << "设置为异步触发模式（默认）" << std::endl;
+    }
+
     ViUInt32 res = 0;
     auto iviSUATools_vi = new iviSUATools_ViSession;
     auto s = IviSUATools_Initialize(iviSUATools_vi);
@@ -208,22 +225,38 @@ int main(int argc, char *argv[]){
     iviDigitizer_vi_list.push_back(iviDigitizer_vi);
     s = IviSUATools_Sync(iviSUATools_vi, iviSyncATrig_vi, iviFgen_vi_list, iviDigitizer_vi_list);
 
+    //设置触发模式
+    ViUInt32 triggerSourcemask = 0; // 设置触发源为内部PXI_STAR触发
+    if (is_sync)triggerSourcemask=IVIDIGITIZER_VAL_TRIGGER_SOURCE_PXI_SYNC;
+
     std::cout << "\n=== Trig Config ===" << std::endl;
     ViUInt32 triggerSource = IVISYNCATRIG_VAL_TRIGGER_SOURCE_P_PXI_STAR_INTERNAL; //来源
     ViUInt32 triggerPeriod = 40000000; // 周期(需要被800整除)
     ViUInt32 triggerRepetSize = 4294967295;// 触发数量
     ViUInt32 triggerPulseWidth = 20000000; // 脉宽(为周期的一半)
     if (triggerSource == IVISYNCATRIG_VAL_TRIGGER_SOURCE_P_PXI_STAR_INTERNAL){
-        s = triggerConfigDAQ(iviDigitizer_vi, IVIDIGITIZER_VAL_TRIGGER_SOURCE_PXI_STAR_TRIG);
+        s = triggerConfigDAQ(iviDigitizer_vi, IVIDIGITIZER_VAL_TRIGGER_SOURCE_PXI_STAR_TRIG|triggerSourcemask);
         s = internalTriggerConfigSAT(iviSyncATrig_vi, triggerSource, triggerPeriod, triggerRepetSize, triggerPulseWidth);
         s = IviSyncATrig_SetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_TRIGGER_SOURCE_P_PXI_STAR, triggerSource);
     } else if (triggerSource == IVISYNCATRIG_VAL_TRIGGER_SOURCE_P_PXI_STAR_EXTERNAL){
-        s = triggerConfigDAQ(iviDigitizer_vi, IVIDIGITIZER_VAL_TRIGGER_SOURCE_PXI_STAR_TRIG);
+        s = triggerConfigDAQ(iviDigitizer_vi, IVIDIGITIZER_VAL_TRIGGER_SOURCE_PXI_STAR_TRIG|triggerSourcemask);
         s = internalTriggerConfigSAT(iviSyncATrig_vi, triggerSource);
         s = IviSyncATrig_SetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_TRIGGER_SOURCE_P_PXI_STAR, triggerSource);
     }
     else
         std::cout << "\n=== Trig Source Error ===" << std::endl;
+
+    //打印触发模式
+    ViUInt32 get_triggerSource = 0;
+    IviDigitizer_GetAttributeViUInt32(iviDigitizer_vi, "0", IVIDIGITIZER_ATTR_TRIGGER_SOURCE, &get_triggerSource);
+    if((get_triggerSource & IVIDIGITIZER_VAL_TRIGGER_SOURCE_PXI_SYNC)!=0){
+        std::cout << "\n===设置为同步触发模式 ==="  << std::endl;                         // 输出同步触发模式标题
+    }
+    else{
+        std::cout << "\n===设置为异步触发模式 ==="  << std::endl;                         // 输出异步触发模式标题
+    }
+
+
 
     std::cout << "\n=== Sample Config ===" << std::endl;
     ViConstString sampleEnableChannel = "-1";

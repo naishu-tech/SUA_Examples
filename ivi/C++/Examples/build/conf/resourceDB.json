@@ -16,7 +16,7 @@
         "work_mode" : 
         {
             "AWG" : 3,
-            "DAQ" : 0
+            "DAQ" : 2
         }
     },
     "PXI::1::INSTR" : 
