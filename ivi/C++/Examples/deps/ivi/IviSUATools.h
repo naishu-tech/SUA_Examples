@@ -7,14 +7,14 @@
 
 #include "type.h"
 
-#include "IviDigitizer.h"
-#include "IviFgen.h"
-#include "IviBase.h"
-#include "type.h"
-#include "IviSyncATrig.h"
-#include "IviPXIMainBoard.h"
 #include "IviATTR.h"
 #include "IviVAL.h"
+
+#include "IviBase.h"
+#include "IviDigitizer.h"
+#include "IviFgen.h"
+#include "IviSyncATrig.h"
+#include "IviPXIMainBoard.h"
 
 // ===============================================================================
 // 数据结构定义
@@ -42,7 +42,7 @@ struct iviSUATools_ViSession{
     IviDeviceInfo infoSyncATrig;                 // 设备信息
     IviDeviceInfo infoPXIMainBoard;                 // 设备信息
     ViInt32 code_size = 1310720;
-    ViInt32 code_chnl_size  = 1310720/8;
+    ViInt32 code_chnl_size  = 163840;
     ViChar *NSQC = nullptr;
 };
 
@@ -57,7 +57,6 @@ DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_Sync(iviSUATools_ViSession *vi, iviS
 // ===============================================================================
 // 信息获取函数
 // ===============================================================================
-
 DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_GetInfoFgen(iviSUATools_ViSession *vi, iviFgen_ViSession *iviFgen_vi);
 DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_GetInfoDigitizer(iviSUATools_ViSession *vi, iviDigitizer_ViSession *iviDigitizer_vi);
 DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_GetInfoSyncATrig(iviSUATools_ViSession *vi, iviSyncATrig_ViSession *iviSyncATrig_vi);

@@ -1,1 +1,38 @@
-{}
+{
+    "PXI::0::INSTR" :
+    {
+        "config" : "/home/digilab/SUA_Examples/ivi/C++/Examples/build/conf/ivi_3302XXXX-80.json",
+        "cr_target" : "xdma://0",
+        "cs_target" : "xdma://0",
+        "ds_target" : "xdma://0",
+        "param" :
+        {
+            "cmd_irq_base" : 32505900,
+            "cmd_recv_base" : 31457280,
+            "cmd_sent_base" : 0,
+            "cmd_sent_down_base" : 32505904,
+            "icd_path" : "/home/digilab/SUA_Examples/ivi/C++/Examples/build/conf/icd.json"
+        },
+        "work_mode" :
+        {
+            "AWG" : 3,
+            "DAQ" : 2
+        }
+    },
+    "PXI::1::INSTR" :
+    {
+        "config" : "/home/digilab/SUA_Examples/ivi/C++/Examples/build/conf/ivi_1210XXXX-00.json",
+        "cr_target" : "xdma://1",
+        "cs_target" : "vps://1",
+        "ds_target" : "sim://1",
+        "param" :
+        {
+            "icd_path" : "/home/digilab/SUA_Examples/ivi/C++/Examples/build/conf/icd.json"
+        },
+        "work_mode" :
+        {
+            "AWG" : 0,
+            "DAQ" : 0
+        }
+    }
+}

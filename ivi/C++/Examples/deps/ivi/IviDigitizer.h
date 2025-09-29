@@ -13,6 +13,8 @@
 #include <unordered_map>
 #include <vector>
 #include <string>
+#include <queue>
+#include <deque>
 
 class BinarySemaphore {
 private:
@@ -61,6 +63,7 @@ public:
     bool try_acquire() noexcept {
         std::lock_guard<std::mutex> lock(mtx_);
         if (available_.load(std::memory_order_acquire)) {
+            available_.store(false, std::memory_order_release);
             return true;
         }
         return false;
@@ -72,6 +75,7 @@ public:
         if (cv_.wait_for(lock, timeout_duration, [this] {
             return available_.load(std::memory_order_acquire);
         })) {
+            available_.store(false, std::memory_order_release);
             return true;
         }
         return false;
@@ -83,6 +87,7 @@ public:
         if (cv_.wait_until(lock, timeout_time, [this] {
             return available_.load(std::memory_order_acquire);
         })) {
+            available_.store(false, std::memory_order_release);
             return true;
         }
         return false;
@@ -108,7 +113,7 @@ struct ChannelTransferState {
     }
 
     ChannelTransferState(ChannelTransferState&& other) noexcept
-            : isTransferring(std::move(other.dataReadySemaphore))
+            : isTransferring(std::move(other.isTransferring))//tjf-20250912改
             , dataReadySemaphore(std::move(other.dataReadySemaphore))
             , lastDataDepth(other.lastDataDepth.load())
             , lastCheckTime(other.lastCheckTime.load()) {
@@ -117,7 +122,7 @@ struct ChannelTransferState {
 
     ChannelTransferState& operator=(ChannelTransferState&& other) noexcept {
         if (this != &other) {
-            isTransferring= std::move(other.dataReadySemaphore);
+            isTransferring= std::move(other.isTransferring);//tjf-20250912改
             dataReadySemaphore = std::move(other.dataReadySemaphore);
             lastDataDepth.store(other.lastDataDepth.load());
             lastCheckTime.store(other.lastCheckTime.load());
@@ -158,6 +163,13 @@ struct iviDigitizer_ViSession{
 
     std::mutex mtx_fetchInt16;
     std::mutex mtx_fetchInt8;
+    
+    // DMA传输专用锁 - 全局锁，所有通道共用
+    std::mutex dma_transfer_lock;
+
+    // 数据就绪通道队列 - 存储已准备好数据的通道号，支持查询和FIFO操作
+    std::deque<ViUInt32> dataReadyChannelQueue;
+    std::mutex queueMutex; // 保护队列的互斥锁
 
     std::map<ViUInt32, channelInfor> channelInforMap{};
     std::map<ViUInt32, channelXDMAInfor> channelXDMAInforMap{};
@@ -201,6 +213,7 @@ struct iviDigitizer_ViSession{
     std::atomic<bool> forceWakeup{false};
     std::atomic<bool> quickExit{false};
 
+    ViUInt32 chnlLevelEnabled = 0b11111111;
 };
 
 struct iviDigitizer_memData{
@@ -282,4 +295,7 @@ DLLEXTERN RIGOLLIB_API ViStatus IviDigitizer_ConfigureChannelDataDepthInt16(iviD
 DLLEXTERN RIGOLLIB_API ViStatus IviDigitizer_ConfigureChannelDataDepthInt8(iviDigitizer_ViSession *vi, const std::string& channelsName, ViUInt32 dataDepth);
 DLLEXTERN RIGOLLIB_API ViStatus IviDigitizer_ReadWaveformInt16 (iviDigitizer_ViSession *vi, ViConstString channelName, ViUInt32 waveformArraySize, iviDigitizer_memData* waveformArray, ViReal64 maximumTime_s);
 DLLEXTERN RIGOLLIB_API ViStatus IviDigitizer_ReadWaveformInt8 (iviDigitizer_ViSession *vi, ViConstString channelName, ViUInt32 waveformArraySize, iviDigitizer_memData* waveformArray, ViReal64 maximumTime_s);
+
+DLLEXTERN RIGOLLIB_API ViStatus Ringbuffer_queryFunction(iviDigitizer_ViSession *vi,bool is_sync);
+DLLEXTERN RIGOLLIB_API ViStatus Ringbuffer_readFunction(iviDigitizer_ViSession *vi, ViConstString channelName, ViUInt32 waveformArraySize, iviDigitizer_memData *waveformArray, ViReal64 maximumTime_s, const char *dataTypeName);
 #endif //IVI_IVIDIGITIZER_H
