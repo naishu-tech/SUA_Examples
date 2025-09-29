@@ -94,7 +94,7 @@
     "IVIDIGITIZER_ATTR_SAMPLE_POINT_POST": [360003, "ViUInt32", 32768, "0<=x and x<=2147483647", 8],
     "IVIDIGITIZER_ATTR_REF_SIGNAL_LOCK_STATE": [360022, "ViUInt32", 0, "0<=x and x<=4294967295", 0],
     "IVIDIGITIZER_ATTR_REF_SIGNAL_EVER_LOST": [360023, "ViUInt32", 1, "0<=x and x<=4294967295", 0],
-    "IVIDIGITIZER_ATTR_TRIGGER_MODE": [360029, "ViInt32", 0, "0<=x and x<=2147483647", 0],
+    "IVIDIGITIZER_ATTR_TRIGGER_TYPE": [360029, "ViInt32", 0, "0<=x and x<=2147483647", 0],
     "IVIDIGITIZER_ATTR_DELAY_CALIBRATION_INTERVAL_START": [360037, "ViInt32", 2, "0<=x and x<=2147483647", 0],
     "IVIDIGITIZER_ATTR_DELAY_CALIBRATION_INTERVAL_STOP": [360038, "ViInt32", 2, "0<=x and x<=2147483647", 0],
     "IVIDIGITIZER_ATTR_TRIGGER_DELAY_CALIBRATION": [360039, "ViInt32", 2, "0<=x and x<=2147483647", 0],
@@ -398,9 +398,9 @@
     "IVIFGEN_ATTR_GENERATION": [200065, "ViInt32", 1,  "0 == x or x == 1", 0],
 
     "IVIFGEN_ATTR_XDMA_CHANNEL": [87, "ViString", "1,2", "", 0],
-    "IVIFGEN_ATTR_DEFAULT_XDMA_CHANNEL_NUMS": [88, "ViInt32", 2, "0 == x or x == 1", 0],
-    "IVIFGEN_ATTR_DEFAULT_CHANNEL_LEN": [89, "ViUInt32", 2147483648, "0 == x or x == 1", 0],
-    "IVIFGEN_ATTR_DEFAULT_MAX_SAMPLE_RATE": [90, "ViReal64", 8000000000.0, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_XDMA_CHANNEL_NUMS": [88, "ViInt32", 2, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_CHANNEL_LEN": [89, "ViUInt32", 2147483648, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_MAX_SAMPLE_RATE": [90, "ViReal64", 8000000000.0, "0 == x or x == 1", 0],
 
     "IVIDIGITIZER_ATTR_XDMA_CHANNEL": [91, "ViString", "0", "", 0],
     "IVIDIGITIZER_ATTR_XDMA_CHANNEL_NUMS": [92, "ViInt32", 8, "0 == x or x == 1", 0],
@@ -481,8 +481,7 @@
     "IVIBASE_ATTR_ADC_GET_CAL_COE_OPERATE_TYPE": [182, "ViUInt32", 0, "0", 0],
     "IVIBASE_ATTR_ADC_GET_CAL_COE_EXE": [183, "ViUInt32", 0, "0", 0],
     "IVIBASE_ATTR_ADC_GET_CAL_COE_RESULT": [184, "ViUInt32", 0, "0", 0],
-    "IVIBASE_ATTR_ADC_GET_CAL_COE": [185, "ViUInt32", 0, "0", 256],
-
+    "IVIBASE_ATTR_ADC_GET_CAL_COE": [185, "ViUInt32", 0, "0", 32],
 
     "IVIBASE_ATTR_AMP_CAL_PARAM_CONFIG_OPERATE_TYPE": [186, "ViUInt32", 0, "0", 0],
     "IVIBASE_ATTR_AMP_CAL_PARAM_CONFIG_CHNL_TYPE": [187, "ViUInt32", 0, "0", 0],
@@ -599,7 +598,126 @@
     "IVIBASE_ATTR_S10_FPGA_FUNCTION_IDENTIFICATION": [274, "ViUInt32", 18689, "0 <= x or x <= 2147483647", 0],
     "IVIBASE_ATTR_S10_FPGA_FIRMWARE_VERSION": [275, "ViUInt32", 18689, "0 <= x or x <= 2147483647", 0],
     "IVIBASE_ATTR_S10_BASIC_CAPABILITY_IDENTIFICATION": [276, "ViUInt32", 18689, "0 <= x or x <= 2147483647", 0],
-    "IVIBASE_ATTR_S10_FIRMWARE_SLOT_POSITION": [277, "ViUInt32", 1, "0<=x and x<=4294967295", 0]
+    "IVIBASE_ATTR_S10_FIRMWARE_SLOT_POSITION": [277, "ViUInt32", 1, "0<=x and x<=4294967295", 0],
+
+    "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE_SAMPLE_RATE": [311, "ViUInt32", 0, "0", 0],
+    "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE_NYQUIST_ZONE": [312, "ViUInt32", 0, "0", 0],
+    "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE_OPERATE_TYPE": [313, "ViUInt32", 0, "0", 0],
+    "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE": [314, "ViUInt32", 0, "0", 256],
+    "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE_EXE": [315, "ViUInt32", 0, "0", 0],
+    "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE_RESULT": [316, "ViUInt32", 0, "0", 0],
+
+    "IVIDIGITIZER_ATTR_ADC_CAL_COE_SAMPLE_RATE": [317, "ViUInt32", 0, "0 == x or x == 1", 0],
+
+    "IVIBASE_ATTR_AMP_CAL_PARAM_CONFIG_SAMPLE_RATE": [318, "ViUInt32", 0, "0", 0],
+    "IVIBASE_ATTR_AMP_CAL_PARAM_GET_SAMPLE_RATE": [319, "ViUInt32", 0, "0", 0],
+
+    "IVIBASE_ATTR_ADC_GET_CAL_COE_CHANL": [320, "ViUInt32", 0, "0", 0],
+    "IVIBASE_ATTR_ADC_GET_CAL_COE_SAMPLE_RATE": [321, "ViUInt32", 0, "0", 0],
+
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_CONFIG_SAMPLE_RATE": [322, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_CONFIG": [323, "ViUInt32", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_CONFIG_EXE": [324, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_CONFIG_RESULT": [325, "ViUInt32", 1, "0 == x or x == 1", 0],
+
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_GET_EXE": [326, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_GET_RESULT": [327, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_GET": [328, "ViUInt32", 250, "0 == x or x == 1", 8],
+
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_CONFIG_SAMPLE_RATE": [329, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_CONFIG": [330, "ViInt32", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_CONFIG_EXE": [331, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_CONFIG_RESULT": [332, "ViUInt32", 1, "0 == x or x == 1", 0],
+
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_GET_EXE": [333, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_GET_RESULT": [334, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_GET": [335, "ViInt32", 1, "0 == x or x == 1", 8],
+
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM_OPERATE_TYPE": [336, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM_SAMPLE_RATE": [337, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM_20000UA": [338, "ViInt32", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM0": [339, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM1": [340, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM2": [341, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM3": [342, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM4": [343, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM5": [344, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM6": [345, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM7": [346, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM8": [347, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM9": [348, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM10": [349, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM_EXE": [350, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM_RESULT": [351, "ViUInt32", 1, "0 == x or x == 1", 0],
+
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM_OPERATE_TYPE": [352, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM_SAMPLE_RATE": [353, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM_EXE": [354, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM_RESULT": [355, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM_20000UA": [356, "ViInt32", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM0": [357, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM1": [358, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM2": [359, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM3": [360, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM4": [361, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM5": [362, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM6": [363, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM7": [364, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM8": [365, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM9": [366, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM10": [367, "ViReal64", 1, "0 == x or x == 1", 8],
+
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_OPERATE_TYPE": [368, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_SAMPLE_RATE": [369, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_1800": [370, "ViInt32", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_2600": [371, "ViInt32", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM0": [372, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM1": [373, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM2": [374, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM3": [375, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM4": [376, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM5": [377, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM6": [378, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM7": [379, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM8": [380, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM9": [381, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM10": [382, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM11": [383, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM12": [384, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_EXE": [385, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_RESULT": [386, "ViUInt32", 1, "0 == x or x == 1", 0],
+
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM_OPERATE_TYPE": [387, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM_SAMPLE_RATE": [388, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM_EXE": [389, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM_RESULT": [390, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM_1800": [391, "ViInt32", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM_2600": [392, "ViInt32", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM0": [393, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM1": [394, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM2": [395, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM3": [396, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM4": [397, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM5": [398, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM6": [399, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM7": [400, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM8": [401, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM9": [402, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM10": [403, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM11": [404, "ViReal64", 1, "0 == x or x == 1", 8],
+    "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM12": [405, "ViReal64", 1, "0 == x or x == 1", 8],
+
+    "IVIBASE_ATTR_GOLDEN_UPDATE": [406, "ViString", "", "", 0],
+    "IVIBASE_ATTR_GOLDEN_UPDATE_RESULT": [407, "ViUInt32", 1, "0<=x and x<=4294967295", 0],
+
+    "IVIBASE_ATTR_UPDATE_BOOT": [408, "ViUInt32", 1, "", 0],
+    "IVIBASE_ATTR_UPDATE_BOOT_A7": [409, "ViUInt32", 1, "0<=x and x<=4294967295", 0],
+
+    "IVIFGEN_ATTR_DAC_VOP_PARAM_GET_SAMPLE_RATE": [410, "ViUInt32", 1, "0 == x or x == 1", 0],
+    "IVIFGEN_ATTR_DAC_VOP_PARAM_GET_OUTPUT_GEAR": [411, "ViUInt32", 1, "0 == x or x == 1", 0],
+
+    "IVIDIGITIZER_ATTR_TRIGGER_MODE": [412, "ViUInt32", 3221225471, "0<=x and x<=4294967295", 0],
+    "IVIDIGITIZER_ATTR_INTERNAL_TRIGGER_EDGE_SET_ENABLE": [413, "ViUInt32", 255, "0<=x and x<=4294967295", 0]
   },
   "action": {
     "get_firmware_slot_posiTion": {
@@ -3017,11 +3135,11 @@
       "func": "x0",
       "target": ["attr", "IVIBASE_ATTR_ADC_GET_CAL_COE_OPERATE_TYPE", 0]
     },
-    "execute_ADC_getCalCoe": {
+    "execute_ADC_CalCoeGetUp": {
       "source": [
       ],
       "func": "",
-      "target": ["execute", "ADC_getCalCoe", 0]
+      "target": ["execute", "ADC_CalCoeGetUp", 0]
     },
     "get_ADC_getCalCoeResult": {
       "source": [
@@ -3214,11 +3332,11 @@
       "func": "x0",
       "target": ["attr", "IVIDIGITIZER_ATTR_ADC_CAL_COE_OPERATE_TYPE", 0]
     },
-    "execute_ADC_CalCoeConfig": {
+    "execute_ADC_CalCoeGetSave": {
       "source": [
       ],
       "func": "",
-      "target": ["execute", "ADC_CalCoeConfig", 0]
+      "target": ["execute", "ADC_CalCoeGetSave", 0]
     },
     "get_ADC_CalCoeConfigResult": {
       "source": [
@@ -3950,10 +4068,1076 @@
       ],
       "func": "x0",
       "target": ["attr", "IVIBASE_ATTR_S10_FIRMWARE_SLOT_POSITION", 0]
+    },
+
+    "set_ADC_CalCoeDownSaveSRate": {
+      "source": [
+        ["attr", "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE_SAMPLE_RATE", 0]
+      ],
+      "func": "x0",
+      "target": ["param", "ADC_CalCoeDownSaveSRate", 0]
+    },
+    "get_ADC_CalCoeDownSaveSRate": {
+      "source": [
+        ["param", "ADC_CalCoeDownSaveSRate", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE_SAMPLE_RATE", 0]
+    },
+    "set_ADC_CalCoeDownSaveNyquistZone": {
+      "source": [
+        ["attr", "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE_NYQUIST_ZONE", 0]
+      ],
+      "func": "x0",
+      "target": ["param", "ADC_CalCoeDownSaveNyquistZone", 0]
+    },
+    "get_ADC_CalCoeDownSaveNyquistZone": {
+      "source": [
+        ["param", "ADC_CalCoeDownSaveNyquistZone", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE_NYQUIST_ZONE", 0]
+    },
+    "set_ADC_CalCoeDownSaveOperateType": {
+      "source": [
+        ["attr", "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE_OPERATE_TYPE", 0]
+      ],
+      "func": "x0",
+      "target": ["param", "ADC_CalCoeDownSaveOperateType", 0]
+    },
+    "get_ADC_CalCoeDownSaveOperateType": {
+      "source": [
+        ["param", "ADC_CalCoeDownSaveOperateType", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE_OPERATE_TYPE", 0]
+    },
+    "set_ADC_CalCoeDownSave": {
+      "source": [
+        ["attr", "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "ADC_CalCoeDownSave{}", 1]
+    },
+    "get_ADC_CalCoeDownSave": {
+      "source": [
+        ["param", "ADC_CalCoeDownSave{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE", 1]
+    },
+    "execute_ADC_CalCoeDownSave": {
+      "source": [
+      ],
+      "func": "",
+      "target": ["execute", "ADC_CalCoeDownSave", 0]
+    },
+    "get_ADC_CalCoeDownSaveResult": {
+      "source": [
+        ["param", "ADC_CalCoeDownSaveResult", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE_RESULT", 0]
+    },
+
+    "set_ADC_CalCoeSRate": {
+      "source": [
+        ["attr", "IVIDIGITIZER_ATTR_ADC_CAL_COE_SAMPLE_RATE", 0]
+      ],
+      "func": "x0",
+      "target": ["param", "ADC_CalCoeSRate", 0]
+    },
+    "get_ADC_CalCoeSRate": {
+      "source": [
+        ["param", "ADC_CalCoeSRate", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIDIGITIZER_ATTR_ADC_CAL_COE_SAMPLE_RATE", 0]
+    },
+
+    "set_AmpCalParamConfigSRate": {
+      "source": [
+        ["attr", "IVIBASE_ATTR_AMP_CAL_PARAM_CONFIG_SAMPLE_RATE", 0]
+      ],
+      "func": "x0",
+      "target": ["param", "AmpCalParamConfigSRate", 0]
+    },
+    "get_AmpCalParamConfigSRate": {
+      "source": [
+        ["param", "AmpCalParamConfigSRate", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIBASE_ATTR_AMP_CAL_PARAM_CONFIG_SAMPLE_RATE", 0]
+    },
+
+    "set_AmpCalParamGetSRate": {
+      "source": [
+        ["attr", "IVIBASE_ATTR_AMP_CAL_PARAM_GET_SAMPLE_RATE", 0]
+      ],
+      "func": "x0",
+      "target": ["param", "AmpCalParamGetSRate", 0]
+    },
+    "get_AmpCalParamGetSRate": {
+      "source": [
+        ["param", "AmpCalParamGetSRate", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIBASE_ATTR_AMP_CAL_PARAM_GET_SAMPLE_RATE", 0]
+    },
+
+    "set_ADC_getCalCoeChanl": {
+      "source": [
+        ["attr", "IVIBASE_ATTR_ADC_GET_CAL_COE_CHANL", 0]
+      ],
+      "func": "x0",
+      "target": ["param", "ADC_getCalCoeChanl", 0]
+    },
+    "get_ADC_getCalCoeChanl": {
+      "source": [
+        ["param", "ADC_getCalCoeChanl", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIBASE_ATTR_ADC_GET_CAL_COE_CHANL", 0]
+    },
+
+    "set_ADC_getCalCoeSRate": {
+      "source": [
+        ["attr", "IVIBASE_ATTR_ADC_GET_CAL_COE_SAMPLE_RATE", 0]
+      ],
+      "func": "x0",
+      "target": ["param", "ADC_getCalCoeSRate", 0]
+    },
+    "get_ADC_getCalCoeSRate": {
+      "source": [
+        ["param", "ADC_getCalCoeSRate", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIBASE_ATTR_ADC_GET_CAL_COE_SAMPLE_RATE", 0]
+    },
+
+    "set_DACOutputRangeParamConfigSRate": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_CONFIG_SAMPLE_RATE", 0]
+      ],
+      "func": "x0/1000000",
+      "target": ["param", "DACOutputRangeParamConfigSRate", 0]
+    },
+    "get_DACOutputRangeParamConfigSRate": {
+      "source": [
+        ["param", "DACOutputRangeParamConfigSRate", 0]
+      ],
+      "func": "x0*1000000",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_CONFIG_SAMPLE_RATE", 0]
+    },
+    "set_DACOutputRangeParamConfig": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_CONFIG", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputRangeParamConfig{}", 1]
+    },
+    "get_DACOutputRangeParamConfig": {
+      "source": [
+        ["param", "DACOutputRangeParamConfig{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_CONFIG", 1]
+    },
+    "execute_DACOutputRangeParamConfig": {
+      "source": [
+      ],
+      "func": "",
+      "target": ["execute", "DACOutputRangeParamConfig", 0]
+    },
+    "get_DACOutputRangeParamConfigResult": {
+      "source": [
+        ["param", "DACOutputRangeParamConfigResult", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_CONFIG_RESULT", 0]
+    },
+
+    "execute_DACOutputRangeParamGet": {
+      "source": [
+      ],
+      "func": "",
+      "target": ["execute", "DACOutputRangeParamGet", 0]
+    },
+    "get_DACOutputRangeParamGetResult": {
+      "source": [
+        ["param", "DACOutputRangeParamGetResult", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_GET_RESULT", 0]
+    },
+    "get_DACOutputRangeParamGet": {
+      "source": [
+        ["param", "DACOutputRangeParamGet{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_GET", 1]
+    },
+
+    "set_DACOutputOffsetParamConfigSRate": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_CONFIG_SAMPLE_RATE", 0]
+      ],
+      "func": "x0/1000000",
+      "target": ["param", "DACOutputOffsetParamConfigSRate", 0]
+    },
+    "get_DACOutputOffsetParamConfigSRate": {
+      "source": [
+        ["param", "DACOutputOffsetParamConfigSRate", 0]
+      ],
+      "func": "x0*1000000",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_CONFIG_SAMPLE_RATE", 0]
+    },
+    "set_DACOutputOffsetParamConfig": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_CONFIG", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputOffsetParamConfig{}", 1]
+    },
+    "get_DACOutputOffsetParamConfig": {
+      "source": [
+        ["param", "DACOutputOffsetParamConfig{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_CONFIG", 1]
+    },
+    "execute_DACOutputOffsetParamConfig": {
+      "source": [
+      ],
+      "func": "",
+      "target": ["execute", "DACOutputOffsetParamConfig", 0]
+    },
+    "get_DACOutputOffsetParamConfigResult": {
+      "source": [
+        ["param", "DACOutputOffsetParamConfigResult", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_CONFIG_RESULT", 0]
+    },
+
+    "execute_DACOutputOffsetParamGet": {
+      "source": [
+      ],
+      "func": "",
+      "target": ["execute", "DACOutputOffsetParamGet", 0]
+    },
+    "get_DACOutputOffsetParamGetResult": {
+      "source": [
+        ["param", "DACOutputOffsetParamGetResult", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_GET_RESULT", 0]
+    },
+    "get_DACOutputOffsetParamGet": {
+      "source": [
+        ["param", "DACOutputOffsetParamGet{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_GET", 1]
+    },
+
+    "set_DACOutputRangeConfigParamOperateType": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM_OPERATE_TYPE", 0]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputRangeConfigParamOperateType", 0]
+    },
+    "get_DACOutputRangeConfigParamOperateType": {
+      "source": [
+        ["param", "DACOutputRangeConfigParamOperateType", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM_OPERATE_TYPE", 0]
+    },
+    "set_DACOutputRangeConfigParamSRate": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM_SAMPLE_RATE", 0]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputRangeConfigParamSRate", 0]
+    },
+    "get_DACOutputRangeConfigParamSRate": {
+      "source": [
+        ["param", "DACOutputRangeConfigParamSRate", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM_SAMPLE_RATE", 0]
+    },
+    "set_DACOutputRangeConfigParam20000uA": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM_20000UA", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputRangeConfigParam20000uAChnl{}", 1]
+    },
+    "get_DACOutputRangeConfigParam20000uA": {
+      "source": [
+        ["param", "DACOutputRangeConfigParam20000uAChnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM_20000UA", 1]
+    },
+    "set_DACOutputRangeConfigParam0": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM0", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputRangeConfigParam0Chnl{}", 1]
+    },
+    "get_DACOutputRangeConfigParam0": {
+      "source": [
+        ["param", "DACOutputRangeConfigParam0Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM0", 1]
+    },
+    "set_DACOutputRangeConfigParam1": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM1", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputRangeConfigParam1Chnl{}", 1]
+    },
+    "get_DACOutputRangeConfigParam1": {
+      "source": [
+        ["param", "DACOutputRangeConfigParam1Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM1", 1]
+    },
+    "set_DACOutputRangeConfigParam2": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM2", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputRangeConfigParam2Chnl{}", 1]
+    },
+    "get_DACOutputRangeConfigParam2": {
+      "source": [
+        ["param", "DACOutputRangeConfigParam2Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM2", 1]
+    },
+    "set_DACOutputRangeConfigParam3": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM3", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputRangeConfigParam3Chnl{}", 1]
+    },
+    "get_DACOutputRangeConfigParam3": {
+      "source": [
+        ["param", "DACOutputRangeConfigParam3Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM3", 1]
+    },
+    "set_DACOutputRangeConfigParam4": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM4", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputRangeConfigParam4Chnl{}", 1]
+    },
+    "get_DACOutputRangeConfigParam4": {
+      "source": [
+        ["param", "DACOutputRangeConfigParam4Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM4", 1]
+    },
+    "set_DACOutputRangeConfigParam5": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM5", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputRangeConfigParam5Chnl{}", 1]
+    },
+    "get_DACOutputRangeConfigParam5": {
+      "source": [
+        ["param", "DACOutputRangeConfigParam5Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM5", 1]
+    },
+    "set_DACOutputRangeConfigParam6": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM6", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputRangeConfigParam6Chnl{}", 1]
+    },
+    "get_DACOutputRangeConfigParam6": {
+      "source": [
+        ["param", "DACOutputRangeConfigParam6Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM6", 1]
+    },
+    "set_DACOutputRangeConfigParam7": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM7", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputRangeConfigParam7Chnl{}", 1]
+    },
+    "get_DACOutputRangeConfigParam7": {
+      "source": [
+        ["param", "DACOutputRangeConfigParam7Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM7", 1]
+    },
+    "set_DACOutputRangeConfigParam8": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM8", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputRangeConfigParam8Chnl{}", 1]
+    },
+    "get_DACOutputRangeConfigParam8": {
+      "source": [
+        ["param", "DACOutputRangeConfigParam8Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM8", 1]
+    },
+    "set_DACOutputRangeConfigParam9": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM9", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputRangeConfigParam9Chnl{}", 1]
+    },
+    "get_DACOutputRangeConfigParam9": {
+      "source": [
+        ["param", "DACOutputRangeConfigParam9Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM9", 1]
+    },
+    "set_DACOutputRangeConfigParam10": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM10", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputRangeConfigParam10Chnl{}", 1]
+    },
+    "get_DACOutputRangeConfigParam10": {
+      "source": [
+        ["param", "DACOutputRangeConfigParam10Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM10", 1]
+    },
+    "execute_DACOutputRangeConfigParam": {
+      "source": [
+      ],
+      "func": "",
+      "target": ["execute", "DACOutputRangeConfigParam", 0]
+    },
+    "get_DACOutputRangeConfigParamResult": {
+      "source": [
+        ["param", "DACOutputRangeConfigParamResult", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM_RESULT", 0]
+    },
+
+    "set_DACOutputRangeGetParamOperateType": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM_OPERATE_TYPE", 0]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputRangeGetParamOperateType", 0]
+    },
+    "get_DACOutputRangeGetParamOperateType": {
+      "source": [
+        ["param", "DACOutputRangeGetParamOperateType", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM_OPERATE_TYPE", 0]
+    },
+    "set_DACOutputRangeGetParamSRate": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM_SAMPLE_RATE", 0]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputRangeGetParamSRate", 0]
+    },
+    "get_DACOutputRangeGetParamSRate": {
+      "source": [
+        ["param", "DACOutputRangeGetParamSRate", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM_SAMPLE_RATE", 0]
+    },
+    "execute_DACOutputRangeGetParam": {
+      "source": [
+      ],
+      "func": "",
+      "target": ["execute", "DACOutputRangeGetParam", 0]
+    },
+    "get_DACOutputRangeGetParamResult": {
+      "source": [
+        ["param", "DACOutputRangeGetParamResult", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM_RESULT", 0]
+    },
+    "get_DACOutputRangeGetParam20000uA": {
+      "source": [
+        ["param", "DACOutputRangeGetParam20000uAChnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM_20000UA", 1]
+    },
+    "get_DACOutputRangeGetParam0": {
+      "source": [
+        ["param", "DACOutputRangeGetParam0Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM0", 1]
+    },
+    "get_DACOutputRangeGetParam1": {
+      "source": [
+        ["param", "DACOutputRangeGetParam1Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM1", 1]
+    },
+    "get_DACOutputRangeGetParam2": {
+      "source": [
+        ["param", "DACOutputRangeGetParam2Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM2", 1]
+    },
+    "get_DACOutputRangeGetParam3": {
+      "source": [
+        ["param", "DACOutputRangeGetParam3Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM3", 1]
+    },
+    "get_DACOutputRangeGetParam4": {
+      "source": [
+        ["param", "DACOutputRangeGetParam4Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM4", 1]
+    },
+    "get_DACOutputRangeGetParam5": {
+      "source": [
+        ["param", "DACOutputRangeGetParam5Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM5", 1]
+    },
+    "get_DACOutputRangeGetParam6": {
+      "source": [
+        ["param", "DACOutputRangeGetParam6Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM6", 1]
+    },
+    "get_DACOutputRangeGetParam7": {
+      "source": [
+        ["param", "DACOutputRangeGetParam7Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM7", 1]
+    },
+    "get_DACOutputRangeGetParam8": {
+      "source": [
+        ["param", "DACOutputRangeGetParam8Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM8", 1]
+    },
+    "get_DACOutputRangeGetParam9": {
+      "source": [
+        ["param", "DACOutputRangeGetParam9Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM9", 1]
+    },
+    "get_DACOutputRangeGetParam10": {
+      "source": [
+        ["param", "DACOutputRangeGetParam10Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM10", 1]
+    },
+
+    "set_DACOutputOffsetConfigParamOperateType": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_OPERATE_TYPE", 0]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputOffsetConfigParamOperateType", 0]
+    },
+    "get_DACOutputOffsetConfigParamOperateType": {
+      "source": [
+        ["param", "DACOutputOffsetConfigParamOperateType", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_OPERATE_TYPE", 0]
+    },
+    "set_DACOutputOffsetConfigParamSRate": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_SAMPLE_RATE", 0]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputOffsetConfigParamSRate", 0]
+    },
+    "get_DACOutputOffsetConfigParamSRate": {
+      "source": [
+        ["param", "DACOutputOffsetConfigParamSRate", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_SAMPLE_RATE", 0]
+    },
+    "set_DACOutputOffsetConfigParam1800": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_1800", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputOffsetConfigParam1800Chnl{}", 1]
+    },
+    "get_DACOutputOffsetConfigParam1800": {
+      "source": [
+        ["param", "DACOutputOffsetConfigParam1800Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_1800", 1]
+    },
+    "set_DACOutputOffsetConfigParam2600": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_2600", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputOffsetConfigParam2600Chnl{}", 1]
+    },
+    "get_DACOutputOffsetConfigParam2600": {
+      "source": [
+        ["param", "DACOutputOffsetConfigParam2600Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_2600", 1]
+    },
+    "set_DACOutputOffsetConfigParam0": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM0", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputOffsetConfigParam0Chnl{}", 1]
+    },
+    "get_DACOutputOffsetConfigParam0": {
+      "source": [
+        ["param", "DACOutputOffsetConfigParam0Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM0", 1]
+    },
+    "set_DACOutputOffsetConfigParam1": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM1", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputOffsetConfigParam1Chnl{}", 1]
+    },
+    "get_DACOutputOffsetConfigParam1": {
+      "source": [
+        ["param", "DACOutputOffsetConfigParam1Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM1", 1]
+    },
+    "set_DACOutputOffsetConfigParam2": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM2", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputOffsetConfigParam2Chnl{}", 1]
+    },
+    "get_DACOutputOffsetConfigParam2": {
+      "source": [
+        ["param", "DACOutputOffsetConfigParam2Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM2", 1]
+    },
+    "set_DACOutputOffsetConfigParam3": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM3", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputOffsetConfigParam3Chnl{}", 1]
+    },
+    "get_DACOutputOffsetConfigParam3": {
+      "source": [
+        ["param", "DACOutputOffsetConfigParam3Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM3", 1]
+    },
+    "set_DACOutputOffsetConfigParam4": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM4", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputOffsetConfigParam4Chnl{}", 1]
+    },
+    "get_DACOutputOffsetConfigParam4": {
+      "source": [
+        ["param", "DACOutputOffsetConfigParam4Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM4", 1]
+    },
+    "set_DACOutputOffsetConfigParam5": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM5", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputOffsetConfigParam5Chnl{}", 1]
+    },
+    "get_DACOutputOffsetConfigParam5": {
+      "source": [
+        ["param", "DACOutputOffsetConfigParam5Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM5", 1]
+    },
+    "set_DACOutputOffsetConfigParam6": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM6", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputOffsetConfigParam6Chnl{}", 1]
+    },
+    "get_DACOutputOffsetConfigParam6": {
+      "source": [
+        ["param", "DACOutputOffsetConfigParam6Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM6", 1]
+    },
+    "set_DACOutputOffsetConfigParam7": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM7", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputOffsetConfigParam7Chnl{}", 1]
+    },
+    "get_DACOutputOffsetConfigParam7": {
+      "source": [
+        ["param", "DACOutputOffsetConfigParam7Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM7", 1]
+    },
+    "set_DACOutputOffsetConfigParam8": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM8", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputOffsetConfigParam8Chnl{}", 1]
+    },
+    "get_DACOutputOffsetConfigParam8": {
+      "source": [
+        ["param", "DACOutputOffsetConfigParam8Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM8", 1]
+    },
+    "set_DACOutputOffsetConfigParam9": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM9", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputOffsetConfigParam9Chnl{}", 1]
+    },
+    "get_DACOutputOffsetConfigParam9": {
+      "source": [
+        ["param", "DACOutputOffsetConfigParam9Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM9", 1]
+    },
+    "set_DACOutputOffsetConfigParam10": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM10", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputOffsetConfigParam10Chnl{}", 1]
+    },
+    "get_DACOutputOffsetConfigParam10": {
+      "source": [
+        ["param", "DACOutputOffsetConfigParam10Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM10", 1]
+    },
+    "set_DACOutputOffsetConfigParam11": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM11", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputOffsetConfigParam11Chnl{}", 1]
+    },
+    "get_DACOutputOffsetConfigParam11": {
+      "source": [
+        ["param", "DACOutputOffsetConfigParam11Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM11", 1]
+    },
+    "set_DACOutputOffsetConfigParam12": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM12", 1]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputOffsetConfigParam12Chnl{}", 1]
+    },
+    "get_DACOutputOffsetConfigParam12": {
+      "source": [
+        ["param", "DACOutputOffsetConfigParam12Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM12", 1]
+    },
+    "execute_DACOutputOffsetConfigParam": {
+      "source": [
+      ],
+      "func": "",
+      "target": ["execute", "DACOutputOffsetConfigParam", 0]
+    },
+    "get_DACOutputOffsetConfigParamResult": {
+      "source": [
+        ["param", "DACOutputOffsetConfigParamResult", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_RESULT", 0]
+    },
+
+    "set_DACOutputOffsetGetParamOperateType": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM_OPERATE_TYPE", 0]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputOffsetGetParamOperateType", 0]
+    },
+    "get_DACOutputOffsetGetParamOperateType": {
+      "source": [
+        ["param", "DACOutputOffsetGetParamOperateType", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM_OPERATE_TYPE", 0]
+    },
+    "set_DACOutputOffsetGetParamSRate": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM_SAMPLE_RATE", 0]
+      ],
+      "func": "x0",
+      "target": ["param", "DACOutputOffsetGetParamSRate", 0]
+    },
+    "get_DACOutputOffsetGetParamSRate": {
+      "source": [
+        ["param", "DACOutputOffsetGetParamSRate", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM_SAMPLE_RATE", 0]
+    },
+    "execute_DACOutputOffsetGetParam": {
+      "source": [
+      ],
+      "func": "",
+      "target": ["execute", "DACOutputOffsetGetParam", 0]
+    },
+    "get_DACOutputOffsetGetParamResult": {
+      "source": [
+        ["param", "DACOutputOffsetGetParamResult", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM_RESULT", 0]
+    },
+    "get_DACOutputOffsetGetParam1800": {
+      "source": [
+        ["param", "DACOutputOffsetGetParam1800Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM_1800", 1]
+    },
+    "get_DACOutputOffsetGetParam2600": {
+      "source": [
+        ["param", "DACOutputOffsetGetParam2600Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM_2600", 1]
+    },
+    "get_DACOutputOffsetGetParam0": {
+      "source": [
+        ["param", "DACOutputOffsetGetParam0Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM0", 1]
+    },
+    "get_DACOutputOffsetGetParam1": {
+      "source": [
+        ["param", "DACOutputOffsetGetParam1Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM1", 1]
+    },
+    "get_DACOutputOffsetGetParam2": {
+      "source": [
+        ["param", "DACOutputOffsetGetParam2Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM2", 1]
+    },
+    "get_DACOutputOffsetGetParam3": {
+      "source": [
+        ["param", "DACOutputOffsetGetParam3Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM3", 1]
+    },
+    "get_DACOutputOffsetGetParam4": {
+      "source": [
+        ["param", "DACOutputOffsetGetParam4Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM4", 1]
+    },
+    "get_DACOutputOffsetGetParam5": {
+      "source": [
+        ["param", "DACOutputOffsetGetParam5Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM5", 1]
+    },
+    "get_DACOutputOffsetGetParam6": {
+      "source": [
+        ["param", "DACOutputOffsetGetParam6Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM6", 1]
+    },
+    "get_DACOutputOffsetGetParam7": {
+      "source": [
+        ["param", "DACOutputOffsetGetParam7Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM7", 1]
+    },
+    "get_DACOutputOffsetGetParam8": {
+      "source": [
+        ["param", "DACOutputOffsetGetParam8Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM8", 1]
+    },
+    "get_DACOutputOffsetGetParam9": {
+      "source": [
+        ["param", "DACOutputOffsetGetParam9Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM9", 1]
+    },
+    "get_DACOutputOffsetGetParam10": {
+      "source": [
+        ["param", "DACOutputOffsetGetParam10Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM10", 1]
+    },
+    "get_DACOutputOffsetGetParam11": {
+      "source": [
+        ["param", "DACOutputOffsetGetParam11Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM11", 1]
+    },
+    "get_DACOutputOffsetGetParam12": {
+      "source": [
+        ["param", "DACOutputOffsetGetParam12Chnl{}", 1]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM12", 1]
+    },
+
+    "get_updateBoot": {
+      "source": [
+        ["register", "0x01F00110", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIBASE_ATTR_UPDATE_BOOT", 0]
+    },
+    "get_updateBootA7": {
+      "source": [
+        ["register", "0x003000DC", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIBASE_ATTR_UPDATE_BOOT_A7", 0]
+    },
+
+    "set_DACVopParamGetSRate": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_VOP_PARAM_GET_SAMPLE_RATE", 0]
+      ],
+      "func": "x0",
+      "target": ["param", "DACVopParamGetSRate", 0]
+    },
+    "get_DACVopParamGetSRate": {
+      "source": [
+        ["param", "DACVopParamGetSRate", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_VOP_PARAM_GET_SAMPLE_RATE", 0]
+    },
+    "set_DACVopParamGetOutputGear": {
+      "source": [
+        ["attr", "IVIFGEN_ATTR_DAC_VOP_PARAM_GET_OUTPUT_GEAR", 0]
+      ],
+      "func": "x0",
+      "target": ["param", "DACVopParamGetOutputGear", 0]
+    },
+    "get_DACVopParamGetOutputGear": {
+      "source": [
+        ["param", "DACVopParamGetOutputGear", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIFGEN_ATTR_DAC_VOP_PARAM_GET_OUTPUT_GEAR", 0]
+    },
+
+    "set_triggerEdgeSetEnable": {
+      "source": [
+        ["attr", "IVIDIGITIZER_ATTR_INTERNAL_TRIGGER_EDGE_SET_ENABLE", 0]
+      ],
+      "func": "x0",
+      "target": ["param", "triggerEdgeSetEnable", 0]
+    },
+    "get_triggerEdgeSetEnable": {
+      "source": [
+        ["param", "triggerEdgeSetEnable", 0]
+      ],
+      "func": "x0",
+      "target": ["attr", "IVIDIGITIZER_ATTR_INTERNAL_TRIGGER_EDGE_SET_ENABLE", 0]
     }
   },
   "sequence":{
     "set_sequence": {
+      "ATTR_M": ["set_m"],
       "IVIBASE_ATTR_REF_CLOCK_SOURCE": ["set_ref_clock_source"],
       "IVIBASE_ATTR_REF_FREQ_FREQUENCY": ["set_ref_freq_frequency"],
 
@@ -3987,7 +5171,7 @@
 
       "IVIBASE_ATTR_ADC_GET_CAL_COE_NYQUIST_ZONE":["set_ADC_getCalCoeNyquistZone"],
       "IVIBASE_ATTR_ADC_GET_CAL_COE_OPERATE_TYPE": ["set_ADC_getCalCoeOperateType"],
-      "IVIBASE_ATTR_ADC_GET_CAL_COE_EXE": ["execute_ADC_getCalCoe"],
+      "IVIBASE_ATTR_ADC_GET_CAL_COE_EXE": ["execute_ADC_CalCoeGetUp"],
 
       "IVIBASE_ATTR_AMP_CAL_PARAM_CONFIG_OPERATE_TYPE": ["set_AmpCalParamConfigOperateType"],
       "IVIBASE_ATTR_AMP_CAL_PARAM_CONFIG_CHNL_TYPE": ["set_AmpCalParamConfigChnlType"],
@@ -4005,7 +5189,7 @@
 
       "IVIDIGITIZER_ATTR_ADC_CAL_COE_NYQUIST_ZONE": ["set_ADC_CalCoeNyquistZone"],
       "IVIDIGITIZER_ATTR_ADC_CAL_COE_OPERATE_TYPE": ["set_ADC_CalCoeOperateType"],
-      "IVIDIGITIZER_ATTR_CAL_COE_CONFIG_EXE": ["execute_ADC_CalCoeConfig"],
+      "IVIDIGITIZER_ATTR_CAL_COE_CONFIG_EXE": ["execute_ADC_CalCoeGetSave"],
 
       "IVIBASE_ATTR_RF_DAC_NCO_FREQUENCY": ["set_DACNCOFrequency"],
 
@@ -4254,10 +5438,192 @@
       "IVISYNCATRIG_ATTR_INTERNAL_TRIGGER_RESET": ["execute_SAT_internalTriggerReset"],
 
       "IVISYNCATRIG_ATTR_AUTO_BOOT_SETTING": ["set_SAT_autobootsetting"],
-      "IVISYNCATRIG_ATTR_AUTO_BOOT_SETTING_EXE": ["execute_SAT_autobootsettingConfig"]
+      "IVISYNCATRIG_ATTR_AUTO_BOOT_SETTING_EXE": ["execute_SAT_autobootsettingConfig"],
+
+      "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE_SAMPLE_RATE": ["set_ADC_CalCoeDownSaveSRate"],
+      "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE_NYQUIST_ZONE": ["set_ADC_CalCoeDownSaveNyquistZone"],
+      "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE_OPERATE_TYPE": ["set_ADC_CalCoeDownSaveOperateType"],
+      "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE": ["set_ADC_CalCoeDownSave"],
+      "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE_EXE": ["execute_ADC_CalCoeDownSave"],
+
+      "IVIDIGITIZER_ATTR_ADC_CAL_COE_SAMPLE_RATE": ["set_ADC_CalCoeSRate"],
+
+      "IVIBASE_ATTR_AMP_CAL_PARAM_CONFIG_SAMPLE_RATE": ["set_AmpCalParamConfigSRate"],
+
+      "IVIBASE_ATTR_AMP_CAL_PARAM_GET_SAMPLE_RATE": ["set_AmpCalParamGetSRate"],
+
+      "IVIBASE_ATTR_ADC_GET_CAL_COE_CHANL": ["set_ADC_getCalCoeChanl"],
+      "IVIBASE_ATTR_ADC_GET_CAL_COE_SAMPLE_RATE": ["set_ADC_getCalCoeSRate"],
+
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_CONFIG_SAMPLE_RATE": ["set_DACOutputRangeParamConfigSRate"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_CONFIG": ["set_DACOutputRangeParamConfig"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_CONFIG_EXE": ["execute_DACOutputRangeParamConfig"],
+
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_GET_EXE": ["execute_DACOutputRangeParamGet"],
+
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_CONFIG_SAMPLE_RATE": ["set_DACOutputOffsetParamConfigSRate"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_CONFIG": ["set_DACOutputOffsetParamConfig"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_CONFIG_EXE": ["execute_DACOutputOffsetParamConfig"],
+
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_GET_EXE": ["execute_DACOutputOffsetParamGet"],
+
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM_OPERATE_TYPE": ["set_DACOutputRangeConfigParamOperateType"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM_SAMPLE_RATE": ["set_DACOutputRangeConfigParamSRate"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM_20000UA": ["set_DACOutputRangeConfigParam20000uA"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM0": ["set_DACOutputRangeConfigParam0"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM1": ["set_DACOutputRangeConfigParam1"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM2": ["set_DACOutputRangeConfigParam2"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM3": ["set_DACOutputRangeConfigParam3"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM4": ["set_DACOutputRangeConfigParam4"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM5": ["set_DACOutputRangeConfigParam5"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM6": ["set_DACOutputRangeConfigParam6"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM7": ["set_DACOutputRangeConfigParam7"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM8": ["set_DACOutputRangeConfigParam8"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM9": ["set_DACOutputRangeConfigParam9"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM10": ["set_DACOutputRangeConfigParam10"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM_EXE": ["execute_DACOutputRangeConfigParam"],
+
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM_OPERATE_TYPE": ["set_DACOutputRangeGetParamOperateType"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM_SAMPLE_RATE": ["set_DACOutputRangeGetParamSRate"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM_EXE": ["execute_DACOutputRangeGetParam"],
+
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_OPERATE_TYPE": ["set_DACOutputOffsetConfigParamOperateType"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_SAMPLE_RATE": ["set_DACOutputOffsetConfigParamSRate"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_1800": ["set_DACOutputOffsetConfigParam1800"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_2600": ["set_DACOutputOffsetConfigParam2600"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM0": ["set_DACOutputOffsetConfigParam0"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM1": ["set_DACOutputOffsetConfigParam1"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM2": ["set_DACOutputOffsetConfigParam2"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM3": ["set_DACOutputOffsetConfigParam3"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM4": ["set_DACOutputOffsetConfigParam4"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM5": ["set_DACOutputOffsetConfigParam5"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM6": ["set_DACOutputOffsetConfigParam6"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM7": ["set_DACOutputOffsetConfigParam7"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM8": ["set_DACOutputOffsetConfigParam8"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM9": ["set_DACOutputOffsetConfigParam9"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM10": ["set_DACOutputOffsetConfigParam10"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM11": ["set_DACOutputOffsetConfigParam11"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM12": ["set_DACOutputOffsetConfigParam12"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_EXE": ["execute_DACOutputOffsetConfigParam"],
+
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM_OPERATE_TYPE": ["set_DACOutputOffsetGetParamOperateType"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM_SAMPLE_RATE": ["set_DACOutputOffsetGetParamSRate"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM_EXE": ["execute_DACOutputOffsetGetParam"],
+
+      "IVIFGEN_ATTR_DAC_VOP_PARAM_GET_SAMPLE_RATE": ["set_DACVopParamGetSRate"],
+      "IVIFGEN_ATTR_DAC_VOP_PARAM_GET_OUTPUT_GEAR": ["set_DACVopParamGetOutputGear"],
+
+      "IVIDIGITIZER_ATTR_INTERNAL_TRIGGER_EDGE_SET_ENABLE": ["set_triggerEdgeSetEnable"]
 
     },
     "get_sequence": {
+
+      "IVIDIGITIZER_ATTR_INTERNAL_TRIGGER_EDGE_SET_ENABLE": ["get_triggerEdgeSetEnable"],
+      "IVIFGEN_ATTR_DAC_VOP_PARAM_GET_SAMPLE_RATE": ["get_DACVopParamGetSRate"],
+      "IVIFGEN_ATTR_DAC_VOP_PARAM_GET_OUTPUT_GEAR": ["get_DACVopParamGetOutputGear"],
+
+      "IVIBASE_ATTR_UPDATE_BOOT": ["get_updateBoot"],
+      "IVIBASE_ATTR_UPDATE_BOOT_A7": ["get_updateBootA7"],
+
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM_OPERATE_TYPE": ["get_DACOutputOffsetGetParamOperateType"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM_SAMPLE_RATE": ["get_DACOutputOffsetGetParamSRate"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM_RESULT": ["get_DACOutputOffsetGetParamResult"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM_1800": ["get_DACOutputOffsetGetParam1800"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM_2600": ["get_DACOutputOffsetGetParam2600"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM0": ["get_DACOutputOffsetGetParam0"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM1": ["get_DACOutputOffsetGetParam1"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM2": ["get_DACOutputOffsetGetParam2"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM3": ["get_DACOutputOffsetGetParam3"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM4": ["get_DACOutputOffsetGetParam4"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM5": ["get_DACOutputOffsetGetParam5"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM6": ["get_DACOutputOffsetGetParam6"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM7": ["get_DACOutputOffsetGetParam7"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM8": ["get_DACOutputOffsetGetParam8"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM9": ["get_DACOutputOffsetGetParam9"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM10": ["get_DACOutputOffsetGetParam10"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM11": ["get_DACOutputOffsetGetParam11"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_GET_PARAM12": ["get_DACOutputOffsetGetParam12"],
+
+
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_OPERATE_TYPE": ["get_DACOutputOffsetConfigParamOperateType"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_SAMPLE_RATE": ["get_DACOutputOffsetConfigParamSRate"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_1800": ["get_DACOutputOffsetConfigParam1800"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_2600": ["get_DACOutputOffsetConfigParam2600"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM0": ["get_DACOutputOffsetConfigParam0"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM1": ["get_DACOutputOffsetConfigParam1"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM2": ["get_DACOutputOffsetConfigParam2"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM3": ["get_DACOutputOffsetConfigParam3"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM4": ["get_DACOutputOffsetConfigParam4"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM5": ["get_DACOutputOffsetConfigParam5"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM6": ["get_DACOutputOffsetConfigParam6"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM7": ["get_DACOutputOffsetConfigParam7"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM8": ["get_DACOutputOffsetConfigParam8"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM9": ["get_DACOutputOffsetConfigParam9"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM10": ["get_DACOutputOffsetConfigParam10"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM11": ["get_DACOutputOffsetConfigParam11"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM12": ["get_DACOutputOffsetConfigParam12"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_CONFIG_PARAM_RESULT": ["get_DACOutputOffsetConfigParamResult"],
+
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM_OPERATE_TYPE": ["get_DACOutputRangeGetParamOperateType"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM_SAMPLE_RATE": ["get_DACOutputRangeGetParamSRate"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM_RESULT": ["get_DACOutputRangeGetParamResult"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM_20000UA": ["get_DACOutputRangeGetParam20000uA"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM0": ["get_DACOutputRangeGetParam0"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM1": ["get_DACOutputRangeGetParam1"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM2": ["get_DACOutputRangeGetParam2"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM3": ["get_DACOutputRangeGetParam3"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM4": ["get_DACOutputRangeGetParam4"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM5": ["get_DACOutputRangeGetParam5"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM6": ["get_DACOutputRangeGetParam6"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM7": ["get_DACOutputRangeGetParam7"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM8": ["get_DACOutputRangeGetParam8"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM9": ["get_DACOutputRangeGetParam9"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_GET_PARAM10": ["get_DACOutputRangeGetParam10"],
+
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM_OPERATE_TYPE": ["get_DACOutputRangeConfigParamOperateType"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM_SAMPLE_RATE": ["get_DACOutputRangeConfigParamSRate"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM_20000UA": ["get_DACOutputRangeConfigParam20000uA"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM0": ["get_DACOutputRangeConfigParam0"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM1": ["get_DACOutputRangeConfigParam1"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM2": ["get_DACOutputRangeConfigParam2"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM3": ["get_DACOutputRangeConfigParam3"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM4": ["get_DACOutputRangeConfigParam4"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM5": ["get_DACOutputRangeConfigParam5"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM6": ["get_DACOutputRangeConfigParam6"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM7": ["get_DACOutputRangeConfigParam7"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM8": ["get_DACOutputRangeConfigParam8"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM9": ["get_DACOutputRangeConfigParam9"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM10": ["get_DACOutputRangeConfigParam10"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_CONFIG_PARAM_RESULT": ["get_DACOutputRangeConfigParamResult"],
+
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_GET_RESULT": ["get_DACOutputOffsetParamGetResult"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_GET": ["get_DACOutputOffsetParamGet"],
+
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_CONFIG_SAMPLE_RATE": ["get_DACOutputOffsetParamConfigSRate"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_CONFIG": ["get_DACOutputOffsetParamConfig"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_OFFSET_PARAM_CONFIG_RESULT": ["get_DACOutputOffsetParamConfigResult"],
+
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_GET_RESULT": ["get_DACOutputRangeParamGetResult"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_GET": ["get_DACOutputRangeParamGet"],
+
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_CONFIG_SAMPLE_RATE": ["get_DACOutputRangeParamConfigSRate"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_CONFIG": ["get_DACOutputRangeParamConfig"],
+      "IVIFGEN_ATTR_DAC_OUTPUT_RANGE_PARAM_CONFIG_RESULT": ["get_DACOutputRangeParamConfigResult"],
+
+      "IVIBASE_ATTR_ADC_GET_CAL_COE_CHANL": ["get_ADC_getCalCoeChanl"],
+      "IVIBASE_ATTR_ADC_GET_CAL_COE_SAMPLE_RATE": ["get_ADC_getCalCoeSRate"],
+
+      "IVIDIGITIZER_ATTR_ADC_CAL_COE_SAMPLE_RATE": ["get_ADC_CalCoeSRate"],
+
+      "IVIBASE_ATTR_AMP_CAL_PARAM_CONFIG_SAMPLE_RATE": ["get_AmpCalParamConfigSRate"],
+
+      "IVIBASE_ATTR_AMP_CAL_PARAM_GET_SAMPLE_RATE": ["get_AmpCalParamGetSRate"],
+
+      "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE_SAMPLE_RATE": ["get_ADC_CalCoeDownSaveSRate"],
+      "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE_NYQUIST_ZONE": ["get_ADC_CalCoeDownSaveNyquistZone"],
+      "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE_OPERATE_TYPE": ["get_ADC_CalCoeDownSaveOperateType"],
+      "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE": ["get_ADC_CalCoeDownSave"],
+      "IVIBASE_ATTR_ADC_CAL_COE_DOWN_SAVE_RESULT": ["get_ADC_CalCoeDownSaveResult"],
 
       "IVIBASE_ATTR_S10_MODULE_DEVICE_ID": ["get_S10_moduleModel"],
       "IVIBASE_ATTR_S10_FPGA_FUNCTION_IDENTIFICATION": ["get_S10_FPGA_function_ID"],

@@ -6,19 +6,6 @@
 #include "IviFgen.h"
 #include "tool_config.h"
 
-ViStatus preAWG(iviFgen_ViSession* iviFgen_vi){
-    ViStatus error = VI_STATE_SUCCESS;
-//    error = IviFgen_SetAttributeViInt32(iviFgen_vi, "0", IVIFGEN_ATTR_TRIGGER_SOURCE_EXE, 0);
-    ViReal64 DAC_sample_rate;
-    error = IviFgen_GetAttributeViReal64(iviFgen_vi, "0", IVIFGEN_ATTR_DAC_SAMPLE_RATE, &DAC_sample_rate);
-    error = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIBASE_ATTR_LSDADC_SET_CHNL_TYPE, 1);
-    error = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIBASE_ATTR_LSDADC_SET_SAMPLE_RATE, int(DAC_sample_rate / 1e6 ));
-    error = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIBASE_ATTR_LSDADC_SET_OUTPUT_GEAR, 250);
-    error = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIBASE_ATTR_LSDADC_SET_VOLTAGE, 0);
-    error = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIBASE_ATTR_LSDADC_SET_EXE, 0);
-    return error;
-}
-
 int main() {
     ViUInt32 res = 0;
     auto iviSUATools_vi = new iviSUATools_ViSession;
@@ -31,15 +18,14 @@ int main() {
     auto iviFgen_vi = new iviFgen_ViSession;
     s = IviFgen_Initialize("PXI::0::INSTR", VI_STATE_FALSE, VI_STATE_TRUE, iviFgen_vi, resource_db_path);
 
-    std::cout << "\n=== LSDADC Config ===" << std::endl;
-    s = preAWG(iviFgen_vi);
-
-    std::cout << "\n=== RF Config ===" << std::endl;
-    s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIBASE_ATTR_OFFLINE_WORK, 1);
-    s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIBASE_ATTR_RF_CONFIG, 0);
-
     auto iviSyncATrig_vi = new iviSyncATrig_ViSession;
     s = IviSyncATrig_Initialize("PXI::1::INSTR", VI_STATE_FALSE, VI_STATE_TRUE, iviSyncATrig_vi, resource_db_path);
+
+    std::cout << "\n=== SYNC Config ===" << std::endl;
+    std::list<iviFgen_ViSession *> iviFgen_vi_list;
+    std::list<iviDigitizer_ViSession *> iviDigitizer_vi_list;
+    iviFgen_vi_list.push_back(iviFgen_vi);
+    s = IviSUATools_Sync(iviSUATools_vi, iviSyncATrig_vi, iviFgen_vi_list, iviDigitizer_vi_list);
 
     std::cout << "\n=== DUC Config ===" << std::endl;
     s = DUCConfigAWG(iviFgen_vi, 0, "-1", 0);
@@ -59,12 +45,6 @@ int main() {
     std::cout << "\n=== Fgen Clock Config ===" << std::endl;
     s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIBASE_ATTR_REF_CLOCK_SOURCE, IVIBASE_VAL_REF_CLOCK_EXTERNAL);
     s = IviFgen_SetAttributeViReal64(iviFgen_vi, "0", IVIBASE_ATTR_REF_FREQ_FREQUENCY, 100000000.0);
-
-    std::cout << "\n=== SYNC Config ===" << std::endl;
-    std::list<iviFgen_ViSession *> iviFgen_vi_list;
-    std::list<iviDigitizer_ViSession *> iviDigitizer_vi_list;
-    iviFgen_vi_list.push_back(iviFgen_vi);
-    s = IviSUATools_Sync(iviSUATools_vi, iviSyncATrig_vi, iviFgen_vi_list, iviDigitizer_vi_list);
 
     std::cout << "\n=== Trig Config ===" << std::endl;
     ViUInt32 triggerSource = IVISYNCATRIG_VAL_TRIGGER_SOURCE_P_PXI_STAR_INTERNAL; //来源
