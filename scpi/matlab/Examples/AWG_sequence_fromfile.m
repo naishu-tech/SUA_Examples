@@ -33,7 +33,7 @@ function AWG_sequence_fromfile()
     end
     
     %% 配置设备参数
-    device_ip = "172.16.152.68";
+    device_ip = "172.16.152.83";
     
     % 采样率
     sample_rate = 4; % 4GHz采样率
@@ -265,7 +265,7 @@ function AWG_sequence_fromfile()
     end
     
     %% 配置模块和通道
-    module_name = 'S2_M4901';
+    module_name = 'S2_M6201';
     board_name = 'S0_M1210';
     
     % 通道使能

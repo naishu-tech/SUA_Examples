@@ -6,19 +6,6 @@
 # include "IviSUATools.h"
 # include "tool_config.h"
 
-ViStatus preDAQ(iviDigitizer_ViSession* iviDigitizer_vi){
-    ViStatus error = VI_STATE_SUCCESS;
-//    error = IviDigitizer_SetAttributeViInt32(iviDigitizer_vi, "0", IVIDIGITIZER_ATTR_TRIGGER_CONFIG_EXECUTE, 0);
-    ViReal64 DAC_sample_rate;
-    error = IviDigitizer_GetAttributeViReal64(iviDigitizer_vi, "0", IVIDIGITIZER_ATTR_ADC_SAMPLE_RATE, &DAC_sample_rate);
-    error = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIBASE_ATTR_LSDADC_SET_CHNL_TYPE, 0);
-    error = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIBASE_ATTR_LSDADC_SET_SAMPLE_RATE, int(DAC_sample_rate / 1e6 ));
-    error = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIBASE_ATTR_LSDADC_SET_OUTPUT_GEAR, 500);
-    error = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIBASE_ATTR_LSDADC_SET_VOLTAGE, 0);
-    error = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIBASE_ATTR_LSDADC_SET_EXE, 0);
-    return error;
-}
-
 int main(int argc, char *argv[]){
     ViUInt32 res = 0;
     auto iviSUATools_vi = new iviSUATools_ViSession;
@@ -42,15 +29,14 @@ int main(int argc, char *argv[]){
         return 0;
     }
 
-    std::cout << "\n=== LSDADC Config ===" << std::endl;
-    s = preDAQ(iviDigitizer_vi);
-
-    std::cout << "\n=== RF Config ===" << std::endl;
-    s = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIBASE_ATTR_OFFLINE_WORK, 1);
-    s = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIBASE_ATTR_RF_CONFIG, 0);
-
     auto iviSyncATrig_vi = new iviSyncATrig_ViSession;
     s = IviSyncATrig_Initialize("PXI::1::INSTR", VI_STATE_FALSE, VI_STATE_TRUE, iviSyncATrig_vi, resource_db_path);
+
+    std::cout << "\n=== SYNC Config ===" << std::endl;
+    std::list<iviFgen_ViSession *> iviFgen_vi_list;
+    std::list<iviDigitizer_ViSession *> iviDigitizer_vi_list;
+    iviDigitizer_vi_list.push_back(iviDigitizer_vi);
+    s = IviSUATools_Sync(iviSUATools_vi, iviSyncATrig_vi, iviFgen_vi_list, iviDigitizer_vi_list);
 
     std::cout << "\n=== DDC Config ===" << std::endl;
     s = DDConfigDAQ(iviDigitizer_vi, 0, "-1", 0);
@@ -70,12 +56,6 @@ int main(int argc, char *argv[]){
     std::cout << "\n=== Digitizer Clock Config ===" << std::endl;
     s = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIBASE_ATTR_REF_CLOCK_SOURCE, IVIBASE_VAL_REF_CLOCK_EXTERNAL);
     s = IviDigitizer_SetAttributeViReal64(iviDigitizer_vi, "0", IVIBASE_ATTR_REF_FREQ_FREQUENCY, 100000000.0);
-
-    std::cout << "\n=== SYNC Config ===" << std::endl;
-    std::list<iviFgen_ViSession *> iviFgen_vi_list;
-    std::list<iviDigitizer_ViSession *> iviDigitizer_vi_list;
-    iviDigitizer_vi_list.push_back(iviDigitizer_vi);
-    s = IviSUATools_Sync(iviSUATools_vi, iviSyncATrig_vi, iviFgen_vi_list, iviDigitizer_vi_list);
 
     std::cout << "\n=== Trig Config ===" << std::endl;
     ViUInt32 triggerSource = IVISYNCATRIG_VAL_TRIGGER_SOURCE_P_PXI_STAR_INTERNAL; //来源
