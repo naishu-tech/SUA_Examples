@@ -1,7 +1,7 @@
 {
     "PXI::0::INSTR" : 
     {
-        "config" : "/home/digilab/SUA_Examples/ivi/C++/Examples/build/conf/ivi_3302XXXX-80.json",
+        "config" : "/home/digilab/SUA_Examples/ivi/C++/Examples/build/conf/ivi_4901XXXX-22.json",
         "cr_target" : "xdma://0",
         "cs_target" : "xdma://0",
         "ds_target" : "xdma://0",
@@ -16,7 +16,7 @@
         "work_mode" : 
         {
             "AWG" : 3,
-            "DAQ" : 2
+            "DAQ" : 0
         }
     },
     "PXI::1::INSTR" : 
