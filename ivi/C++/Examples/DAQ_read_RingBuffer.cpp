@@ -203,25 +203,25 @@ void upload_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& chan
 
 int main(int argc, char *argv[]){                                                // 主函数入口，接收命令行参数
     // 解析命令行参数
-    ViUInt32 triggerSource = IVIDIGITIZER_VAL_TRIGGER_SOURCE_PXI_STAR_TRIG; // 默认触发源
+    ViUInt32 triggerSource = IVIDIGITIZER_VAL_TRIGGER_SOURCE_PXI_STAR_TRIG|IVIDIGITIZER_VAL_TRIGGER_SOURCE_PXI_SYNC; // 默认触发源
     std::string channelName = "0,1";                                        // 默认通道
     ViUInt32 times = 20;                                                     // 默认数据包数
-    ViUInt32 syncTriggerChannel = 0x00;                                      // 默认同步触发通道设置
+    ViUInt32 syncTriggerChannel = 0xFF;                                      // 默认同步触发通道设置
     ViInt32 triggerEdgetype = 0x01;                                          // 默认触发边沿类型
     ViInt32 chTriggerEdgetype = 0x01;                                        // 默认通道触发边沿类型
     
-    if (argc > 0) {
+    if (argc > 1) {
         if (argc != 7) {
             std::cout << "参数数量错误！" << std::endl;
-            std::cout << "用法: " << argv[0] << " <触发源> <通道> <数据包数> <同步触发通道> <触发边沿类型> <通道触发边沿类型>" << std::endl;
+            std::cout << "用法: " << argv[0] << " <触发源> <上行通道> <数据包数> <Level同步触发通道> <触发边沿类型> <电平触发-通道电平>" << std::endl;
             std::cout << "参数说明:" << std::endl;
             std::cout << "  触发源: 支持16进制(0x开头)或10进制(含负数)" << std::endl;
-            std::cout << "  通道: 字符串格式，如\"0,1\"" << std::endl;
+            std::cout << "  上行通道: 字符串格式，如\"0,1\",通道间英文逗号间隔" << std::endl;
             std::cout << "  数据包数: 10进制整数" << std::endl;
-            std::cout << "  同步触发通道: 支持16进制(0x开头)或10进制(含负数)" << std::endl;
+            std::cout << "  Level同步触发通道: 支持16进制(0x开头)或10进制(含负数)" << std::endl;
             std::cout << "  触发边沿类型: 支持16进制(0x开头)或10进制(含负数)" << std::endl;
-            std::cout << "  通道触发边沿类型: 支持16进制(0x开头)或10进制(含负数)" << std::endl;
-            std::cout << "示例: " << argv[0] << " 0x04 \"0,1\" 20 0x02 0x01 0x01" << std::endl;
+            std::cout << "  电平触发-通道电平: 支持16进制(0x开头)或10进制(含负数)" << std::endl;
+            std::cout << "示例: " << argv[0] << " 0x40000004 \"0,1\" 20 0xFF 0 0x01" << std::endl;
             std::cout << "示例: " << argv[0] << " 4 \"0,1\" 20 2 1 1" << std::endl;
             return 1;
         }
