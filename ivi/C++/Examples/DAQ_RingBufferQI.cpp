@@ -32,6 +32,18 @@ int main(int argc, char *argv[]){
     auto iviSyncATrig_vi = new iviSyncATrig_ViSession;
     s = IviSyncATrig_Initialize("PXI::1::INSTR", VI_STATE_FALSE, VI_STATE_TRUE, iviSyncATrig_vi, resource_db_path);
 
+    std::cout << "\n=== SAT Clock Config ===" << std::endl;
+    s = IviSyncATrig_SetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ, IVISYNCATRIG_VAL_100MHZ_SOURCE_INTERNAL);
+    s = IviSyncATrig_SetAttributeViInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ_EXE, 0);
+    s = IviSyncATrig_GetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ_RESULT, &res);
+    std::cout << "IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ res is " << res << std::endl;
+
+    std::cout << "\n=== Extract Multiple Config ===" << std::endl;
+    s = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIDIGITIZER_ATTR_ADC_EXTRACT_MULTIPLE, 2);
+
+    std::cout << "\n=== Sample Rate Config ===" << std::endl;
+    s = IviDigitizer_SetAttributeViReal64(iviDigitizer_vi, "0", IVIDIGITIZER_ATTR_ADC_SAMPLE_RATE, 2000000000);
+    
     std::cout << "\n=== SYNC Config ===" << std::endl;
     std::list<iviFgen_ViSession *> iviFgen_vi_list;
     std::list<iviDigitizer_ViSession *> iviDigitizer_vi_list;
@@ -40,18 +52,6 @@ int main(int argc, char *argv[]){
 
     std::cout << "\n=== DDC Config ===" << std::endl;
     s = DDConfigDAQ(iviDigitizer_vi, 1, "-1", 0);
-
-    std::cout << "\n=== Extract Multiple Config ===" << std::endl;
-    s = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIDIGITIZER_ATTR_ADC_EXTRACT_MULTIPLE, 2);
-
-    std::cout << "\n=== Sample Rate Config ===" << std::endl;
-    s = IviDigitizer_SetAttributeViReal64(iviDigitizer_vi, "0", IVIDIGITIZER_ATTR_ADC_SAMPLE_RATE, 2000000000);
-
-    std::cout << "\n=== SAT Clock Config ===" << std::endl;
-    s = IviSyncATrig_SetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ, IVISYNCATRIG_VAL_100MHZ_SOURCE_INTERNAL);
-    s = IviSyncATrig_SetAttributeViInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ_EXE, 0);
-    s = IviSyncATrig_GetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ_RESULT, &res);
-    std::cout << "IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ res is " << res << std::endl;
 
     std::cout << "\n=== Digitizer Clock Config ===" << std::endl;
     s = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIBASE_ATTR_REF_CLOCK_SOURCE, IVIBASE_VAL_REF_CLOCK_EXTERNAL);

@@ -48,3 +48,4 @@ int main(int argc, char *argv[]){
     delete iviDigitizer_vi;
     return 0;
 }
+

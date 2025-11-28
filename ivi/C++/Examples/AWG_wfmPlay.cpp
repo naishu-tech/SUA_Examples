@@ -21,6 +21,18 @@ int main() {
     auto iviSyncATrig_vi = new iviSyncATrig_ViSession;
     s = IviSyncATrig_Initialize("PXI::1::INSTR", VI_STATE_FALSE, VI_STATE_TRUE, iviSyncATrig_vi, resource_db_path);
 
+    std::cout << "\n=== SAT Clock Config ===" << std::endl;
+    s = IviSyncATrig_SetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ, IVISYNCATRIG_VAL_100MHZ_SOURCE_INTERNAL);
+    s = IviSyncATrig_SetAttributeViInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ_EXE, 0);
+    s = IviSyncATrig_GetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ_RESULT, &res);
+    std::cout << "IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ res is " << res << std::endl;
+
+    std::cout << "\n=== DUC Config ===" << std::endl;
+    s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIFGEN_ATTR_DAC_INTERNAL_MULTIPLE, 1);
+
+    std::cout << "\n=== Sample Rate Config ===" << std::endl;
+    s = IviFgen_SetAttributeViReal64(iviFgen_vi, "0", IVIFGEN_ATTR_DAC_SAMPLE_RATE, 4000000000);
+
     std::cout << "\n=== SYNC Config ===" << std::endl;
     std::list<iviFgen_ViSession *> iviFgen_vi_list;
     std::list<iviDigitizer_ViSession *> iviDigitizer_vi_list;
@@ -29,18 +41,6 @@ int main() {
 
     std::cout << "\n=== DUC Config ===" << std::endl;
     s = DUCConfigAWG(iviFgen_vi, 0, "-1", 0);
-
-    std::cout << "\n=== Internal Multiple Config ===" << std::endl;
-    s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIFGEN_ATTR_DAC_INTERNAL_MULTIPLE, 1);
-
-    std::cout << "\n=== Sample Rate Config ===" << std::endl;
-    s = IviFgen_SetAttributeViReal64(iviFgen_vi, "0", IVIFGEN_ATTR_DAC_SAMPLE_RATE, 4000000000);
-
-    std::cout << "\n=== SAT Clock Config ===" << std::endl;
-    s = IviSyncATrig_SetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ, IVISYNCATRIG_VAL_100MHZ_SOURCE_INTERNAL);
-    s = IviSyncATrig_SetAttributeViInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ_EXE, 0);
-    s = IviSyncATrig_GetAttributeViUInt32(iviSyncATrig_vi, "0", IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ_RESULT, &res);
-    std::cout << "IVISYNCATRIG_ATTR_TEST_CLOCK_SOURCE_100MHZ res is " << res << std::endl;
 
     std::cout << "\n=== Fgen Clock Config ===" << std::endl;
     s = IviFgen_SetAttributeViUInt32(iviFgen_vi, "0", IVIBASE_ATTR_REF_CLOCK_SOURCE, IVIBASE_VAL_REF_CLOCK_EXTERNAL);
