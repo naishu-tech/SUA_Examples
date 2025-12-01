@@ -1,9 +1,8 @@
 # include "iostream"
-# include "IviFgen.h"
-# include "IviDigitizer.h"
-# include "jsoncpp/json/json.h"
 # include "IviBase.h"
-# include "IviSyncATrig.h"
+# include "tool_config.h"
+# include "../deps/jsoncpp/json/json.h"
+
 
 int main(int argc, char *argv[]){
 
@@ -14,33 +13,38 @@ int main(int argc, char *argv[]){
 //        std::cout << argv[0] << " {logicalName}" << std::endl;
 //        return 1;
 //    }
-//
-//    std::string logicalName = argv[1];
-    std::string logicalName = "Sim";
+
+    std::string resource_db_path = "./resourceDB.json";
+    std::string logicalName = "PXI::0::INSTR";
+//    std::string logicalName = "PXI::1::INSTR";
 
     auto vi = new iviBase_ViSession;
     std::cout << "logicalName: " << logicalName << std::endl;
-    auto s = IviBase_Initialize(logicalName, VI_STATE_FALSE, VI_STATE_TRUE, vi);
+    auto s = IviBase_Initialize(logicalName, VI_STATE_FALSE, VI_STATE_TRUE, vi, resource_db_path);
     std::cout << "IviBase_Initialize: " << s << std::endl;
 
-    s = IviBase_SetAttributeViUInt32(vi, "0", IVIBASE_ATTR_OFFLINE_WORK, 1);
-    s = IviBase_SetAttributeViInt32(vi, "0", IVIBASE_ATTR_RF_CONFIG, 0);
-    ViString m;
-    s = IviBase_GetAttributeViString(vi, "0", IVIBASE_ATTR_MODULE_VENDOR_ID_STR, &m);
-    std::cout <<"IVIBASE_ATTR_MODULE_VENDOR_ID_STR: "<< m << std::endl;
-    s = IviBase_GetAttributeViString(vi, "0", IVIBASE_ATTR_MODULE_DEVICE_ID_STR, &m);
-    std::cout <<"IVIBASE_ATTR_MODULE_DEVICE_ID_STR: "<< m << std::endl;
-    s = IviBase_GetAttributeViString(vi, "0", IVIBASE_ATTR_FPGA_VERSION_STR, &m);
-    std::cout <<"IVIBASE_ATTR_FPGA_VERSION_STR: "<< m << std::endl;
+    ViUInt32 m;
+    s = IviBase_GetAttributeViUInt32(vi, "0", IVIBASE_ATTR_FPGA_FUNCTION_IDENTIFICATION, &m);
+    std::cout <<"IVIBASE_ATTR_FPGA_FUNCTION_IDENTIFICATION: "<< m << std::endl;
+    s = IviBase_GetAttributeViUInt32(vi, "0", IVIBASE_ATTR_MODULE_DEVICE_ID, &m);
+    std::cout <<"IVIBASE_ATTR_MODULE_DEVICE_ID: "<< m << std::endl;
+    s = IviBase_GetAttributeViUInt32(vi, "0", IVIBASE_ATTR_FPGA_FIRMWARE_VERSION, &m);
+    std::cout <<"IVIBASE_ATTR_FPGA_FIRMWARE_VERSION: "<< m << std::endl;
+    s = IviBase_GetAttributeViUInt32(vi, "0", IVIBASE_ATTR_BASIC_CAPABILITY_IDENTIFICATION, &m);
+    std::cout <<"IVIBASE_ATTR_BASIC_CAPABILITY_IDENTIFICATION: "<< m << std::endl;
 
-    s = IviBase_GetAttributeViString(vi, "0", IVIBASE_ATTR_COMPILE_DATE_INFO, &m);
-    std::cout <<"IVIBASE_ATTR_COMPILE_DATE_INFO: "<< m << std::endl;
-    s = IviBase_GetAttributeViString(vi, "0", IVIBASE_ATTR_COMPILE_TIME_INFO, &m);
-    std::cout <<"IVIBASE_ATTR_COMPILE_TIME_INFO: "<< m << std::endl;
-
-//    IviBase_CompileTimeInfo();
+//    ViUInt32 m;
+//    s = IviBase_GetAttributeViUInt32(vi, "0", IVIBASE_ATTR_A7_FPGA_FUNCTION_IDENTIFICATION, &m);
+//    std::cout <<"IVIBASE_ATTR_A7_FPGA_FUNCTION_IDENTIFICATION: "<< m << std::endl;
+//    s = IviBase_GetAttributeViUInt32(vi, "0", IVIBASE_ATTR_A7_MODULE_DEVICE_ID, &m);
+//    std::cout <<"IVIBASE_ATTR_A7_MODULE_DEVICE_ID: "<< m << std::endl;
+//    s = IviBase_GetAttributeViUInt32(vi, "0", IVIBASE_ATTR_A7_FPGA_FIRMWARE_VERSION, &m);
+//    std::cout <<"IVIBASE_ATTR_A7_FPGA_FIRMWARE_VERSION: "<< m << std::endl;
+//    s = IviBase_GetAttributeViUInt32(vi, "0", IVIBASE_ATTR_A7_BASIC_CAPABILITY_IDENTIFICATION, &m);
+//    std::cout <<"IVIBASE_ATTR_A7_BASIC_CAPABILITY_IDENTIFICATION: "<< m << std::endl;
 
     s = IviBase_Close(vi);
+
     return 0;
 
 }

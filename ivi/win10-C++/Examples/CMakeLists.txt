@@ -69,6 +69,12 @@ set(COMMON_LIBRARIES
     xdma_api
 )
 
+set(JSONCPP_SOURCES
+        ./deps/jsoncpp/lib_json/json_reader.cpp
+        ./deps/jsoncpp/lib_json/json_value.cpp
+        ./deps/jsoncpp/lib_json/json_writer.cpp
+)
+
 set(THREADED_LIBRARIES
     ${COMMON_LIBRARIES}
     Threads::Threads
@@ -87,41 +93,27 @@ function(add_simple_test target_name source_file)
     target_link_libraries(${target_name} ${COMMON_LIBRARIES} ${THREADED_LIBRARIES})
 endfunction()
 
-# ===============================================================================
-# Cheakout attr范围判断测试
-# ===============================================================================
-add_simple_test(checkoutAWG "AWG_Checkout.cpp" "tool_config.h")
-add_simple_test(checkoutDAQ "DAQ_Checkout.cpp" "tool_config.h")
 
 # ===============================================================================
 # AWG (任意波形发生器) 测试
 # ===============================================================================
-add_simple_test(wfmQIPlayAWG "AWG_wfmQIPlay.cpp" "tool_config.h")
-add_simple_test(wfmSequencePlayAWG "AWG_wfmSequencePlay.cpp" "tool_config.h")
 add_simple_test(wfmPlayAWG "AWG_wfmPlay.cpp" "tool_config.h")
 
 # ===============================================================================
 # DAQ (数据采集) 测试
 # ===============================================================================
-add_simple_test(RingBufferQIDAQ "DAQ_RingBufferQI.cpp" "tool_config.h")
-add_simple_test(RingBufferDAQ "DAQ_RingBuffer.cpp" "tool_config.h")
-add_simple_test(StreamDAQ "DAQ_Stream.cpp" "tool_config.h")
 add_simple_test(ReadRingBufferDAQ "DAQ_read_RingBuffer.cpp" "tool_config.h")
-add_simple_test(workModeSwitchDAQ "DAQ_workModeSwitch.cpp" "tool_config.h")
-
-# ===============================================================================
-# SUATools () 测试
-# ===============================================================================
-add_simple_test(getInfoSUATools "SUATools_getInfo.cpp")
-add_simple_test(syncSUATools "SUATools_sync.cpp")
-add_simple_test(resourceDBSUATools "SUATools_resourceDB.cpp")
-add_simple_test(runSUATools "SUATools_run.cpp")
-add_simple_test(stopSUATools "SUATools_stop.cpp")
 
 # ===============================================================================
 # SUATools () 测试
 # ===============================================================================
 add_simple_test(testCombined "AWG_DAQ_Combined.cpp")
+
+# ===============================================================================
+# RF
+# =================================
+add_executable(RF "RF.cpp" ${JSONCPP_SOURCES})
+target_link_libraries(RF ${COMMON_LIBRARIES})
 
 # ===============================================================================
 # 构建信息输出

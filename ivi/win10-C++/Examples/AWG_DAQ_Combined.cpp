@@ -3,28 +3,19 @@
 // This file combines AWG waveform playback with DAQ ring buffer data acquisition
 //
 
+// Project Headers
+#include "tool_config.h"
+
+// Third-party IVI Libraries
 #include "IviSUATools.h"
 #include "IviFgen.h"
 #include "IviDigitizer.h"
 #include "IviBase.h"
-#include "tool_config.h"
 
-#include <fstream>
-#include <cstring>
-#include <thread>
-#include <chrono>
+// C++ Standard Library (additional headers not in tool_config.h)
 #include <list>
-#include <vector>
-#include <map>
-#include <exception>
 #include <queue>
-#include <mutex>
-#include <sstream>
-#include <iomanip>
-#include <filesystem>
 #include <unordered_map>
-#include <algorithm>
-#include <cmath>
 
 // Forward declaration
 struct SystemConfig;
@@ -80,24 +71,19 @@ struct SystemConfig {
     std::string resource_db_path = "./resourceDB.json";
     std::string logicalName = "PXI::0::INSTR";
 
-    // LSDADC configuration
-    ViUInt32 lsdadc_chnl_type = 0;
-    ViUInt32 lsdadc_sample_rate = 4000;
-    ViUInt32 lsdadc_output_gear = 500;
-    ViUInt32 lsdadc_voltage = 0;
-
     // Trigger configuration
-    ViUInt32 triggerPeriod = 40000000;
+    ViUInt32 triggerPeriod = 40000000; // 40ms
     ViUInt32 triggerRepetSize = 4294967295;
-    ViUInt32 triggerPulseWidth = 20000000;
-    ViUInt32 triggerDelay = 0;
-    ViUInt32 triggerEdgeType = 0;
-    ViUInt32 triggerHoldOffTime = 0;
+    ViUInt32 triggerPulseWidth = 20000000; // 20ms
+    ViUInt32 triggerDelay = 0; // 0ns
+    ViUInt32 triggerEdgeType = 0; // 0ns
+    ViUInt32 triggerHoldOffTime = 0; // 0ns
     std::string triggerEdgechannelName = "-1";
-    ViInt32 triggerEdgeSet = 32768;
+    ViInt32 triggerEdgeSet = 29202; // -0.5V ~ 0.5V ==> -29202 ~ 29202
     
     // AWG configuration
-    std::string AWG_channelName = "0,1";
+    std::string AWG_channelName = "0,1"; // channel0, channel1
+    // Play a waveform in sequence
     std::string nswave_code = R"(
 @nw.kernel
 def program(wlist: dict[str, np.ndarray]):
@@ -106,29 +92,33 @@ def program(wlist: dict[str, np.ndarray]):
         nw.play_arb(seg1)
     return nw.Kernel()
 )";
-    std::list<ViString> wfmPath_list = {
-        "./wfm/Sin_Fixed_4000MSps_0Offset_1Amp_100MHz_0MBw_0Phase_1024us_16bit_Signed_1024us_1Row_1Column.dat"
-    };
-    ViInt32 wfmSize = 8192000;
     // AWG Work times
-    ViUInt32 workTimes = 10;
+    ViUInt32 workTimes = 10; // 10s
+    // AWG file
+    std::list<ViString> wfmPath_list = {
+            "./wfm/Sin_Fixed_4000MSps_0Offset_1Amp_100MHz_0MBw_0Phase_1024us_16bit_Signed_1024us_1Row_1Column.dat"
+    };
     // AWG Sample Rate
-    ViReal64 AWG_sampleRate = 4000000000;
+    std::string AWG_waveformType = "Sin"; // Sin, Square, Triangle, Sawtooth, Chirp
+    ViReal64 AWG_sampleRate = 4000000000.0; // Hz, default 4GSps
+    ViReal64 AWG_frequency = 50000000.0;   // Hz, default 100MHz
+    // Waveform generation parameters
+    WaveformParameters waveformParams = WaveformParameters(AWG_waveformType, AWG_sampleRate, AWG_frequency);
 
     // DAQ configuration parameters
     ViUInt32 triggerSource = IVIFGEN_VAL_TRIGGER_SOURCE_INTERNAL;
-    std::string DAQ_channelName = "0,1";
-    ViUInt32 times = 20;
+    std::string DAQ_channelName = "0"; // channel0, channel1
+    ViUInt32 times = 40;
     ViUInt32 syncTriggerChannel = 0xFF;
     ViInt32 triggerEdgetype = 0x01;
     ViInt32 chTriggerEdgetype = 0x01;
     // DAQ sample configuration
     std::string sampleEnableChannel = "-1";
-    ViInt32 sampleEnable = 1;
+    ViInt32 sampleEnable = 1; // True = 1, False = 0
     std::string sampleStrageDepthChannel = "-1";
-    ViUInt32 sampleStrageDepth = 65536;
+    ViUInt32 sampleStrageDepth = 65536; // pts
     std::string sampleLenPreChannel = "-1";
-    ViUInt32 sampleLenPre = 32768;
+    ViUInt32 sampleLenPre = 32768; // pts
     std::string sampleTimesChannel = "-1";
     ViUInt32 sampleTimes = 4294967295;
     std::string sampleLogicalExtractionMultipleChannel = "-1";
@@ -139,20 +129,27 @@ def program(wlist: dict[str, np.ndarray]):
     ViUInt32 sampleCollectDataType = 0;
     // DAQ Save file Path
     std::string directoryPath = "./";
-    ViUInt32 head_len = 16;
+    ViUInt32 head_len = 16; // pts
     // DAQ Sample Rate
-    ViReal64 DAQ_sampleRate = 2000000000;
+    ViReal64 DAQ_sampleRate = 2000000000; // 2GHz
 };
 
 // Pre-RF configuration for AWG
 ViStatus RF(iviBase_ViSession* iviBase_vi, const SystemConfig& config){
     ViStatus error = VI_STATE_SUCCESS;
 
-    std::cout << "\n=== LSDADC Set ===" << std::endl;
-    error = IviBase_SetAttributeViUInt32(iviBase_vi, "0", IVIBASE_ATTR_LSDADC_SET_CHNL_TYPE, config.lsdadc_chnl_type);
-    error = IviBase_SetAttributeViUInt32(iviBase_vi, "0", IVIBASE_ATTR_LSDADC_SET_SAMPLE_RATE, config.lsdadc_sample_rate);
-    error = IviBase_SetAttributeViUInt32(iviBase_vi, "0", IVIBASE_ATTR_LSDADC_SET_OUTPUT_GEAR, config.lsdadc_output_gear);
-    error = IviBase_SetAttributeViUInt32(iviBase_vi, "0", IVIBASE_ATTR_LSDADC_SET_VOLTAGE, config.lsdadc_voltage);
+    std::cout << "\n=== ADC LSDADC Set ===" << std::endl;
+    error = IviBase_SetAttributeViUInt32(iviBase_vi, "0", IVIBASE_ATTR_LSDADC_SET_CHNL_TYPE, 0);
+    error = IviBase_SetAttributeViUInt32(iviBase_vi, "0", IVIBASE_ATTR_LSDADC_SET_SAMPLE_RATE, 4000);
+    error = IviBase_SetAttributeViUInt32(iviBase_vi, "0", IVIBASE_ATTR_LSDADC_SET_OUTPUT_GEAR, 500);
+    error = IviBase_SetAttributeViUInt32(iviBase_vi, "0", IVIBASE_ATTR_LSDADC_SET_VOLTAGE, 0);
+    error = IviBase_SetAttributeViUInt32(iviBase_vi, "0", IVIBASE_ATTR_LSDADC_SET_EXE, 0);
+
+    std::cout << "\n=== DAC LSDADC Set ===" << std::endl;
+    error = IviBase_SetAttributeViUInt32(iviBase_vi, "0", IVIBASE_ATTR_LSDADC_SET_CHNL_TYPE, 1);
+    error = IviBase_SetAttributeViUInt32(iviBase_vi, "0", IVIBASE_ATTR_LSDADC_SET_SAMPLE_RATE, 4000);
+    error = IviBase_SetAttributeViUInt32(iviBase_vi, "0", IVIBASE_ATTR_LSDADC_SET_OUTPUT_GEAR, 500);
+    error = IviBase_SetAttributeViUInt32(iviBase_vi, "0", IVIBASE_ATTR_LSDADC_SET_VOLTAGE, 0);
     error = IviBase_SetAttributeViUInt32(iviBase_vi, "0", IVIBASE_ATTR_LSDADC_SET_EXE, 0);
 
     std::cout << "\n=== RF Config ===" << std::endl;
@@ -163,7 +160,6 @@ ViStatus RF(iviBase_ViSession* iviBase_vi, const SystemConfig& config){
 }
 
 // Function to read and plot binary data file
-
 
 // Write file thread for DAQ data
 void write_file_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& channelName, ViUInt32 waveformArraySize, const std::string &path, std::mutex *mu) {
@@ -203,7 +199,11 @@ void write_file_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& 
 }
 
 // Upload thread for DAQ data
-void upload_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& channelName, ViUInt32 waveformArraySize, ViUInt32 times, std::mutex *mu) {
+void upload_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& channelName, ViUInt32 waveformArraySize, ViUInt32 times, std::mutex *mu
+#ifdef _WIN32
+    , PlotWindow* plotWindow
+#endif
+) {
     std::unique_lock<std::mutex> *lock;
     iviDigitizer_memData* mem;
     std::cout << "upload thread start: " << waveformArraySize << std::endl;
@@ -229,14 +229,42 @@ void upload_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& chan
             continue;
         }
         dictionary += 1;
-//        std::cout << "[Upload] Channel " << channelName << " completed successfully, dictionary=" << dictionary << std::endl;
         speed_count += waveformArraySize;
 
         if (cnt % 20 == 0) {
             auto count = std::chrono::steady_clock::now() - st;
-            std::cout << std::flush << '\r' << "current write file speed: " << speed_count*1000./(count.count()) << "MB/s" << std::endl;
+            std::cout << std::flush << '\r' << "current CHNL"<< channelName <<" upload data speed: " << speed_count*1000./(count.count()) << "MB/s" << std::endl;
             speed_count = 0;
             st = std::chrono::steady_clock::now();
+            
+            // Update real-time plot using PlotWindow
+#ifdef _WIN32
+            if (plotWindow != nullptr) {
+                // Read only first 2048+32 bytes (1040 samples)
+                const size_t readBytes = 2048 + 32;
+                size_t readSamples = std::min(static_cast<size_t>(waveformArraySize), static_cast<size_t>(readBytes / sizeof(ViInt16)));
+                
+                // Copy data
+                const auto srcData = reinterpret_cast<const ViInt16*>(mem->memDataHandle);
+                std::vector<ViInt16> allData(srcData, srcData + readSamples);
+                
+                // Skip first 32 bytes (16 samples) for plotting
+                const size_t skipSamples = 16;
+                if (readSamples > skipSamples) {
+                    size_t plotSamples = readSamples - skipSamples;
+                    std::vector<ViInt16> plotData(allData.begin() + skipSamples, allData.end());
+                    
+                    // Find min and max
+                    if (!plotData.empty()) {
+                        ViInt16 minVal = *std::min_element(plotData.begin(), plotData.end());
+                        ViInt16 maxVal = *std::max_element(plotData.begin(), plotData.end());
+                        
+                        // Update plot window
+                        plotWindow->UpdateData(plotData, minVal, maxVal, plotSamples, "Channel " + channelName);
+                    }
+                }
+            }
+#endif
         }
         q->full.Push(reinterpret_cast<nsuMemory_p>(mem));
     }
@@ -249,7 +277,7 @@ int main(int argc, char *argv[]){
 
 #ifdef _WIN32
     std::cout << "=== Configuring Python Paths ===" << std::endl;
-    configure_python_paths("C:/Users/ll/.conda/envs/JupyterServer");
+    configure_python_paths("C:/Users/sn06129/.conda/envs/JupyterServer");
     std::cout << "Python paths configured" << std::endl;
 #endif
 
@@ -270,6 +298,10 @@ int main(int argc, char *argv[]){
     std::unordered_map<int, std::mutex> chnl_mutex;
     std::unordered_map<int, std::thread> chnl_up_trd;
     std::unordered_map<int, std::thread> chnl_write_trd;
+#ifdef _WIN32
+    // Plot window management
+    std::unordered_map<int, PlotWindow*> chnl_plotWindow;
+#endif
     // Helper vectors
     std::vector<std::string> AWG_channels;
     std::vector<std::string> DAQ_channels;
@@ -303,6 +335,11 @@ int main(int argc, char *argv[]){
         return 0;
     }
 
+    // ========== Stop AWG and DAQ ==========
+    std::cout << "\n=== Stop AWG and DAQ ===" << std::endl;
+    s = IviFgen_AbortGeneration(iviFgen_vi);
+    s = IviDigitizer_Abort(iviDigitizer_vi);
+    
     std::cout << "\n=== Sample Rate Config ===" << std::endl;
     s = IviFgen_SetAttributeViReal64(iviFgen_vi, "0", IVIFGEN_ATTR_DAC_SAMPLE_RATE, config.AWG_sampleRate);
 
@@ -346,10 +383,37 @@ int main(int argc, char *argv[]){
 
     std::cout << "\n=== Read Waveform ===" << std::endl;
 
-    buffer = new ViChar[config.wfmSize / sizeof(ViChar)];
-    bufferWfm = new ViInt16 [config.wfmSize / sizeof(ViInt16)];
+    // If wfmPath_list is empty, generate waveform using GenerateWaveformFile
+    if (config.wfmPath_list.empty()) {
+        std::cout << "Waveform path list is empty, generating waveform..." << std::endl;
+        WaveformResult result = GenerateWaveformFile(config.waveformParams);
+        if (result.filePath.empty()) {
+            std::cerr << "Failed to generate waveform file" << std::endl;
+            return 1;
+        }
+        config.wfmPath_list.push_back(result.filePath);
+        std::cout << "Generated waveform file: " << result.filePath << std::endl;
+    }
 
     for (auto& wfmPath : config.wfmPath_list) {
+        // Check if file exists
+        std::ifstream testFile(wfmPath, std::ios::binary);
+        bool fileExists = testFile.good();
+        testFile.close();
+
+        // If file doesn't exist, generate waveform
+        if (!fileExists) {
+            std::cout << "Waveform file does not exist: " << wfmPath << std::endl;
+            std::cout << "Generating waveform..." << std::endl;
+            WaveformResult result = GenerateWaveformFile(config.waveformParams);
+            if (result.filePath.empty()) {
+                std::cerr << "Failed to generate waveform file" << std::endl;
+                return 1;
+            }
+            wfmPath = result.filePath;  // Update path to generated file
+            std::cout << "Generated waveform file: " << result.filePath << std::endl;
+        }
+
         std::ifstream fileWfm(wfmPath, std::ios::binary);
         if (!fileWfm) {
             std::cerr << "Open " << wfmPath <<" File Failed!" << std::endl;
@@ -361,18 +425,24 @@ int main(int argc, char *argv[]){
         std::cout << "The stream file size is " << sizeWfm << " bytes" << std::endl;
         fileWfm.seekg(0, std::ios::beg);
 
-        if (fileWfm.read(buffer, config.wfmSize)) {
-            std::cout << "Successfully read data in "<< config.wfmSize <<" Byte" << std::endl;
+        // Allocate buffers based on actual file size
+        buffer = new ViChar[sizeWfm];
+        bufferWfm = new ViInt16[sizeWfm / sizeof(ViInt16)];
+
+        if (fileWfm.read(buffer, sizeWfm)) {
+            std::cout << "Successfully read data in "<< sizeWfm <<" Byte" << std::endl;
         } else {
             std::cerr << "Failed to read file" << std::endl;
+            delete[] buffer;
+            delete[] bufferWfm;
             return 1;
         }
         fileWfm.close();
 
-        memcpy(bufferWfm, buffer, config.wfmSize);
+        memcpy(bufferWfm, buffer, sizeWfm);
         auto *wfmHandle = new waveformHandle;
-        std::cout << "Create Arb Waveform: " << (config.wfmSize / sizeof(ViInt16)) << std::endl;
-        isFAIL(IviFgen_CreateArbWaveformViInt16(iviFgen_vi, config.wfmSize / sizeof(ViInt16), bufferWfm, wfmHandle));
+        std::cout << "Create Arb Waveform: " << (sizeWfm / sizeof(ViInt16)) << std::endl;
+        isFAIL(IviFgen_CreateArbWaveformViInt16(iviFgen_vi, sizeWfm / sizeof(ViInt16), bufferWfm, wfmHandle));
 
         waveformHandle_map["seg1"] = wfmHandle;
     }
@@ -428,17 +498,51 @@ int main(int argc, char *argv[]){
             }
         }
         chnl_mutex[numChannel];
+#ifdef _WIN32
+        // Create plot window for this channel
+        auto plotWindow = new PlotWindow();
+        // Initialize with empty data
+        std::vector<ViInt16> emptyData;
+        plotWindow->Create(emptyData, 0, 0, 0, "Channel " + channel);
+        chnl_plotWindow[numChannel] = plotWindow;
+        
+        // Create upload thread with plot window
+        chnl_up_trd.emplace(numChannel, std::thread(upload_thread, iviDigitizer_vi, &chnl_Deque[numChannel], channel, waveformArraySize, config.times, &chnl_mutex[numChannel], plotWindow));
+#else
         chnl_up_trd.emplace(numChannel, std::thread(upload_thread, iviDigitizer_vi, &chnl_Deque[numChannel], channel, waveformArraySize, config.times, &chnl_mutex[numChannel]));
+#endif
         chnl_write_trd.emplace(numChannel, std::thread(write_file_thread, iviDigitizer_vi, &chnl_Deque[numChannel], channel, waveformArraySize, directoryPath +"/up-res-14Bit_", &chnl_mutex[numChannel]));
     }
-
+    
     // ========== Start AWG and DAQ ==========
     std::cout << "\n=== Start AWG Waveform Playback and DAQ Data Acquisition ===" << std::endl;
     s = IviFgen_InitiateGeneration(iviFgen_vi);
     s = IviDigitizer_InitiateAcquisition(iviDigitizer_vi);
 
     std::cout << "\n=== wait " << config.workTimes << "S ===" << std::endl;
+#ifdef _WIN32
+    // Process Windows messages while waiting
+    auto startTime = std::chrono::steady_clock::now();
+    while (true) {
+        // Process Windows messages (non-blocking)
+        MSG msg = {};
+        while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+        
+        // Check if time has elapsed
+        auto elapsed = std::chrono::steady_clock::now() - startTime;
+        if (elapsed >= std::chrono::seconds(config.workTimes)) {
+            break;
+        }
+        
+        // Sleep a bit to avoid busy waiting
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+#else
     std::this_thread::sleep_for(std::chrono::seconds(config.workTimes));
+#endif
 
     // Wait for DAQ threads to complete
     for (const auto &channel: DAQ_channels) {
@@ -461,9 +565,30 @@ int main(int argc, char *argv[]){
         }
     }
 
-    // Clean up waveform buffer
+#ifdef _WIN32
+    // Clean up plot windows
+    std::cout << "\n=== Closing Plot Windows ===" << std::endl;
+    for (const auto &channel: DAQ_channels) {
+        string2int(channel.data(), numChannel, 10)
+        if (chnl_plotWindow.find(numChannel) != chnl_plotWindow.end()) {
+            delete chnl_plotWindow[numChannel];
+            chnl_plotWindow[numChannel] = nullptr;
+        }
+    }
+    
+    // Process any remaining Windows messages
+    MSG msg = {};
+    while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+#endif
+
+    // Free buffers for next iteration
     delete[] buffer;
     delete[] bufferWfm;
+    buffer = nullptr;
+    bufferWfm = nullptr;
 
     // ========== Close Sessions ==========
     std::cout << "\n=== Test Completed ===" << std::endl;
