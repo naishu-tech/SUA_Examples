@@ -2,7 +2,7 @@
 #define IVI_TYPE_H
 
 // ===============================================================================
-// 平台相关宏定义
+// Platform-related Macro Definitions
 // ===============================================================================
 #ifdef __linux__
     #define _API_CALL
@@ -11,11 +11,11 @@
 #else  // Windows, RTX
     #define RIGOLLIB_API __declspec(dllexport)
     #define DLLEXTERN extern "C"
-    #define NOMINMAX  // 防止Windows.h定义min/max宏
+    #define NOMINMAX  // Prevent Windows.h from defining min/max macros
 #endif
 
 // ===============================================================================
-// C 标准库头文件
+// C Standard Library Headers
 // ===============================================================================
 #include <cstring>
 #include <cmath>
@@ -25,9 +25,9 @@
 #include <cstdint>
 
 // ===============================================================================
-// C++ 标准库头文件
+// C++ Standard Library Headers
 // ===============================================================================
-// 容器类
+// Container classes
 #include <string>
 #include <vector>
 #include <map>
@@ -35,13 +35,13 @@
 #include <list>
 #include <queue>
 
-// 流和文件操作
+// Stream and file operations
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <iomanip>
 
-// 其他核心功能
+// Other core functionality
 #include <memory>
 #include <variant>
 #include <complex>
@@ -51,36 +51,36 @@
 #include <exception>
 #include <unordered_set>
 
-// 并发和时间
+// Concurrency and time
 #include <thread>
 #include <atomic>
 #include <chrono>
 #include <condition_variable>
 
 // ===============================================================================
-// 系统特定头文件
+// System-specific Headers
 // ===============================================================================
 #ifdef __linux__
     #include <fcntl.h>
     #include <unistd.h>
     #include <sys/ioctl.h>
 #elif defined(_WIN32)
-    // Windows特定头文件可以在这里添加
-    // #include <windows.h>  // 如果需要的话
+    // Windows-specific headers can be added here
+    // #include <windows.h>  // If needed
 #endif
 
 // ===============================================================================
-// 第三方库头文件
+// Third-party Library Headers
 // ===============================================================================
-// JSON库
+// JSON library
 #include "jsoncpp/json/json.h"
 
-// NSUKit相关
+// NSUKit related
 #include "../nsukitcpp/NSUKit.h"
 #include "../nsukitcpp/xdma_api.h"
 #include "../nsukitcpp/high_level/HardwareSync.h"
 
-// 条件依赖的接口
+// Conditionally dependent interfaces
 #ifdef IVI_WITH_XDMA
     #include "interface/pcie_interface.h"
 #endif
@@ -90,31 +90,31 @@
 #endif
 
 // ===============================================================================
-// 项目内部头文件
+// Project Internal Headers
 // ===============================================================================
 #include "IviATTR.h"
 #include "IviVAL.h"
 #include "version.h"
 
 // ===============================================================================
-// 数学常量定义
+// Mathematical Constant Definitions
 // ===============================================================================
 #ifndef M_PI
     #define M_PI 3.14159265358979323846
 #endif
 
 // ===============================================================================
-// 状态码和错误码定义
+// Status Code and Error Code Definitions
 // ===============================================================================
 
-// 基本状态码
+// Basic status codes
 #define VI_STATE_SUCCESS                        (0)
 #define VI_STATE_FAIL                           (1)
 #define VI_STATE_NULL                           (0)
 #define VI_STATE_TRUE                           (1)
 #define VI_STATE_FALSE                          (0)
 
-// 错误码定义
+// Error code definitions
 #define VI_TIMEOUT                              (3)
 #define VI_ERROR_MAX_TIME_EXCEEDED              (4)
 #define VI_ERROR_VALUE_OUTPUT_RANGE             (5)
@@ -147,7 +147,7 @@
 #define VI_ERROR_RFCONFIG_FAIL                  (32)
 #define VI_ERROR_TIMEOUT                        (33)
 
-// 通用错误码
+// General error codes
 #define VI_ERROR_GRT_PARAM_ERROR                (-99999)
 #define VI_ERROR_NO_DATA_AVAILABLE              (-99999)
 #define VI_ERROR_DATA_NOT_READY                 (-99999)
@@ -155,20 +155,20 @@
 #define VI_ERROR_RESOURCE_BUSY                  (-99999)
 
 // ===============================================================================
-// 兼容性宏定义
+// Compatibility Macro Definitions
 // ===============================================================================
 #define VISAFN              _VI_FUNC
 #define ViPtr               _VI_PTR
 
-// 状态检查宏
+// Status check macros
 #define isSUCCESS(error) if ((error) == VI_STATE_SUCCESS) return VI_STATE_SUCCESS
 #define isFAIL(error) if ((error) != VI_STATE_SUCCESS) return error
 
 // ===============================================================================
-// 类型定义
+// Type Definitions
 // ===============================================================================
 
-// 基本整数类型
+// Basic integer types
 typedef uint8_t             ViUInt8;
 typedef int8_t              ViInt8;
 typedef uint16_t            ViUInt16;
@@ -178,21 +178,21 @@ typedef int32_t             ViInt32;
 typedef uint64_t            ViUInt64;
 typedef int64_t             ViInt64;
 
-// 字符和字符串类型
+// Character and string types
 typedef char                ViChar;
 typedef char*               ViCharMem;
 typedef const ViChar*       ViConstString;
 typedef std::string         ViString;
 
-// 浮点类型
+// Floating-point types
 typedef float               ViReal32;
 typedef double              ViReal64;
 
-// 复数类型
+// Complex number types
 typedef std::complex<double> ViCPReal128;
 typedef std::complex<float>  ViCPReal64;
 
-// 其他类型
+// Other types
 typedef unsigned char       ViByte;
 typedef void                ViAddr;
 typedef ViByte              ViBuf;

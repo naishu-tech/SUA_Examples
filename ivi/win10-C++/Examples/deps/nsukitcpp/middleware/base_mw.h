@@ -5,8 +5,8 @@
 #ifndef NSUKIT_BASE_MW_H
 #define NSUKIT_BASE_MW_H
 
-#include "../base/base_kit.h"
-#include "../interface/base_itf.h"
+#include "base/base_kit.h"
+#include "interface/base_itf.h"
 
 namespace nsukit {
     class NSU_DLLEXPORT U_Middleware {

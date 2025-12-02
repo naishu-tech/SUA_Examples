@@ -15,7 +15,7 @@ option(ENABLE_PYTHON_TESTS "Enable Python-based tests" OFF)
 if(ENABLE_PYTHON_TESTS)
     # 尝试查找 Python
     find_package(Python 3.10 COMPONENTS Interpreter Development)
-    
+
     if(Python_FOUND)
         # 尝试查找 pybind11
         find_package(pybind11 CONFIG)
@@ -64,9 +64,9 @@ find_package(Threads REQUIRED)
 # 通用链接库列表
 # ===============================================================================
 set(COMMON_LIBRARIES
-    ivi
-    NSUKit
-    xdma_api
+        ivi
+        NSUKit
+        xdma_api
 )
 
 set(JSONCPP_SOURCES
@@ -76,8 +76,8 @@ set(JSONCPP_SOURCES
 )
 
 set(THREADED_LIBRARIES
-    ${COMMON_LIBRARIES}
-    Threads::Threads
+        ${COMMON_LIBRARIES}
+        Threads::Threads
 )
 
 set(PYTHON_LIBRARIES ${COMMON_LIBRARIES})
@@ -105,7 +105,7 @@ add_simple_test(wfmPlayAWG "AWG_wfmPlay.cpp" "tool_config.h")
 add_simple_test(ReadRingBufferDAQ "DAQ_read_RingBuffer.cpp" "tool_config.h")
 
 # ===============================================================================
-# SUATools () 测试
+# 两收两发 测试
 # ===============================================================================
 add_simple_test(testCombined "AWG_DAQ_Combined.cpp")
 
@@ -136,15 +136,15 @@ message(STATUS "===============================")
 
 # AWG 测试组
 add_custom_target(test_awg_all
-    COMMENT "Build all AWG tests"
-    DEPENDS
+        COMMENT "Build all AWG tests"
+        DEPENDS
         QIPlayAWG sequencePlayAWG wfmPlayAWG
 )
 
 # DAQ 测试组
 add_custom_target(test_daq_all
-    COMMENT "Build all DAQ tests"
-    DEPENDS
+        COMMENT "Build all DAQ tests"
+        DEPENDS
         QIRingBufferDAQ RingbufferDAQ StreamDAQ workModeSwitchDAQ
 )
 
@@ -152,5 +152,5 @@ add_custom_target(test_daq_all
 add_custom_target(test_all
         COMMENT "Build SUATools tests"
         DEPENDS
-            getInfoSUATools syncSUATools syncSUATools runSUATools stopSUATools
+        getInfoSUATools syncSUATools syncSUATools runSUATools stopSUATools
 )

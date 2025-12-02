@@ -3,6 +3,7 @@
 
 #include "exprtk/exprtk.hpp"
 #include "type.h"
+#include "jsoncpp/json/json.h"
 #include "configureNSUKit.h"
 #include "IviATTR.h"
 #include "IviVAL.h"
@@ -31,18 +32,18 @@ struct actionGroup {
 };
 
 
-//todo 检查最大采样率是否正确
+// TODO: Check if the maximum sample rate is correct
 
-// 动态内存分配模式（移除静态分配，完全转为动态模式）
-// 注意：原有的静态分配模式已被移除，现在只支持动态分配
+// Dynamic memory allocation mode (static allocation removed, fully converted to dynamic mode)
+// Note: The original static allocation mode has been removed, now only dynamic allocation is supported
 
 struct channelXDMAInfor{
     ViUInt32 channelOpenNum = 2;
     ViUInt32 channelNum = 2;
     
-    // === 动态内存分配字段 ===
-    ViUInt32 xdmaBaseAddr = 0;           // XDMA组的基础地址
-    ViUInt64 xdmaTotalMemory = 0;        // XDMA组的总内存大小（字节）
+    // === Dynamic Memory Allocation Fields ===
+    ViUInt32 xdmaBaseAddr = 0;           // Base address of the XDMA group
+    ViUInt64 xdmaTotalMemory = 0;        // Total memory size of the XDMA group (in bytes)
     
     channelXDMAInfor(ViUInt32 channelOpenNum, ViUInt32 channelNum): channelOpenNum(channelOpenNum), channelNum(channelNum) {}
     ~channelXDMAInfor() = default;
@@ -56,10 +57,10 @@ struct channelInfor {
     ViUInt32 channelLen = 2147483648;
     ViReal64 channelMAXSampleRate = 4000000000.0;
     
-    // === 动态内存分配字段（现为唯一模式） ===
-    ViUInt32 dynamicStartAddr = 0;        // 动态分配的起始地址
-    ViUInt32 dynamicMemSize = 0;          // 动态分配的内存大小
-    ViUInt32 baseBlockSize = 0;           // 基础内存块大小（用于动态分配计算）
+    // === Dynamic Memory Allocation Fields (now the only mode) ===
+    ViUInt32 dynamicStartAddr = 0;        // Start address of dynamic allocation
+    ViUInt32 dynamicMemSize = 0;          // Memory size of dynamic allocation
+    ViUInt32 baseBlockSize = 0;           // Base memory block size (for dynamic allocation calculation)
     
     channelInfor(ViBoolean channelEnable, ViInt32 channelXDMA, ViUInt32 channelLen, ViReal64 channelMAXSampleRate):
         channelEnable(channelEnable), channelXDMA(channelXDMA), channelLen(channelLen), channelMAXSampleRate(channelMAXSampleRate){}
@@ -67,7 +68,7 @@ struct channelInfor {
 };
 
 struct iviBase_ViSession{
-    nsukit::BaseKit* kit{}; //
+    nsukit::BaseKit* kit{};
     nsuInitParam_t param{};
     ViString logicalName = "Sim";
     ViString name = "sim;sim;sim";
@@ -196,24 +197,24 @@ DLLEXTERN RIGOLLIB_API ViStatus IviBase_Sync(iviBase_ViSession *vi,  iviBase_ViS
 DLLEXTERN RIGOLLIB_API ViStatus IviBase_SendStream(iviBase_ViSession *vi, ViConstString channel, ViChar *streamValue, ViInt32 streamLength, ViInt32 streamOffset);
 DLLEXTERN RIGOLLIB_API ViStatus IviBase_RecvStream(iviBase_ViSession *vi, ViConstString channel, ViChar *streamValue, ViInt32 streamLength, ViInt32 streamOffset);
 
-DLLEXTERN RIGOLLIB_API ViStatus IviBase_SetParamViUInt8(iviBase_ViSession *vi, ViString param_name,  ViUInt8 value);
-DLLEXTERN RIGOLLIB_API ViStatus IviBase_SetParamViInt8(iviBase_ViSession *vi, ViString param_name,  ViInt8 value);
-DLLEXTERN RIGOLLIB_API ViStatus IviBase_SetParamViUInt16(iviBase_ViSession *vi, ViString param_name,  ViUInt16 value);
-DLLEXTERN RIGOLLIB_API ViStatus IviBase_SetParamViInt16(iviBase_ViSession *vi, ViString param_name,  ViInt16 value);
-DLLEXTERN RIGOLLIB_API ViStatus IviBase_SetParamViUInt32(iviBase_ViSession *vi, ViString param_name,  ViUInt32 value);
-DLLEXTERN RIGOLLIB_API ViStatus IviBase_SetParamViInt32(iviBase_ViSession *vi, ViString param_name,  ViInt32 value);
-DLLEXTERN RIGOLLIB_API ViStatus IviBase_SetParamViReal32(iviBase_ViSession *vi, ViString param_name,  ViReal32 value);
-DLLEXTERN RIGOLLIB_API ViStatus IviBase_SetParamViReal64(iviBase_ViSession *vi, ViString param_name,  ViReal64 value);
-DLLEXTERN RIGOLLIB_API ViStatus IviBase_SetParamViString(iviBase_ViSession *vi, ViString param_name,  ViString value);
-DLLEXTERN RIGOLLIB_API ViStatus IviBase_GetParamViUInt8(iviBase_ViSession *vi, ViString param_name,  ViUInt8* value);
-DLLEXTERN RIGOLLIB_API ViStatus IviBase_GetParamViInt8(iviBase_ViSession *vi, ViString param_name,  ViInt8* value);
-DLLEXTERN RIGOLLIB_API ViStatus IviBase_GetParamViUInt16(iviBase_ViSession *vi, ViString param_name,  ViUInt16* value);
-DLLEXTERN RIGOLLIB_API ViStatus IviBase_GetParamViInt16(iviBase_ViSession *vi, ViString param_name,  ViInt16* value);
-DLLEXTERN RIGOLLIB_API ViStatus IviBase_GetParamViUInt32(iviBase_ViSession *vi, ViString param_name,  ViUInt32* value);
-DLLEXTERN RIGOLLIB_API ViStatus IviBase_GetParamViInt32(iviBase_ViSession *vi, ViString param_name,  ViInt32* value);
-DLLEXTERN RIGOLLIB_API ViStatus IviBase_GetParamViReal32(iviBase_ViSession *vi, ViString param_name,  ViReal32* value);
-DLLEXTERN RIGOLLIB_API ViStatus IviBase_GetParamViReal64(iviBase_ViSession *vi, ViString param_name,  ViReal64* value);
-DLLEXTERN RIGOLLIB_API ViStatus IviBase_GetParamViString(iviBase_ViSession *vi, ViString param_name,  ViString* value);
+DLLEXTERN RIGOLLIB_API ViStatus IviBase_SetParamViUInt8(iviBase_ViSession *vi, ViString param_name, ViUInt8 value);
+DLLEXTERN RIGOLLIB_API ViStatus IviBase_SetParamViInt8(iviBase_ViSession *vi, ViString param_name, ViInt8 value);
+DLLEXTERN RIGOLLIB_API ViStatus IviBase_SetParamViUInt16(iviBase_ViSession *vi, ViString param_name, ViUInt16 value);
+DLLEXTERN RIGOLLIB_API ViStatus IviBase_SetParamViInt16(iviBase_ViSession *vi, ViString param_name, ViInt16 value);
+DLLEXTERN RIGOLLIB_API ViStatus IviBase_SetParamViUInt32(iviBase_ViSession *vi, ViString param_name, ViUInt32 value);
+DLLEXTERN RIGOLLIB_API ViStatus IviBase_SetParamViInt32(iviBase_ViSession *vi, ViString param_name, ViInt32 value);
+DLLEXTERN RIGOLLIB_API ViStatus IviBase_SetParamViReal32(iviBase_ViSession *vi, ViString param_name, ViReal32 value);
+DLLEXTERN RIGOLLIB_API ViStatus IviBase_SetParamViReal64(iviBase_ViSession *vi, ViString param_name, ViReal64 value);
+DLLEXTERN RIGOLLIB_API ViStatus IviBase_SetParamViString(iviBase_ViSession *vi, ViString param_name, ViString value);
+DLLEXTERN RIGOLLIB_API ViStatus IviBase_GetParamViUInt8(iviBase_ViSession *vi, ViString param_name, ViUInt8* value);
+DLLEXTERN RIGOLLIB_API ViStatus IviBase_GetParamViInt8(iviBase_ViSession *vi, ViString param_name, ViInt8* value);
+DLLEXTERN RIGOLLIB_API ViStatus IviBase_GetParamViUInt16(iviBase_ViSession *vi, ViString param_name, ViUInt16* value);
+DLLEXTERN RIGOLLIB_API ViStatus IviBase_GetParamViInt16(iviBase_ViSession *vi, ViString param_name, ViInt16* value);
+DLLEXTERN RIGOLLIB_API ViStatus IviBase_GetParamViUInt32(iviBase_ViSession *vi, ViString param_name, ViUInt32* value);
+DLLEXTERN RIGOLLIB_API ViStatus IviBase_GetParamViInt32(iviBase_ViSession *vi, ViString param_name, ViInt32* value);
+DLLEXTERN RIGOLLIB_API ViStatus IviBase_GetParamViReal32(iviBase_ViSession *vi, ViString param_name, ViReal32* value);
+DLLEXTERN RIGOLLIB_API ViStatus IviBase_GetParamViReal64(iviBase_ViSession *vi, ViString param_name, ViReal64* value);
+DLLEXTERN RIGOLLIB_API ViStatus IviBase_GetParamViString(iviBase_ViSession *vi, ViString param_name, ViString* value);
 DLLEXTERN RIGOLLIB_API ViStatus IviBase_Execute(iviBase_ViSession *vi, ViString cname);
 DLLEXTERN RIGOLLIB_API ViStatus IviBase_Write(iviBase_ViSession *vi, ViAttr addr, ViUInt32 value);
 DLLEXTERN RIGOLLIB_API ViStatus IviBase_Read(iviBase_ViSession *vi, ViAttr addr, ViUInt32* value);

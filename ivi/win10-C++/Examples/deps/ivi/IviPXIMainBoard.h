@@ -2,6 +2,7 @@
 #define IVI_IVIPXIMAINBOARD_H
 
 #include "IviBase.h"
+#include "jsoncpp/json/json.h"
 
 struct iviPXIMainBoard_ViSession{
     iviBase_ViSession* vi{};

@@ -322,7 +322,6 @@ namespace nsukit {
         }
         METHOD_NEED_(check_typesafe);
 
-        //
         nsukitStatus_t status = nsukitStatus_t::NSUKIT_STATUS_SUCCESS;
 
         if (!this->combined_cmd_itf()) {

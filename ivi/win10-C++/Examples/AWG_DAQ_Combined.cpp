@@ -67,6 +67,8 @@ struct Deque {
 
 // Configuration structure to hold all variables
 struct SystemConfig {
+    std::string python_path = "C:/Users/sn06129/.conda/envs/JupyterServer";
+
     // System configuration
     std::string resource_db_path = "./resourceDB.json";
     std::string logicalName = "PXI::0::INSTR";
@@ -94,14 +96,14 @@ def program(wlist: dict[str, np.ndarray]):
 )";
     // AWG Work times
     ViUInt32 workTimes = 10; // 10s
-    // AWG file
+    // AWG file. When the AWG file is empty, create a waveform by GenerateWaveformFile(WaveformParameters)
     std::list<ViString> wfmPath_list = {
-            "./wfm/Sin_Fixed_4000MSps_0Offset_1Amp_100MHz_0MBw_0Phase_1024us_16bit_Signed_1024us_1Row_1Column.dat"
+//            "./wfm/Sin_Fixed_4000MSps_0Offset_1Amp_100MHz_0MBw_0Phase_1024us_16bit_Signed_1024us_1Row_1Column.dat"
     };
     // AWG Sample Rate
-    std::string AWG_waveformType = "Sin"; // Sin, Square, Triangle, Sawtooth, Chirp
+    std::string AWG_waveformType = "Sawtooth"; // Sin, Square, Triangle, Sawtooth, Chirp
     ViReal64 AWG_sampleRate = 4000000000.0; // Hz, default 4GSps
-    ViReal64 AWG_frequency = 50000000.0;   // Hz, default 100MHz
+    ViReal64 AWG_frequency = 50000000.0;   // Hz, default 50MHz
     // Waveform generation parameters
     WaveformParameters waveformParams = WaveformParameters(AWG_waveformType, AWG_sampleRate, AWG_frequency);
 
@@ -274,15 +276,14 @@ void upload_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& chan
 }
 
 int main(int argc, char *argv[]){
-
+    SystemConfig config;
 #ifdef _WIN32
     std::cout << "=== Configuring Python Paths ===" << std::endl;
-    configure_python_paths("C:/Users/sn06129/.conda/envs/JupyterServer");
+    configure_python_paths(config.python_path);
     std::cout << "Python paths configured" << std::endl;
 #endif
 
     // Initialize configuration structure
-    SystemConfig config;
     ViStatus s = VI_STATE_SUCCESS;
     std::map<ViString, waveformHandle *> waveformHandle_map;
     // Session pointers

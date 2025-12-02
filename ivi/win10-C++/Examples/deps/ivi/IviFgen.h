@@ -2,6 +2,7 @@
 #define IVI_IVIFGEN_H
 
 #include "IviBase.h"
+#include "jsoncpp/json/json.h"
 
 struct waveformHandle {
     void* dataHandle = nullptr;
@@ -33,8 +34,8 @@ struct iviFgen_ViSession{
     ViUInt32 maxDataSize = 4294967295;
     ViUInt32 channelNumber = 2;
     bool is_locked = false;
-    ViReal64 maxSampleRate = 8000000000.0;
-    ViReal64 maxChannelSampleRate = 4000000000.0;
+    ViReal64 maxSampleRate = 10000000000.0;
+    ViReal64 maxChannelSampleRate = 10000000000.0;
     std::map<uintptr_t, waveformHandle*> wfmHandles{};
     ViUInt32 channelEnabled = 0b11111111;
     std::map<ViUInt32, channelInfor> channelInforMap{};

@@ -81,6 +81,8 @@ namespace nsukit {
         unsigned short int port;
         std::string ip;
         bool mode;
+
+        std::mutex recv_mutex;
     public:
         int recvTimeout;
 
@@ -104,14 +106,6 @@ namespace nsukit {
         int SendData(int s, char *buf, int len);
 
         void CloseSock(int s);
-
-        unsigned short int GetPort() const {
-            return port;
-        };
-
-        std::string GetIp() {
-            return ip;
-        }
     };
 
     int TcpRecvBytes(SocketGenerator *s, char *buf, size_t len, bool *stopped = nullptr);

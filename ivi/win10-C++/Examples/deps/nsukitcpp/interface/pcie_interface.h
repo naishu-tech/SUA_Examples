@@ -6,7 +6,7 @@
 #define NSUKIT_PCIE_INTERFACE_H
 
 #include "base_itf.h"
-#include "../xdma_api.h"
+#include "xdma_api.h"
 
 namespace nsukit {
     class XDMAOperation_t {

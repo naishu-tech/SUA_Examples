@@ -5,8 +5,8 @@
 #define NSUKIT_TRF_H
 
 #include "base_itf.h"
-#include "../xdma_api.h"
-#include "../cs_over_pc.h"
+#include "xdma_api.h"
+#include "cs_over_pc.h"
 
 #include <queue>
 #include <list>
@@ -18,7 +18,6 @@ namespace nsukit {
         std::map<int, int> openedBoard = {};
         std::mutex OpLock{};
         std::map<int, int> vpsNUMs = {};
-//        uint8_t vpsNUMs=0;
 
     public:
         /**
@@ -41,11 +40,11 @@ namespace nsukit {
 
         nsuBoardNum_t vpsBoard = 0;
         uint32_t feedback_type = 0;
+        nsuRegAddr_t vps_base_addr = 0x00300000;
 
         std::queue<nsuCharBuf_p> feedback_buf_q;
         std::mutex OpLock{};
 
-//        std::map<int, int> vpsObject_map = {};
         /**
          * ICD over AXI方式的读取反馈前的预处理，等待对端发送反馈
          * @return
@@ -62,12 +61,10 @@ namespace nsukit {
 
         ~VPSCmdUItf() override { 
             delete mixin_; 
-//            vpsObject_map.clear();
+            vpsObject_map.clear();
         };
 
         std::map<nsuBoardNum_t, CsOverPc*> vpsObject_map = {};
-
-//        std::list<CsOverPc *> vpsObject_list = {};
 
         /**
          *
@@ -84,22 +81,6 @@ namespace nsukit {
          */
         nsukitStatus_t close() override;
 
-
-//        /**
-//         *
-//         * @param addr
-//         * @param value
-//         * @return
-//         */
-//        nsukitStatus_t write(nsuRegAddr_t addr, nsuRegValue_t value) override;
-//
-//        /**
-//         *
-//         * @param addr
-//         * @param buf
-//         * @return
-//         */
-//        nsukitStatus_t read(nsuRegAddr_t addr, nsuRegValue_t *buf) override;
 
         /**
          *

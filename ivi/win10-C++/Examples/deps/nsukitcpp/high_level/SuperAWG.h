@@ -3,7 +3,7 @@
 #ifndef NSUKIT_SUPERAWG_H
 #define NSUKIT_SUPERAWG_H
 
-#include "../base/base_kit.h"
+#include "base/base_kit.h"
 
 namespace nsukit {
     DLLEXTERN nsukitStatus_t NSU_DLLEXPORT

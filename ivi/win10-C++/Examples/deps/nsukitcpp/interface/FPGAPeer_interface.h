@@ -35,16 +35,38 @@ namespace nsukit {
         const uint8_t byteWidth = 4;
         const uint8_t maxChnl = 4;
     protected:
+        // struct StreamProcess {
+        //     nsuStreamLen_t current = 0;
+        //     nsuStreamLen_t total = 0;
+        // };
+
+        // nsuBoardNum_t pciBoard = 0;
+
+        // std::map<nsuMemory_p, StreamProcess> uploadProcess{};
+
+        // std::map<nsuMemory_p, StreamProcess> downloadProcess{};
+
+
         struct StreamProcess {
+            nsuBoardNum_t src_board = 0; // 源FPGA板卡号
+            nsuBoardNum_t dst_board = 0; // 目标FPGA板卡号
             nsuStreamLen_t current = 0;
             nsuStreamLen_t total = 0;
+            HANDLE dma = nullptr; // DMA句柄
+            unsigned long long bar_addr = 0; // 目标FPGA的BAR地址
+            int fdLength = 0; // 记录申请的fd长度
         };
 
         nsuBoardNum_t pciBoard = 0;
+        nsuBoardNum_t srcBoard = 0;  // 源FPGA板卡号
+        nsuBoardNum_t dstBoard = 0;  // 目标FPGA板卡号
+        unsigned long long dstBarAddr = 0; // 目标FPGA的bypass BAR地址
+        unsigned long long dstBarSize = 0; // 目标FPGA的bypass BAR大小
 
         std::map<nsuMemory_p, StreamProcess> uploadProcess{};
-
         std::map<nsuMemory_p, StreamProcess> downloadProcess{};
+
+
     public:
         /**
          *
@@ -161,6 +183,21 @@ namespace nsukit {
         nsukitStatus_t
         stream_send(nsuChnlNum_t chnl, nsuMemory_p fd, nsuStreamLen_t length, nsuStreamLen_t offset = 0,
                     bool(*stop_event) () = nullptr, float timeout = 5., int flag = 1) override;
+
+         /**
+         * @brief 直接写入目标FPGA的bypass空间
+         * @param addr 地址（8字节对齐）
+         * @param data 数据
+         * @return 状态码
+         */
+        nsukitStatus_t direct_write(unsigned int addr, unsigned int data);
+
+        /**
+         * @brief 直接读取目标FPGA的bypass空间
+         * @param addr 地址（8字节对齐）
+         * @return 读取的数据
+         */
+        unsigned int direct_read(unsigned int addr);
     };
 }
 

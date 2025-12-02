@@ -129,6 +129,7 @@ struct nsuXDMAParam_t{
 struct nsuVpsParam_t{
     nsuRegAddr_t vps_cmd_board = 0;
     nsuRegAddr_t vps_feedback_type = 3;
+    nsuRegAddr_t base_addr = 0x00300000;
 };
 
 struct nsuGPUPeerParam_t{

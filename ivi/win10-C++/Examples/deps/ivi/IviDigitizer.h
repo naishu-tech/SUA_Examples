@@ -2,6 +2,7 @@
 #define IVI_IVIDIGITIZER_H
 
 #include "IviBase.h"
+#include "jsoncpp/json/json.h"
 
 #include <atomic>
 #include <thread>
@@ -26,7 +27,7 @@ public:
     explicit BinarySemaphore(int initial_count = 0) noexcept
             : available_(initial_count > 0) {}
 
-    // 移动构造和赋值
+    // Move constructor and assignment
     BinarySemaphore(BinarySemaphore&& other) noexcept
             : available_(other.available_.load()) {
         other.available_.store(false);
@@ -40,7 +41,7 @@ public:
         return *this;
     }
 
-    // 禁用拷贝
+    // Copy disabled
     BinarySemaphore(const BinarySemaphore&) = delete;
     BinarySemaphore& operator=(const BinarySemaphore&) = delete;
 
@@ -63,7 +64,7 @@ public:
     bool try_acquire() noexcept {
         std::lock_guard<std::mutex> lock(mtx_);
         if (available_.load(std::memory_order_acquire)) {
-            available_.store(false, std::memory_order_release);
+//            available_.store(false, std::memory_order_release);
             return true;
         }
         return false;
@@ -75,7 +76,7 @@ public:
         if (cv_.wait_for(lock, timeout_duration, [this] {
             return available_.load(std::memory_order_acquire);
         })) {
-            available_.store(false, std::memory_order_release);
+//            available_.store(false, std::memory_order_release);
             return true;
         }
         return false;
@@ -87,7 +88,7 @@ public:
         if (cv_.wait_until(lock, timeout_time, [this] {
             return available_.load(std::memory_order_acquire);
         })) {
-            available_.store(false, std::memory_order_release);
+//            available_.store(false, std::memory_order_release);
             return true;
         }
         return false;
@@ -99,7 +100,7 @@ public:
 };
 
 
-// C++17 优化的通道传输状态
+// C++17 optimized channel transfer state
 struct ChannelTransferState {
     BinarySemaphore isTransferring{0};
     BinarySemaphore dataReadySemaphore{0};
@@ -113,7 +114,7 @@ struct ChannelTransferState {
     }
 
     ChannelTransferState(ChannelTransferState&& other) noexcept
-            : isTransferring(std::move(other.isTransferring))//tjf-20250912改
+            : isTransferring(std::move(other.isTransferring)) // Modified by tjf-20250912
             , dataReadySemaphore(std::move(other.dataReadySemaphore))
             , lastDataDepth(other.lastDataDepth.load())
             , lastCheckTime(other.lastCheckTime.load()) {
@@ -122,7 +123,7 @@ struct ChannelTransferState {
 
     ChannelTransferState& operator=(ChannelTransferState&& other) noexcept {
         if (this != &other) {
-            isTransferring= std::move(other.isTransferring);//tjf-20250912改
+            isTransferring= std::move(other.isTransferring); // Modified by tjf-20250912
             dataReadySemaphore = std::move(other.dataReadySemaphore);
             lastDataDepth.store(other.lastDataDepth.load());
             lastCheckTime.store(other.lastCheckTime.load());
@@ -132,29 +133,50 @@ struct ChannelTransferState {
         return *this;
     }
 
-    // 禁用拷贝
+    // Copy disabled
     ChannelTransferState(const ChannelTransferState&) = delete;
     ChannelTransferState& operator=(const ChannelTransferState&) = delete;
 
-    // 获取最后检查时间
+    // Get last check time
     std::chrono::steady_clock::time_point getLastCheckTime() const noexcept {
         auto count = lastCheckTime.load(std::memory_order_acquire);
         return std::chrono::steady_clock::time_point{std::chrono::steady_clock::duration{count}};
     }
 
-    // 更新最后检查时间
+    // Update last check time
     void updateLastCheckTime() noexcept {
         lastCheckTime.store(std::chrono::steady_clock::now().time_since_epoch().count(),
                             std::memory_order_release);
     }
 };
 
+struct iviDigitizer_memData{
+    nsuMemory_p memData{};
+    ViString memDataType = "ViInt16";
+    ViUInt32 memDataSize=0;
+    char *memDataHandle{};
+};
+
+struct Ringbuffer_DMA_channel_struct
+{
+    ViConstString channelName{}; // DMA read channel
+    ViUInt32 waveformArraySize{}; // DMA read size
+    iviDigitizer_memData *waveformArray{}; // DMA read data pointer
+    ViReal64 startTime_s{}; // Time when Read function starts
+    ViReal64 maximumTime_s{}; // DMA read maximum time
+    const char *dataTypeName{}; // DMA read data type
+
+    // Use condition variable to implement blocking wait
+    std::shared_ptr<std::condition_variable> completion_cv;
+    std::shared_ptr<bool> is_success; // DMA read success flag (thread wakeup indicates DMA completion)
+};
+
 struct iviDigitizer_ViSession{
     iviBase_ViSession* vi{};
 
     std::mutex mtx;
-    ViReal64 maxSampleRate = 8000000000.0;
-    ViReal64 maxChannelSampleRate = 4000000000.0;
+    ViReal64 maxSampleRate = 5000000000.0;
+    ViReal64 maxChannelSampleRate = 5000000000.0;
     ViUInt32 channelNumber = 2;
     bool is_locked = false;
 
@@ -164,12 +186,12 @@ struct iviDigitizer_ViSession{
     std::mutex mtx_fetchInt16;
     std::mutex mtx_fetchInt8;
     
-    // DMA传输专用锁 - 全局锁，所有通道共用
+    // DMA transfer dedicated lock - global lock, shared by all channels
     std::mutex dma_transfer_lock;
 
-    // 数据就绪通道队列 - 存储已准备好数据的通道号，支持查询和FIFO操作
+    // Data ready channel queue - stores channel numbers with ready data, supports query and FIFO operations
     std::deque<ViUInt32> dataReadyChannelQueue;
-    std::mutex queueMutex; // 保护队列的互斥锁
+    std::mutex queueMutex; // Mutex to protect the queue
 
     std::map<ViUInt32, channelInfor> channelInforMap{};
     std::map<ViUInt32, channelXDMAInfor> channelXDMAInforMap{};
@@ -182,46 +204,52 @@ struct iviDigitizer_ViSession{
     std::mutex mtxKeepRunning;
     std::mutex mtxReadWfm;
     std::mutex mtxRead;
-    std::atomic<ViBoolean> keepRunning;
+    std::atomic<ViBoolean> keepRunning = false;
     std::map<ViInt32, std::condition_variable> dataDepthMap{};
     std::thread queryWorkThread;
 
     ViReal64 timeOut = 1.0;
     ViInt32 waitTimes = 3;
 
-    // 使用 unordered_map 提高查找性能
+    // Use unordered_map to improve lookup performance
     std::map<std::int32_t, ChannelTransferState> channelTransferStates;
-    mutable std::shared_mutex queryThreadMutex;  // 读写锁
+    mutable std::shared_mutex queryThreadMutex;  // Read-write lock
     std::atomic<bool> queryThreadActive{true};
 
-    // 使用 C++17 的内联变量优化
+    // Use C++17 inline variable optimization
     inline static constexpr std::chrono::milliseconds defaultPollInterval{1};
     inline static constexpr std::chrono::microseconds channelInterval{1};
 
-    // 统计信息
+    // Statistics
     std::atomic<std::uint64_t> totalDataReadySignals{0};
     std::atomic<std::uint64_t> totalDataTransfers{0};
     std::atomic<std::uint64_t> totalPollCycles{0};
 
-    // 性能监控
+    // Performance monitoring
     mutable std::mutex statsMutex;
     std::chrono::steady_clock::time_point startTime{std::chrono::steady_clock::now()};
 
-    // 新增非阻塞控制变量
+    // New non-blocking control variables
     std::mutex wakeupMutex;
     std::condition_variable wakeupCV;
     std::atomic<bool> forceWakeup{false};
     std::atomic<bool> quickExit{false};
 
     ViUInt32 chnlLevelEnabled = 0b11111111;
+
+    std::queue<std::shared_ptr<Ringbuffer_DMA_channel_struct>> Ringbuffer_DMA_channel_queue;
+    std::mutex Ringbuffer_queue_mutex; // Queue operation lock
+    std::mutex Ringbuffer_state_mutex; // State variable protection lock
+
+    // Use atomic variables to ensure thread safety
+    std::atomic<ViUInt8> ringbuffer_res{0};
+    ViUInt8 ringbuffer_ChaFinMask=0x00; // Channel transfer completion mask, used in sync mode to determine if all channels have completed transfer
+
+    ViUInt8 ringbuffer_ChaEnMask=0x00; // Channel enable mask, used in sync mode to determine if all channels are ready, the initial value of this parameter needs to be set in the init function
+    bool is_AllChannelReady = false;
 };
 
-struct iviDigitizer_memData{
-    nsuMemory_p memData{};
-    ViString memDataType = "ViInt16";
-    ViUInt32 memDataSize=0;
-    char *memDataHandle{};
-};
+
 
 DLLEXTERN RIGOLLIB_API ViStatus IviDigitizer_Initialize (const ViString& logicalName, ViBoolean IDQuery, ViBoolean resetDevice, iviDigitizer_ViSession *vi, const ViString& resourceDBPath = "./resourceDB.json");
 DLLEXTERN RIGOLLIB_API ViStatus IviDigitizer_Reset (iviDigitizer_ViSession *vi);

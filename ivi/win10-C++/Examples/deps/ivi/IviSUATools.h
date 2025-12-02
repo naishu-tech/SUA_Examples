@@ -15,32 +15,33 @@
 #include "IviFgen.h"
 #include "IviSyncATrig.h"
 #include "IviPXIMainBoard.h"
+#include "jsoncpp/json/json.h"
 
 // ===============================================================================
-// 数据结构定义
+// Data Structure Definitions
 // ===============================================================================
 
 /**
- * @brief 设备信息结构体
+ * @brief Device information structure
  */
 typedef struct {
-    ViString fpga_version;           // 固件版本号
-    ViString fpga_hardware_version;  // 硬件版本号
-    ViInt32 fpga_temper;                // 业务卡温度
-    ViReal64 cpu_temper;                // 主控温度
-    ViUInt32 status;                    // 模块运行状态
-    ViReal64 usage;                     // CPU使用率
-    ViReal64 controler_memory_total;    // 控制器总内存
-    ViReal64 controler_memory_usage;    // 控制器内存使用情况
-    ViString ivi_version;            // IVI版本号
+    ViString fpga_version;           // Firmware version number
+    ViString fpga_hardware_version;  // Hardware version number
+    ViInt32 fpga_temper;                // Service card temperature
+    ViReal64 cpu_temper;                // Main controller temperature
+    ViUInt32 status;                    // Module running status
+    ViReal64 usage;                     // CPU usage
+    ViReal64 controler_memory_total;    // Controller total memory
+    ViReal64 controler_memory_usage;    // Controller memory usage
+    ViString ivi_version;            // IVI version number
 } IviDeviceInfo;
 
 struct iviSUATools_ViSession{
-    ViStatus error_code{};                // 操作状态码
-    IviDeviceInfo infoFgen;                 // 设备信息
-    IviDeviceInfo infoDigitizer;                 // 设备信息
-    IviDeviceInfo infoSyncATrig;                 // 设备信息
-    IviDeviceInfo infoPXIMainBoard;                 // 设备信息
+    ViStatus error_code{};                // Operation status code
+    IviDeviceInfo infoFgen;                 // Device information
+    IviDeviceInfo infoDigitizer;                 // Device information
+    IviDeviceInfo infoSyncATrig;                 // Device information
+    IviDeviceInfo infoPXIMainBoard;                 // Device information
     ViInt32 code_size = 1310720;
     ViInt32 code_chnl_size  = 163840;
     ViChar *NSQC = nullptr;
@@ -55,7 +56,7 @@ DLLEXTERN RIGOLLIB_API ViString IviSUATools_ScanOnlineBoards(iviSUATools_ViSessi
 DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_Sync(iviSUATools_ViSession *vi, iviSyncATrig_ViSession *iviSyncATrig_vi, const std::list<iviFgen_ViSession *>& iviFgen_vis, const std::list<iviDigitizer_ViSession *>&  iviDigitizer_vis);
 
 // ===============================================================================
-// 信息获取函数
+// Information Retrieval Functions
 // ===============================================================================
 DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_GetInfoFgen(iviSUATools_ViSession *vi, iviFgen_ViSession *iviFgen_vi);
 DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_GetInfoDigitizer(iviSUATools_ViSession *vi, iviDigitizer_ViSession *iviDigitizer_vi);
@@ -63,17 +64,13 @@ DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_GetInfoSyncATrig(iviSUATools_ViSessi
 DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_GetInfoPXIMainBoard(iviSUATools_ViSession *vi, iviPXIMainBoard_ViSession *iviPXIMainBoard_vi);
 
 // ===============================================================================
-// Python 集成函数
+// Python Integration Functions
 // ===============================================================================
-
-// Python 集成函数
 DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_NSWave(iviSUATools_ViSession *vi, iviFgen_ViSession *iviFgen_vi, ViConstString channel, std::map<ViString, waveformHandle *> waveformHandle_map, const ViString& NSWaveData);
 
 // ===============================================================================
-// 运行控制函数
+// Runtime Control Functions
 // ===============================================================================
-
-// 运行控制函数
 DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_RunFgen(iviSUATools_ViSession *vi, iviSyncATrig_ViSession *iviSyncATrig_vi, iviFgen_ViSession *iviFgen_vi);
 DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_StopFgen(iviSUATools_ViSession *vi, iviSyncATrig_ViSession *iviSyncATrig_vi, iviFgen_ViSession *iviFgen_vi);
 DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_RunDigitizer(iviSUATools_ViSession *vi, iviSyncATrig_ViSession *iviSyncATrig_vi, iviDigitizer_ViSession *iviDigitizer_vi);

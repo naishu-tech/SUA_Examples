@@ -32,6 +32,27 @@ namespace nsukit {
 
     class NSU_DLLEXPORT GPUPeerStreamUItf : public I_BaseStreamUItf {
     private:
+        struct StreamProcess {
+            nsuBoardNum_t FPGA_board; // FPGA 号
+            nsuBoardNum_t GPU_board; // GPU 号
+            nsuStreamLen_t current = 0;
+            nsuStreamLen_t total = 0;
+            void* gpu_device_ptr = nullptr; // GPU设备内存指针
+            unsigned long long gpu_phys_addr = 0; // GPU物理地址
+            bool gpu_allocated = false; // 是否由我们分配的GPU内存
+            HANDLE dma; // DMA句柄
+            int fdLength; //记录申请的fd长度
+        };
+
+        nsuBoardNum_t pciBoard = 0;
+        nsuBoardNum_t gpuBoard = 0;
+
+#ifdef CUDA_ENABLED
+        CUdevice cuDevice;
+        CUcontext cuContext = nullptr;
+#endif
+
+
         const uint8_t byteWidth = 4;
         const uint8_t maxChnl = 4;
     protected:

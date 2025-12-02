@@ -6,7 +6,7 @@
 #define NSUKIT_TCP_INTERFACE_H
 
 #include "base_itf.h"
-#include "../base/c_socket.h"
+#include "base/c_socket.h"
 
 
 namespace nsukit {
