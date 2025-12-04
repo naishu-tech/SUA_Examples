@@ -110,10 +110,10 @@ add_simple_test(ReadRingBufferDAQ "DAQ_read_RingBuffer.cpp" "tool_config.h")
 add_simple_test(testCombined "AWG_DAQ_Combined.cpp")
 
 # ===============================================================================
-# RF
+# getBoardInfo 获取业务卡的逻辑版本号
 # =================================
-add_executable(RF "RF.cpp" ${JSONCPP_SOURCES})
-target_link_libraries(RF ${COMMON_LIBRARIES})
+add_executable(getBoardInfo "getBoardInfo.cpp" ${JSONCPP_SOURCES})
+target_link_libraries(getBoardInfo ${COMMON_LIBRARIES})
 
 # ===============================================================================
 # 构建信息输出

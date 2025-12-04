@@ -74,13 +74,10 @@ struct SystemConfig {
     std::string logicalName = "PXI::0::INSTR";
 
     // Trigger configuration
+    ViUInt32 triggerSource = 1;
     ViUInt32 triggerPeriod = 40000000; // 40ms
     ViUInt32 triggerRepetSize = 4294967295;
     ViUInt32 triggerPulseWidth = 20000000; // 20ms
-    ViUInt32 triggerDelay = 0; // 0ns
-    ViUInt32 triggerEdgeType = 0; // 0ns
-    ViUInt32 triggerHoldOffTime = 0; // 0ns
-    std::string triggerEdgechannelName = "-1";
     ViInt32 triggerEdgeSet = 29202; // -0.5V ~ 0.5V ==> -29202 ~ 29202
     
     // AWG configuration
@@ -108,32 +105,18 @@ def program(wlist: dict[str, np.ndarray]):
     WaveformParameters waveformParams = WaveformParameters(AWG_waveformType, AWG_sampleRate, AWG_frequency);
 
     // DAQ configuration parameters
-    ViUInt32 triggerSource = IVIFGEN_VAL_TRIGGER_SOURCE_INTERNAL;
     std::string DAQ_channelName = "0"; // channel0, channel1
     ViUInt32 times = 40;
     ViUInt32 syncTriggerChannel = 0xFF;
-    ViInt32 triggerEdgetype = 0x01;
-    ViInt32 chTriggerEdgetype = 0x01;
     // DAQ sample configuration
-    std::string sampleEnableChannel = "-1";
     ViInt32 sampleEnable = 1; // True = 1, False = 0
-    std::string sampleStrageDepthChannel = "-1";
     ViUInt32 sampleStrageDepth = 65536; // pts
-    std::string sampleLenPreChannel = "-1";
     ViUInt32 sampleLenPre = 32768; // pts
-    std::string sampleTimesChannel = "-1";
-    ViUInt32 sampleTimes = 4294967295;
-    std::string sampleLogicalExtractionMultipleChannel = "-1";
-    ViUInt32 sampleLogicalExtractionMultiple = 1;
-    std::string sampleCollectDataTruncationChannel = "-1";
-    ViUInt32 sampleCollectDataTruncation = 0;
-    std::string sampleCollectDataTypeChannel = "-1";
-    ViUInt32 sampleCollectDataType = 0;
     // DAQ Save file Path
     std::string directoryPath = "./";
-    ViUInt32 head_len = 16; // pts
     // DAQ Sample Rate
     ViReal64 DAQ_sampleRate = 2000000000; // 2GHz
+    ViUInt32 head_len = 16; // pts
 };
 
 // Pre-RF configuration for AWG
@@ -369,8 +352,7 @@ int main(int argc, char *argv[]){
     s = internalTriggerConfigAWG(iviFgen_vi, config.triggerPulseWidth, config.triggerRepetSize, config.triggerPeriod, 0);
     s = triggerConfigDAQ(iviDigitizer_vi, config.triggerSource);
     s = internaltriggerConfigDAQ(iviDigitizer_vi, config.triggerPulseWidth, config.triggerRepetSize, config.triggerPeriod,
-                                  config.triggerDelay, config.triggerEdgeType, config.triggerHoldOffTime, 
-                                  config.triggerEdgechannelName.c_str(), config.triggerEdgeSet);
+                                  0, 0, 0, "-1", config.triggerEdgeSet);
 
     // ========== AWG Channel Enable ==========
     std::cout << "\n=== AWG Chnl EN ===" << std::endl;
@@ -463,13 +445,13 @@ int main(int argc, char *argv[]){
     // ========== DAQ Sample Configuration ==========
     std::cout << "\n=== Sample Config ===" << std::endl;
     sampleConfigDAQ(iviDigitizer_vi,
-                    config.sampleEnableChannel.c_str(), config.sampleEnable,
-                    config.sampleStrageDepthChannel.c_str(), config.sampleStrageDepth,
-                    config.sampleLenPreChannel.c_str(), config.sampleLenPre,
-                    config.sampleTimesChannel.c_str(), config.sampleTimes,
-                    config.sampleLogicalExtractionMultipleChannel.c_str(), config.sampleLogicalExtractionMultiple,
-                    config.sampleCollectDataTruncationChannel.c_str(), config.sampleCollectDataTruncation,
-                    config.sampleCollectDataTypeChannel.c_str(), config.sampleCollectDataType);
+                    "-1", config.sampleEnable,
+                    "-1", config.sampleStrageDepth,
+                    "-1", config.sampleLenPre,
+                    "-1", 4294967295,
+                    "-1", 0,
+                    "-1", 0,
+                    "-1", 0);
 
     // Create directory for DAQ data
     auto now = std::chrono::system_clock::now();
@@ -600,7 +582,7 @@ int main(int argc, char *argv[]){
     delete iviDigitizer_vi;
     delete iviSUATools_vi;
 
-    PlotDataFile(directoryPath +"/up-res-14Bit_0_0.data");
+    // PlotDataFile(directoryPath +"/up-res-14Bit_0_0.data");
 
     return 0;
 }

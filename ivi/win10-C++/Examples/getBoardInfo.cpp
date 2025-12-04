@@ -16,7 +16,6 @@ int main(int argc, char *argv[]){
 
     std::string resource_db_path = "./resourceDB.json";
     std::string logicalName = "PXI::0::INSTR";
-//    std::string logicalName = "PXI::1::INSTR";
 
     auto vi = new iviBase_ViSession;
     std::cout << "logicalName: " << logicalName << std::endl;
@@ -32,16 +31,6 @@ int main(int argc, char *argv[]){
     std::cout <<"IVIBASE_ATTR_FPGA_FIRMWARE_VERSION: "<< m << std::endl;
     s = IviBase_GetAttributeViUInt32(vi, "0", IVIBASE_ATTR_BASIC_CAPABILITY_IDENTIFICATION, &m);
     std::cout <<"IVIBASE_ATTR_BASIC_CAPABILITY_IDENTIFICATION: "<< m << std::endl;
-
-//    ViUInt32 m;
-//    s = IviBase_GetAttributeViUInt32(vi, "0", IVIBASE_ATTR_A7_FPGA_FUNCTION_IDENTIFICATION, &m);
-//    std::cout <<"IVIBASE_ATTR_A7_FPGA_FUNCTION_IDENTIFICATION: "<< m << std::endl;
-//    s = IviBase_GetAttributeViUInt32(vi, "0", IVIBASE_ATTR_A7_MODULE_DEVICE_ID, &m);
-//    std::cout <<"IVIBASE_ATTR_A7_MODULE_DEVICE_ID: "<< m << std::endl;
-//    s = IviBase_GetAttributeViUInt32(vi, "0", IVIBASE_ATTR_A7_FPGA_FIRMWARE_VERSION, &m);
-//    std::cout <<"IVIBASE_ATTR_A7_FPGA_FIRMWARE_VERSION: "<< m << std::endl;
-//    s = IviBase_GetAttributeViUInt32(vi, "0", IVIBASE_ATTR_A7_BASIC_CAPABILITY_IDENTIFICATION, &m);
-//    std::cout <<"IVIBASE_ATTR_A7_BASIC_CAPABILITY_IDENTIFICATION: "<< m << std::endl;
 
     s = IviBase_Close(vi);
 
