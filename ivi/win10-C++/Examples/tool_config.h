@@ -25,7 +25,9 @@
 #include <cstdlib>
 
 // Third-party Libraries
+#include "deps/ivi/IviBase.h"
 #include "deps/ivi/IviFgen.h"
+#include "deps/ivi/IviDigitizer.h"
 #include "deps/ivi/IviSUATools.h"
 
 // Platform-specific Headers

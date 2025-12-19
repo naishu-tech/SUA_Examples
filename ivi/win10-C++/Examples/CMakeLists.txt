@@ -108,6 +108,8 @@ add_simple_test(ReadRingBufferDAQ "DAQ_read_RingBuffer.cpp" "tool_config.h")
 # 两收两发 测试
 # ===============================================================================
 add_simple_test(testCombined "AWG_DAQ_Combined.cpp")
+add_simple_test(startCombined "AWG_DAQ_Start.cpp")
+add_simple_test(stopCombined "AWG_DAQ_Stop.cpp")
 
 # ===============================================================================
 # getBoardInfo 获取业务卡的逻辑版本号
