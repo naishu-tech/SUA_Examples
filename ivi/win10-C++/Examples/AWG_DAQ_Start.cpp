@@ -17,8 +17,6 @@
 // Forward declaration
 // Configuration structure to hold all variables
 struct SystemConfig {
-    std::string python_path = "C:/Users/sn06129/.conda/envs/JupyterServer";
-
     // System configuration
     std::string resource_db_path = "./resourceDB.json";
     std::string logicalName = "PXI::0::INSTR";
@@ -27,26 +25,17 @@ struct SystemConfig {
 
 int main(int argc, char *argv[]){
     SystemConfig config;
-#ifdef _WIN32
-    std::cout << "=== Configuring Python Paths ===" << std::endl;
-    configure_python_paths(config.python_path);
-    std::cout << "Python paths configured" << std::endl;
-#endif
 
     // Initialize configuration structure
     ViStatus s = VI_STATE_SUCCESS;
-    std::cout << "\n=== Initialize IviSUATools ===" << std::endl;
-    iviSUATools_ViSession* iviSUATools_vi = new iviSUATools_ViSession;
-    s = IviSUATools_Initialize(iviSUATools_vi);
-    std::cout << "IviSUATools initialized successfully" << std::endl;
 
     std::cout << "\n=== Initialize IviFgen ===" << std::endl;
-    iviFgen_ViSession* iviFgen_vi = new iviFgen_ViSession;
+    auto* iviFgen_vi = new iviFgen_ViSession;
     s = IviFgen_Initialize(config.logicalName, VI_STATE_FALSE, VI_STATE_TRUE, iviFgen_vi, config.resource_db_path);
     std::cout << "IviFgen initialized successfully" << std::endl;
 
     std::cout << "\n=== Initialize IviDigitizer ===" << std::endl;
-    iviDigitizer_ViSession* iviDigitizer_vi = new iviDigitizer_ViSession;
+    auto* iviDigitizer_vi = new iviDigitizer_ViSession;
     s = IviDigitizer_Initialize(config.logicalName, VI_STATE_FALSE, VI_STATE_TRUE, iviDigitizer_vi, config.resource_db_path);
     std::cout << "IviDigitizer initialized successfully" << std::endl;
 
@@ -57,10 +46,8 @@ int main(int argc, char *argv[]){
         std::cout << "Error: The Digitizer Work Mode is not RingBuffer!" << std::endl;
         isFAIL(IviDigitizer_Close(iviDigitizer_vi));
         isFAIL(IviFgen_Close(iviFgen_vi));
-        isFAIL(IviSUATools_Close(iviSUATools_vi));
         delete iviDigitizer_vi;
         delete iviFgen_vi;
-        delete iviSUATools_vi;
         return 0;
     }
 
@@ -73,10 +60,8 @@ int main(int argc, char *argv[]){
     std::cout << "\n=== Test Completed ===" << std::endl;
     isFAIL(IviFgen_Close(iviFgen_vi));
     isFAIL(IviDigitizer_Close(iviDigitizer_vi));
-    isFAIL(IviSUATools_Close(iviSUATools_vi));
     delete iviFgen_vi;
     delete iviDigitizer_vi;
-    delete iviSUATools_vi;
 
     return 0;
 }

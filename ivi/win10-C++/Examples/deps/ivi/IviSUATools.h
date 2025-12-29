@@ -47,7 +47,7 @@ struct iviSUATools_ViSession{
     ViChar *NSQC = nullptr;
 };
 
-DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_Initialize (iviSUATools_ViSession *vi, const ViString& logicalName="", ViBoolean IDQuery=false, ViBoolean resetDevice=false, const ViString& resourceDBPath = "");
+DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_Initialize (iviSUATools_ViSession *vi, const ViString& logicalName="", ViBoolean IDQuery=false, ViBoolean resetDevice=false, const ViString& resourceDBPath = "./resourceDB.json");
 DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_Reset (iviSUATools_ViSession *vi);
 DLLEXTERN RIGOLLIB_API ViStatus IviSUATools_Close (iviSUATools_ViSession *vi);
 

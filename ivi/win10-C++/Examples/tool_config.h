@@ -43,37 +43,32 @@
 #define PI 3.14159265358979323846
 #define TWO_PI (2.0 * PI)
 
-// 配置 Python 路径
-// 在 IVI 库初始化 Python 之前设置环境变量
-void configure_python_paths(const std::string& default_python_home) {
-
-    // 检查 PYTHONHOME 环境变量
-    char* python_home_env = std::getenv("PYTHONHOME");
-    if (python_home_env == nullptr) {
-        std::string env_var = "PYTHONHOME=" + default_python_home;
-        _putenv(env_var.c_str());
-        std::cout << "Setting PYTHONHOME=" << default_python_home
-                  << " (if incorrect, set PYTHONHOME environment variable)" << std::endl;
-    } else {
-        std::cout << "PYTHONHOME already set: " << python_home_env << std::endl;
-    }
-
-    // 配置 PYTHONPATH
-    char* python_path_env = std::getenv("PYTHONPATH");
-    if (python_path_env == nullptr) {
-        // 重新获取 PYTHONHOME（可能在上面已经设置）
-        char* current_python_home = std::getenv("PYTHONHOME");
-        std::string python_home = (current_python_home != nullptr) ? current_python_home : default_python_home;
-        std::string python_path = python_home + "\\Lib";
-        std::string env_var = "PYTHONPATH=" + python_path;
-        _putenv(env_var.c_str());
-        std::cout << "Setting PYTHONPATH=" << python_path << std::endl;
-    } else {
-        std::cout << "PYTHONPATH already set: " << python_path_env << std::endl;
-    }
-}
-
-
+//void configure_python_paths(const std::string& default_python_home) {
+//
+//    char* python_home_env = std::getenv("PYTHONHOME");
+//    if (python_home_env == nullptr) {
+//        std::string env_var = "PYTHONHOME=" + default_python_home;
+//        _putenv(env_var.c_str());
+//        std::cout << "Setting PYTHONHOME=" << default_python_home
+//                  << " (if incorrect, set PYTHONHOME environment variable)" << std::endl;
+//    } else {
+//        std::cout << "PYTHONHOME already set: " << python_home_env << std::endl;
+//    }
+//
+//    // Configure PYTHONPATH
+//    char* python_path_env = std::getenv("PYTHONPATH");
+//    if (python_path_env == nullptr) {
+//        // Re-get PYTHONHOME (may have been set above)
+//        char* current_python_home = std::getenv("PYTHONHOME");
+//        std::string python_home = (current_python_home != nullptr) ? current_python_home : default_python_home;
+//        std::string python_path = python_home + "\\Lib";
+//        std::string env_var = "PYTHONPATH=" + python_path;
+//        _putenv(env_var.c_str());
+//        std::cout << "Setting PYTHONPATH=" << python_path << std::endl;
+//    } else {
+//        std::cout << "PYTHONPATH already set: " << python_path_env << std::endl;
+//    }
+//}
 
 ViStatus triggerConfigAWG(iviFgen_ViSession *vi,  ViUInt32 triggerSource){
     auto s = IviFgen_SetAttributeViUInt32(vi, "0", IVIFGEN_ATTR_TRIGGER_SOURCE, triggerSource);

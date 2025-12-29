@@ -67,7 +67,7 @@ struct Deque {
 
 // Configuration structure to hold all variables
 struct SystemConfig {
-    std::string python_path = "C:/Users/sn06129/.conda/envs/JupyterServer";
+//    std::string python_path = "D:/AppData/Local/miniforge3/envs/JupyterServer";
 
     // System configuration
     std::string resource_db_path = "./resourceDB.json";
@@ -79,7 +79,7 @@ struct SystemConfig {
     ViUInt32 triggerRepetSize = 4294967295;
     ViUInt32 triggerPulseWidth = 20000000; // 20ms
     ViInt32 triggerEdgeSet = 29202; // -0.5V ~ 0.5V ==> -29202 ~ 29202
-    
+
     // AWG configuration
     std::string AWG_channelName = "0,1"; // channel0, channel1
     // Play a waveform in sequence
@@ -186,7 +186,7 @@ void write_file_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& 
 // Upload thread for DAQ data
 void upload_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& channelName, ViUInt32 waveformArraySize, ViUInt32 times, std::mutex *mu
 #ifdef _WIN32
-    , PlotWindow* plotWindow
+        , PlotWindow* plotWindow
 #endif
 ) {
     std::unique_lock<std::mutex> *lock;
@@ -221,29 +221,29 @@ void upload_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& chan
             std::cout << std::flush << '\r' << "current CHNL"<< channelName <<" upload data speed: " << speed_count*1000./(count.count()) << "MB/s" << std::endl;
             speed_count = 0;
             st = std::chrono::steady_clock::now();
-            
+
             // Update real-time plot using PlotWindow
 #ifdef _WIN32
             if (plotWindow != nullptr) {
                 // Read only first 2048+32 bytes (1040 samples)
                 const size_t readBytes = 2048 + 32;
                 size_t readSamples = std::min(static_cast<size_t>(waveformArraySize), static_cast<size_t>(readBytes / sizeof(ViInt16)));
-                
+
                 // Copy data
                 const auto srcData = reinterpret_cast<const ViInt16*>(mem->memDataHandle);
                 std::vector<ViInt16> allData(srcData, srcData + readSamples);
-                
+
                 // Skip first 32 bytes (16 samples) for plotting
                 const size_t skipSamples = 16;
                 if (readSamples > skipSamples) {
                     size_t plotSamples = readSamples - skipSamples;
                     std::vector<ViInt16> plotData(allData.begin() + skipSamples, allData.end());
-                    
+
                     // Find min and max
                     if (!plotData.empty()) {
                         ViInt16 minVal = *std::min_element(plotData.begin(), plotData.end());
                         ViInt16 maxVal = *std::max_element(plotData.begin(), plotData.end());
-                        
+
                         // Update plot window
                         plotWindow->UpdateData(plotData, minVal, maxVal, plotSamples, "Channel " + channelName);
                     }
@@ -260,11 +260,11 @@ void upload_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& chan
 
 int main(int argc, char *argv[]){
     SystemConfig config;
-#ifdef _WIN32
-    std::cout << "=== Configuring Python Paths ===" << std::endl;
-    configure_python_paths(config.python_path);
-    std::cout << "Python paths configured" << std::endl;
-#endif
+//#ifdef _WIN32
+//    std::cout << "=== Configuring Python Paths ===" << std::endl;
+//    configure_python_paths(config.python_path);
+//    std::cout << "Python paths configured" << std::endl;
+//#endif
 
     // Initialize configuration structure
     ViStatus s = VI_STATE_SUCCESS;
@@ -323,7 +323,7 @@ int main(int argc, char *argv[]){
     std::cout << "\n=== Stop AWG and DAQ ===" << std::endl;
     s = IviFgen_AbortGeneration(iviFgen_vi);
     s = IviDigitizer_Abort(iviDigitizer_vi);
-    
+
     std::cout << "\n=== Sample Rate Config ===" << std::endl;
     s = IviFgen_SetAttributeViReal64(iviFgen_vi, "0", IVIFGEN_ATTR_DAC_SAMPLE_RATE, config.AWG_sampleRate);
 
@@ -352,7 +352,7 @@ int main(int argc, char *argv[]){
     s = internalTriggerConfigAWG(iviFgen_vi, config.triggerPulseWidth, config.triggerRepetSize, config.triggerPeriod, 0);
     s = triggerConfigDAQ(iviDigitizer_vi, config.triggerSource);
     s = internaltriggerConfigDAQ(iviDigitizer_vi, config.triggerPulseWidth, config.triggerRepetSize, config.triggerPeriod,
-                                  0, 0, 0, "-1", config.triggerEdgeSet);
+                                 0, 0, 0, "-1", config.triggerEdgeSet);
 
     // ========== AWG Channel Enable ==========
     std::cout << "\n=== AWG Chnl EN ===" << std::endl;
@@ -488,7 +488,7 @@ int main(int argc, char *argv[]){
         std::vector<ViInt16> emptyData;
         plotWindow->Create(emptyData, 0, 0, 0, "Channel " + channel);
         chnl_plotWindow[numChannel] = plotWindow;
-        
+
         // Create upload thread with plot window
         chnl_up_trd.emplace(numChannel, std::thread(upload_thread, iviDigitizer_vi, &chnl_Deque[numChannel], channel, waveformArraySize, config.times, &chnl_mutex[numChannel], plotWindow));
 #else
@@ -496,7 +496,7 @@ int main(int argc, char *argv[]){
 #endif
         chnl_write_trd.emplace(numChannel, std::thread(write_file_thread, iviDigitizer_vi, &chnl_Deque[numChannel], channel, waveformArraySize, directoryPath +"/up-res-14Bit_", &chnl_mutex[numChannel]));
     }
-    
+
     // ========== Start AWG and DAQ ==========
     std::cout << "\n=== Start AWG Waveform Playback and DAQ Data Acquisition ===" << std::endl;
     s = IviFgen_InitiateGeneration(iviFgen_vi);
@@ -513,13 +513,13 @@ int main(int argc, char *argv[]){
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
-        
+
         // Check if time has elapsed
         auto elapsed = std::chrono::steady_clock::now() - startTime;
         if (elapsed >= std::chrono::seconds(config.workTimes)) {
             break;
         }
-        
+
         // Sleep a bit to avoid busy waiting
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
@@ -558,7 +558,7 @@ int main(int argc, char *argv[]){
             chnl_plotWindow[numChannel] = nullptr;
         }
     }
-    
+
     // Process any remaining Windows messages
     MSG msg = {};
     while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
@@ -586,4 +586,3 @@ int main(int argc, char *argv[]){
 
     return 0;
 }
-
