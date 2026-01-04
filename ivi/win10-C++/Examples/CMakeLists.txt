@@ -45,7 +45,9 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux")
     include_directories(./deps/nsukitcpp)
     link_directories(/lib/)
 elseif(CMAKE_SYSTEM_NAME MATCHES "Windows")
-    link_directories(./lib)
+    # Use installed IVI libraries
+    include_directories("C:/Program Files/IVI Foundation/IVI/RIGOL/include")
+    link_directories("C:/Program Files/IVI Foundation/IVI/RIGOL/lib")
 elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
     # macOS-specific settings
 else()
@@ -111,11 +113,11 @@ add_simple_test(testCombined "AWG_DAQ_Combined.cpp")
 add_simple_test(startCombined "AWG_DAQ_Start.cpp")
 add_simple_test(stopCombined "AWG_DAQ_Stop.cpp")
 
-# ===============================================================================
-# getBoardInfo 获取业务卡的逻辑版本号
-# =================================
-add_executable(getBoardInfo "getBoardInfo.cpp" ${JSONCPP_SOURCES})
-target_link_libraries(getBoardInfo ${COMMON_LIBRARIES})
+## ===============================================================================
+## getBoardInfo 获取业务卡的逻辑版本号
+## =================================
+#add_executable(getBoardInfo "getBoardInfo.cpp" ${JSONCPP_SOURCES})
+#target_link_libraries(getBoardInfo ${COMMON_LIBRARIES})
 
 # ===============================================================================
 # 构建信息输出
