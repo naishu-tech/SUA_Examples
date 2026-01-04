@@ -67,10 +67,8 @@ struct Deque {
 
 // Configuration structure to hold all variables
 struct SystemConfig {
-//    std::string python_path = "D:/AppData/Local/miniforge3/envs/JupyterServer";
-
     // System configuration
-    std::string resource_db_path = "./resourceDB.json";
+    std::string resource_db_path = "C:/Program Files/IVI Foundation/IVI/RIGOL/file/resourceDB.json";
     std::string logicalName = "PXI::0::INSTR";
 
     // Trigger configuration
@@ -153,7 +151,7 @@ void write_file_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& 
     std::ofstream outF;
     int cnt = 0;
     std::string file_path = path+ channelName + "_" + std::to_string(cnt) + ".data";
-    nsuSize_t speed_count = 0;
+    size_t speed_count = 0;
     auto st = std::chrono::steady_clock::now();
     while (true) {
         lock = new std::unique_lock<std::mutex>(*mu);
@@ -173,8 +171,8 @@ void write_file_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& 
 
         mem = reinterpret_cast<iviDigitizer_memData *>(q->full.Pop());
 
-        outF.write(mem->memDataHandle, (waveformArraySize * sizeof(ViInt16)));
-        q->empty.Push(reinterpret_cast<nsuMemory_p>(mem));
+        outF.write(IviDigitizer_GetMemDataHandle(mem), (waveformArraySize * sizeof(ViInt16)));
+        q->empty.Push(reinterpret_cast<ViMem>(mem));
         lock = new std::unique_lock<std::mutex>(*mu);
         delete lock;
         speed_count += waveformArraySize;
@@ -196,7 +194,7 @@ void upload_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& chan
     std::vector<int> channelsInt;
     int dictionary = 0;
     int cnt = 0;
-    nsuSize_t speed_count = 0;
+    size_t speed_count = 0;
     ViInt32 * m[30];
 
     auto st = std::chrono::steady_clock::now();
@@ -210,7 +208,7 @@ void upload_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& chan
 
         s = IviDigitizer_ReadWaveformInt16(vi, channelName.c_str(), waveformArraySize, mem, 0.1);//100ms timeout
         if (s != VI_STATE_SUCCESS){
-            q->empty.Push(reinterpret_cast<nsuMemory_p>(mem));
+            q->empty.Push(reinterpret_cast<ViMem>(mem));
             continue;
         }
         dictionary += 1;
@@ -230,7 +228,7 @@ void upload_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& chan
                 size_t readSamples = std::min(static_cast<size_t>(waveformArraySize), static_cast<size_t>(readBytes / sizeof(ViInt16)));
 
                 // Copy data
-                const auto srcData = reinterpret_cast<const ViInt16*>(mem->memDataHandle);
+                const auto srcData = reinterpret_cast<const ViInt16*>(IviDigitizer_GetMemDataHandle(mem));
                 std::vector<ViInt16> allData(srcData, srcData + readSamples);
 
                 // Skip first 32 bytes (16 samples) for plotting
@@ -251,7 +249,7 @@ void upload_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& chan
             }
 #endif
         }
-        q->full.Push(reinterpret_cast<nsuMemory_p>(mem));
+        q->full.Push(reinterpret_cast<ViMem>(mem));
     }
     lock = new std::unique_lock<std::mutex>(*mu);
     q->stopFlag = 1;
@@ -292,7 +290,7 @@ int main(int argc, char *argv[]){
 
     std::cout << "\n=== Initialize IviSUATools ===" << std::endl;
     iviSUATools_vi = new iviSUATools_ViSession;
-    s = IviSUATools_Initialize(iviSUATools_vi);
+    s = IviSUATools_Initialize(iviSUATools_vi, config.logicalName, VI_STATE_FALSE, VI_STATE_TRUE, config.resource_db_path);
     std::cout << "IviSUATools initialized successfully" << std::endl;
 
     std::cout << "\n=== Initialize IviFgen ===" << std::endl;
@@ -476,7 +474,7 @@ int main(int argc, char *argv[]){
         if (chnl_Deque.find(numChannel) == chnl_Deque.end()) {
             s = IviDigitizer_ConfigureChannelDataDepthInt16(iviDigitizer_vi, channel, waveformArraySize);
             for (int i=0; i<10; i++) {
-                auto mem = reinterpret_cast<nsuMemory_p>(IviDigitizer_CreateMemInt16(iviDigitizer_vi, waveformArraySize));
+                auto mem = reinterpret_cast<ViMem>(IviDigitizer_CreateMemInt16(iviDigitizer_vi, waveformArraySize));
                 chnl_Deque[numChannel].empty.Push(mem);
             }
         }

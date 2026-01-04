@@ -2,29 +2,14 @@
 #define IVI_IVIFGEN_H
 
 #include "IviBase.h"
-#include "jsoncpp/json/json.h"
+
+struct waveformHandle_Impl;
 
 struct waveformHandle {
-    void* dataHandle = nullptr;
-    ViUInt32 idx = 0;
-    ViConstString channelName = "0";
-    ViUInt32 wfmSize = 0;
-    ViUInt32 memOffset = 0;
-    ViUInt32 writtenSize = 0;
-    ViUInt32 wfmHandleNum = 0;
-    ViBoolean isCreated = false;
+    waveformHandle_Impl* pImpl = nullptr;
 };
 
-class LRUCache {
-private:
-    std::unordered_map<uintptr_t, waveformHandle *> cacheMap;
-public:
-    waveformHandle * get( uintptr_t key);
-    void put(uintptr_t key, waveformHandle * item);
-    void remove(uintptr_t key);
-    void update(uintptr_t key, waveformHandle * item);
-    void clearCacheMap();
-};
+struct iviFgen_ViSession_Impl;
 
 struct iviFgen_ViSession{
     iviBase_ViSession* vi{};
@@ -41,10 +26,11 @@ struct iviFgen_ViSession{
     std::map<ViUInt32, channelInfor> channelInforMap{};
     std::map<ViUInt32, channelXDMAInfor> channelXDMAInforMap{};
     ViUInt32 chanlNum;
-    LRUCache cache;
 
     ViReal64 timeOut = 1.0;
     ViInt32 waitTimes = 3;
+
+    iviFgen_ViSession_Impl* pImpl = nullptr;
 };
 
 DLLEXTERN RIGOLLIB_API ViStatus IviFgen_Initialize (const ViString& logicalName, ViBoolean IDQuery, ViBoolean resetDevice, iviFgen_ViSession *vi, const ViString& resourceDBPath = "./resourceDB.json");

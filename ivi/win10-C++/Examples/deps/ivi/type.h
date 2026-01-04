@@ -1,5 +1,5 @@
-#ifndef IVI_TYPE_H
-#define IVI_TYPE_H
+#ifndef IVI_TYPES_H
+#define IVI_TYPES_H
 
 // ===============================================================================
 // Platform-related Macro Definitions
@@ -50,51 +50,13 @@
 #include <filesystem>
 #include <exception>
 #include <unordered_set>
+#include <unordered_map>
 
 // Concurrency and time
 #include <thread>
 #include <atomic>
 #include <chrono>
 #include <condition_variable>
-
-// ===============================================================================
-// System-specific Headers
-// ===============================================================================
-#ifdef __linux__
-    #include <fcntl.h>
-    #include <unistd.h>
-    #include <sys/ioctl.h>
-#elif defined(_WIN32)
-    // Windows-specific headers can be added here
-    // #include <windows.h>  // If needed
-#endif
-
-// ===============================================================================
-// Third-party Library Headers
-// ===============================================================================
-// JSON library
-#include "jsoncpp/json/json.h"
-
-// NSUKit related
-#include "../nsukitcpp/NSUKit.h"
-#include "../nsukitcpp/xdma_api.h"
-#include "../nsukitcpp/high_level/HardwareSync.h"
-
-// Conditionally dependent interfaces
-#ifdef IVI_WITH_XDMA
-    #include "interface/pcie_interface.h"
-#endif
-
-#ifdef IVI_WITH_VPS
-    #include "interface/vps_interface.h"
-#endif
-
-// ===============================================================================
-// Project Internal Headers
-// ===============================================================================
-#include "IviATTR.h"
-#include "IviVAL.h"
-#include "version.h"
 
 // ===============================================================================
 // Mathematical Constant Definitions
@@ -203,4 +165,5 @@ typedef ViUInt32            ViObject;
 typedef ViUInt32            ViAttr;
 typedef void*               ViMem;
 
-#endif // IVI_TYPE_H
+#endif // IVI_TYPES_H
+

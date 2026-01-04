@@ -1,9 +1,8 @@
 #ifndef IVI_IVIBASE_H
 #define IVI_IVIBASE_H
 
-#include "exprtk/exprtk.hpp"
 #include "type.h"
-#include "jsoncpp/json/json.h"
+
 #include "configureNSUKit.h"
 #include "IviATTR.h"
 #include "IviVAL.h"
@@ -67,9 +66,9 @@ struct channelInfor {
     ~channelInfor() = default;
 };
 
+struct iviBase_ViSession_Impl;
+
 struct iviBase_ViSession{
-    nsukit::BaseKit* kit{};
-    nsuInitParam_t param{};
     ViString logicalName = "Sim";
     ViString name = "sim;sim;sim";
     ViString resourceDescriptr = "sim://0;sim://0;sim://0";
@@ -104,44 +103,17 @@ struct iviBase_ViSession{
     ViUInt32 workModeAWG = 3;
     ViUInt32 workModeDAQ = 0;
 
-    Json::Reader ICDReader;
-    Json::Value icdRoot{};
-    Json::Value *icdAttr;
-    Json::Value *icdAction;
-    Json::Value *icdSequence;
+    iviBase_ViSession_Impl* pImpl = nullptr;
 };
 
 
-std::string extractName(const std::string& str);
-ViStatus get_module(iviBase_ViSession* vi, const ViString& m_name, const ViString& path);
+
 DLLEXTERN RIGOLLIB_API ViStatus IviBase_Initialize (const ViString& logicalName, ViBoolean IDQuery, ViBoolean resetDevice, iviBase_ViSession *vi, const ViString& resourceDBPath = "./resourceDB.json");
-ViStatus InitializeJSON (iviBase_ViSession *vi);
-ViStatus InitializeAttrSim (iviBase_ViSession *vi);
 DLLEXTERN RIGOLLIB_API ViStatus IviBase_Reset (iviBase_ViSession *vi);
 DLLEXTERN RIGOLLIB_API ViStatus IviBase_Close (iviBase_ViSession *vi);
 DLLEXTERN RIGOLLIB_API ViStatus IviBase_RFConfig (iviBase_ViSession *vi);
 DLLEXTERN RIGOLLIB_API ViAttr IviBase_queryAttrID (iviBase_ViSession *vi, const ViString& attrName);
 DLLEXTERN RIGOLLIB_API ViStatus IviBase_SaveJson (iviBase_ViSession *vi, const ViString& iviSavePath="./ivi.json", const ViString& icdSavePath="./icd.json");
-
-void* get_nth_element(const std::list<void*>& lst, int n);
-
-void set_nth_element_ViInt32(std::list<void *>& lst, int n, ViInt32 value);
-void set_nth_element_ViUInt32(std::list<void *>& lst, int n, ViUInt32 value);
-void set_nth_element_ViReal64(std::list<void *>& lst, int n, ViReal64 value);
-void set_nth_element_ViBoolean(std::list<void *>& lst, int n, ViBoolean value);
-void set_nth_element_ViString(std::list<void *>& lst, int n, const ViString& value);
-
-int InitJSON(std::string path, iviBase_ViSession *vi);
-ViStatus ivi_attr2map(Json::Value* icdAttr, iviBase_ViSession *vi);
-ViStatus ivi_action2map(Json::Value* icdAction, iviBase_ViSession *vi);
-ViStatus ivi_sequence2map(Json::Value* icdSequence, iviBase_ViSession *vi);
-
-typedef double eType; // numeric type (float, double, mpfr etc...)
-ViStatus get_value(iviBase_ViSession *vi, const ViString& configurationName, const ViString& configurationValue, ViInt32 channel, eType *x);
-ViStatus set_value(iviBase_ViSession *vi, const ViString& configurationName, const ViString& configurationValue, ViInt32 channel, eType result);
-ViStatus iviAction(iviBase_ViSession *vi, ViInt32 channel, std::list<std::string> *sequence);
-
-ViStatus judgmentChannel(ViAttr attributeID, AttrParam* attrParam, ViInt32 numChannel);
 
 DLLEXTERN RIGOLLIB_API ViStatus IviBase_SetAttributeViInt32(iviBase_ViSession *vi,  ViConstString channel, ViAttr attributeID, ViInt32 attributeValue);
 DLLEXTERN RIGOLLIB_API ViStatus IviBase_SetAttributeViUInt32(iviBase_ViSession *vi, ViConstString channel, ViAttr attributeID, ViUInt32 attributeValue);

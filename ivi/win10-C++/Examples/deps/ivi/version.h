@@ -18,7 +18,7 @@
 #define IVI_VER_(major, minor, patch)         (((major) << 16) + ((minor) << 8) + (patch))
 #define IVI_CURRENT_VERSION_CODE              IVI_VER_(IVI_PROJECT_VER_MAJOR, IVI_PROJECT_VER_MINOR, IVI_PROJECT_VER_PATCH)
 
-#define IVI_BUILD_TIME "20251225_182857"
+#define IVI_BUILD_TIME "20251229_141121"
 #define IVI_GIT_INFO "fix/v1.1.2-bug_62822d8"
 
 /* #undef IVI_DEBUG_EN */

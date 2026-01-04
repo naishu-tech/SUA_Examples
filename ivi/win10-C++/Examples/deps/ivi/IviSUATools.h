@@ -15,7 +15,6 @@
 #include "IviFgen.h"
 #include "IviSyncATrig.h"
 #include "IviPXIMainBoard.h"
-#include "jsoncpp/json/json.h"
 
 // ===============================================================================
 // Data Structure Definitions

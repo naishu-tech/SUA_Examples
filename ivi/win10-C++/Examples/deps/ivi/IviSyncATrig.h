@@ -4,7 +4,6 @@
 #include "IviBase.h"
 #include "IviFgen.h"
 #include "IviDigitizer.h"
-#include "jsoncpp/json/json.h"
 
 struct iviSyncATrig_ViSession{
     iviBase_ViSession* vi{};

@@ -2,7 +2,6 @@
 #define IVI_IVIDIGITIZER_H
 
 #include "IviBase.h"
-#include "jsoncpp/json/json.h"
 
 #include <atomic>
 #include <thread>
@@ -17,159 +16,16 @@
 #include <queue>
 #include <deque>
 
-class BinarySemaphore {
-private:
-    mutable std::mutex mtx_;
-    std::condition_variable cv_;
-    std::atomic<bool> available_{false};
-
-public:
-    explicit BinarySemaphore(int initial_count = 0) noexcept
-            : available_(initial_count > 0) {}
-
-    // Move constructor and assignment
-    BinarySemaphore(BinarySemaphore&& other) noexcept
-            : available_(other.available_.load()) {
-        other.available_.store(false);
-    }
-
-    BinarySemaphore& operator=(BinarySemaphore&& other) noexcept {
-        if (this != &other) {
-            available_.store(other.available_.load());
-            other.available_.store(false);
-        }
-        return *this;
-    }
-
-    // Copy disabled
-    BinarySemaphore(const BinarySemaphore&) = delete;
-    BinarySemaphore& operator=(const BinarySemaphore&) = delete;
-
-    void release() noexcept {
-        {
-            std::lock_guard<std::mutex> lock(mtx_);
-            available_.store(true, std::memory_order_release);
-        }
-        cv_.notify_one();
-    }
-
-    void acquire() {
-        std::unique_lock<std::mutex> lock(mtx_);
-        cv_.wait(lock, [this] {
-            return available_.load(std::memory_order_acquire);
-        });
-        available_.store(false, std::memory_order_release);
-    }
-
-    bool try_acquire() noexcept {
-        std::lock_guard<std::mutex> lock(mtx_);
-        if (available_.load(std::memory_order_acquire)) {
-//            available_.store(false, std::memory_order_release);
-            return true;
-        }
-        return false;
-    }
-
-    template<class Rep, class Period>
-    bool try_acquire_for(const std::chrono::duration<Rep, Period>& timeout_duration) {
-        std::unique_lock<std::mutex> lock(mtx_);
-        if (cv_.wait_for(lock, timeout_duration, [this] {
-            return available_.load(std::memory_order_acquire);
-        })) {
-//            available_.store(false, std::memory_order_release);
-            return true;
-        }
-        return false;
-    }
-
-    template<class Clock, class Duration>
-    bool try_acquire_until(const std::chrono::time_point<Clock, Duration>& timeout_time) {
-        std::unique_lock<std::mutex> lock(mtx_);
-        if (cv_.wait_until(lock, timeout_time, [this] {
-            return available_.load(std::memory_order_acquire);
-        })) {
-//            available_.store(false, std::memory_order_release);
-            return true;
-        }
-        return false;
-    }
-
-    bool available() const noexcept {
-        return available_.load(std::memory_order_acquire);
-    }
-};
-
-
-// C++17 optimized channel transfer state
-struct ChannelTransferState {
-    BinarySemaphore isTransferring{0};
-    BinarySemaphore dataReadySemaphore{0};
-    mutable std::mutex transferMutex;
-    std::atomic<std::uint32_t> lastDataDepth{0};
-    std::atomic<std::chrono::steady_clock::time_point::rep> lastCheckTime{};
-
-    ChannelTransferState() noexcept {
-        lastCheckTime.store(std::chrono::steady_clock::now().time_since_epoch().count(),
-                            std::memory_order_release);
-    }
-
-    ChannelTransferState(ChannelTransferState&& other) noexcept
-            : isTransferring(std::move(other.isTransferring)) // Modified by tjf-20250912
-            , dataReadySemaphore(std::move(other.dataReadySemaphore))
-            , lastDataDepth(other.lastDataDepth.load())
-            , lastCheckTime(other.lastCheckTime.load()) {
-        other.lastDataDepth.store(0);
-    }
-
-    ChannelTransferState& operator=(ChannelTransferState&& other) noexcept {
-        if (this != &other) {
-            isTransferring= std::move(other.isTransferring); // Modified by tjf-20250912
-            dataReadySemaphore = std::move(other.dataReadySemaphore);
-            lastDataDepth.store(other.lastDataDepth.load());
-            lastCheckTime.store(other.lastCheckTime.load());
-
-            other.lastDataDepth.store(0);
-        }
-        return *this;
-    }
-
-    // Copy disabled
-    ChannelTransferState(const ChannelTransferState&) = delete;
-    ChannelTransferState& operator=(const ChannelTransferState&) = delete;
-
-    // Get last check time
-    std::chrono::steady_clock::time_point getLastCheckTime() const noexcept {
-        auto count = lastCheckTime.load(std::memory_order_acquire);
-        return std::chrono::steady_clock::time_point{std::chrono::steady_clock::duration{count}};
-    }
-
-    // Update last check time
-    void updateLastCheckTime() noexcept {
-        lastCheckTime.store(std::chrono::steady_clock::now().time_since_epoch().count(),
-                            std::memory_order_release);
-    }
-};
+// ===============================================================================
+// 不透明类型 - 隐藏内部实现
+// ===============================================================================
+struct iviDigitizer_memData_Impl;
 
 struct iviDigitizer_memData{
-    nsuMemory_p memData{};
-    ViString memDataType = "ViInt16";
-    ViUInt32 memDataSize=0;
-    char *memDataHandle{};
+    iviDigitizer_memData_Impl* pImpl = nullptr;
 };
 
-struct Ringbuffer_DMA_channel_struct
-{
-    ViConstString channelName{}; // DMA read channel
-    ViUInt32 waveformArraySize{}; // DMA read size
-    iviDigitizer_memData *waveformArray{}; // DMA read data pointer
-    ViReal64 startTime_s{}; // Time when Read function starts
-    ViReal64 maximumTime_s{}; // DMA read maximum time
-    const char *dataTypeName{}; // DMA read data type
-
-    // Use condition variable to implement blocking wait
-    std::shared_ptr<std::condition_variable> completion_cv;
-    std::shared_ptr<bool> is_success; // DMA read success flag (thread wakeup indicates DMA completion)
-};
+struct iviDigitizer_ViSession_Impl;
 
 struct iviDigitizer_ViSession{
     iviBase_ViSession* vi{};
@@ -211,8 +67,6 @@ struct iviDigitizer_ViSession{
     ViReal64 timeOut = 1.0;
     ViInt32 waitTimes = 3;
 
-    // Use unordered_map to improve lookup performance
-    std::map<std::int32_t, ChannelTransferState> channelTransferStates;
     mutable std::shared_mutex queryThreadMutex;  // Read-write lock
     std::atomic<bool> queryThreadActive{true};
 
@@ -237,7 +91,6 @@ struct iviDigitizer_ViSession{
 
     ViUInt32 chnlLevelEnabled = 0b11111111;
 
-    std::queue<std::shared_ptr<Ringbuffer_DMA_channel_struct>> Ringbuffer_DMA_channel_queue;
     std::mutex Ringbuffer_queue_mutex; // Queue operation lock
     std::mutex Ringbuffer_state_mutex; // State variable protection lock
 
@@ -247,6 +100,8 @@ struct iviDigitizer_ViSession{
 
     ViUInt8 ringbuffer_ChaEnMask=0x00; // Channel enable mask, used in sync mode to determine if all channels are ready, the initial value of this parameter needs to be set in the init function
     bool is_AllChannelReady = false;
+
+    iviDigitizer_ViSession_Impl* pImpl = nullptr;
 };
 
 
@@ -317,6 +172,10 @@ DLLEXTERN RIGOLLIB_API ViStatus IviDigitizer_TriggerStart (iviDigitizer_ViSessio
 DLLEXTERN RIGOLLIB_API iviDigitizer_memData* IviDigitizer_CreateMemInt16 (iviDigitizer_ViSession *vi, ViUInt32 memDataSize);
 DLLEXTERN RIGOLLIB_API iviDigitizer_memData* IviDigitizer_CreateMemInt8 (iviDigitizer_ViSession *vi, ViUInt32 memDataSize);
 DLLEXTERN RIGOLLIB_API ViStatus IviDigitizer_ClearMem (iviDigitizer_ViSession *vi, iviDigitizer_memData* memData);
+
+DLLEXTERN RIGOLLIB_API char* IviDigitizer_GetMemDataHandle(iviDigitizer_memData* memData);
+DLLEXTERN RIGOLLIB_API ViUInt32 IviDigitizer_GetMemDataSize(iviDigitizer_memData* memData);
+DLLEXTERN RIGOLLIB_API ViString IviDigitizer_GetMemDataType(iviDigitizer_memData* memData);
 
 DLLEXTERN RIGOLLIB_API ViStatus IviDigitizer_ConfigureChannelDataDepth(iviDigitizer_ViSession *vi, const std::string& channelsName, ViUInt32 dataDepth);
 DLLEXTERN RIGOLLIB_API ViStatus IviDigitizer_ConfigureChannelDataDepthInt16(iviDigitizer_ViSession *vi, const std::string& channelsName, ViUInt32 dataDepth);
