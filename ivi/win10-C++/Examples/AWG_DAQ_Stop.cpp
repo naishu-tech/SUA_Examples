@@ -18,7 +18,7 @@
 // Configuration structure to hold all variables
 struct SystemConfig {
     // System configuration
-    std::string resource_db_path = "C:/Program Files/IVI Foundation/IVI/Rigol/IVI/file/resourceDB.json";
+    std::string resource_db_path ="C:/Program Files/IVI Foundation/IVI/RIGOL/file/resourceDB.json";
     std::string logicalName = "PXI::0::INSTR";
 };
 

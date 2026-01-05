@@ -13,7 +13,6 @@
 
 ViStatus preDAQ(iviDigitizer_ViSession* iviDigitizer_vi){
     ViStatus error = VI_STATE_SUCCESS;
-//    error = IviDigitizer_SetAttributeViInt32(iviDigitizer_vi, "0", IVIDIGITIZER_ATTR_TRIGGER_CONFIG_EXECUTE, 0);
     ViReal64 DAC_sample_rate;
     error = IviDigitizer_GetAttributeViReal64(iviDigitizer_vi, "0", IVIDIGITIZER_ATTR_ADC_SAMPLE_RATE, &DAC_sample_rate);
     error = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIBASE_ATTR_LSDADC_SET_CHNL_TYPE, 0);
@@ -60,35 +59,13 @@ struct Deque {
     int dataNum = 0;
 };
 
-std::vector<std::string> split(const std::string& str, char delimiter) {
-    std::vector<std::string> result;
-    std::stringstream ss(str);
-    std::string temp;
-    while (std::getline(ss, temp, delimiter)) {
-        result.push_back(temp);
-    }
-    return result;
-}
-
-// Smart number parsing: supports hexadecimal (0x prefix) and decimal (including negative numbers)
-long parseNumber(const char* str) {
-    std::string s(str);
-    if (s.length() >= 2 && s.substr(0, 2) == "0x") {
-        // Hexadecimal parsing
-        return std::strtol(str, nullptr, 16);
-    } else {
-        // Decimal parsing (supports negative numbers)
-        return std::strtol(str, nullptr, 10);
-    }
-}
-
 void write_file_thread(iviDigitizer_ViSession *vi, Deque *q, std::string channelName, ViUInt32 waveformArraySize, const std::string &path, std::mutex *mu) {
     std::unique_lock<std::mutex> *lock;
     iviDigitizer_memData* mem;
     std::ofstream outF;
 //    outF.open(path + channelName + ".data", std::ofstream::binary);
     int cnt = 0;
-    nsuSize_t speed_count = 0;
+    size_t speed_count = 0;
     auto st = std::chrono::steady_clock::now();
     while (true) {
         lock = new std::unique_lock<std::mutex>(*mu);
@@ -106,8 +83,8 @@ void write_file_thread(iviDigitizer_ViSession *vi, Deque *q, std::string channel
 
         mem = reinterpret_cast<iviDigitizer_memData *>(q->full.Pop());
 
-        outF.write(mem->memDataHandle, (waveformArraySize * sizeof(ViInt16)));
-        q->empty.Push(reinterpret_cast<nsuMemory_p>(mem));
+        outF.write(IviDigitizer_GetMemDataHandle(mem), (waveformArraySize * sizeof(ViInt16)));
+        q->empty.Push(reinterpret_cast<ViMem>(mem));
         lock = new std::unique_lock<std::mutex>(*mu);
         q->dataNum -= 1;
         delete lock;
@@ -125,7 +102,7 @@ void upload_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& chan
     std::vector<int> channelsInt;
     int dictionary = 0;
     int cnt = 0;
-    nsuSize_t speed_count = 0;
+    size_t speed_count = 0;
     ViInt32 * m[30];
 
     auto st = std::chrono::steady_clock::now();
@@ -144,7 +121,7 @@ void upload_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& chan
 
         if (s != VI_STATE_SUCCESS){
             // std::cout << "[Upload] Channel " << channelName << " failed, putting back into queue, dictionary=" << dictionary << std::endl;
-            q->empty.Push(reinterpret_cast<nsuMemory_p>(mem));
+            q->empty.Push(reinterpret_cast<ViMem>(mem));
             continue;
         }
 
@@ -160,7 +137,7 @@ void upload_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& chan
             st = std::chrono::steady_clock::now();
         }
         cnt++;
-        q->full.Push(reinterpret_cast<nsuMemory_p>(mem));
+        q->full.Push(reinterpret_cast<ViMem>(mem));
         lock = new std::unique_lock<std::mutex>(*mu);
         q->dataNum += 1;
         delete lock;
@@ -173,58 +150,47 @@ void upload_thread(iviDigitizer_ViSession *vi, Deque *q, const std::string& chan
 
 int main(int argc, char *argv[]){
 
-#ifdef _WIN32
-    std::cout << "=== Configuring Python Paths ===" << std::endl;
-    configure_python_paths("C:/Users/ll/.conda/envs/JupyterServer");
-    std::cout << "Python paths configured" << std::endl;
-#endif
-
     ViUInt32 res = 0;
     ViStatus s = VI_STATE_SUCCESS;
 
-    std::cout << "\n=== Initialize IviSUATools ===" << std::endl;
-    auto iviSUATools_vi = new iviSUATools_ViSession;
-    s = IviSUATools_Initialize(iviSUATools_vi);
-    std::cout << "IviSUATools initialized successfully" << std::endl;
-
-    std::string resource_db_path = "./resourceDB.json";
+    std::string resource_db_path ="C:/Program Files/IVI Foundation/IVI/RIGOL/file/resourceDB.json";
     std::string logicalName = "PXI::0::INSTR";
 
-    std::cout << "\n=== Initialize IviFgen ===" << std::endl;
-    auto iviFgen_vi = new iviFgen_ViSession;
-    s = IviFgen_Initialize(logicalName, VI_STATE_FALSE, VI_STATE_TRUE, iviFgen_vi, resource_db_path);
-    std::cout << "IviFgen initialized successfully" << std::endl;
+    std::cout << "\n=== Initialize IviSUATools ===" << std::endl;
+    auto iviSUATools_vi = new iviSUATools_ViSession;
+    s = IviSUATools_Initialize(iviSUATools_vi, logicalName, VI_STATE_FALSE, VI_STATE_TRUE, resource_db_path);
+    std::cout << "IviSUATools initialized successfully" << std::endl;
 
     std::cout << "\n=== Initialize IviDigitizer ===" << std::endl;
     auto iviDigitizer_vi = new iviDigitizer_ViSession;
     s = IviDigitizer_Initialize(logicalName, VI_STATE_FALSE, VI_STATE_TRUE, iviDigitizer_vi, resource_db_path);
     std::cout << "IviDigitizer initialized successfully" << std::endl;
 
-    ViUInt32 triggerSource = IVIDIGITIZER_VAL_TRIGGER_SOURCE_PXI_STAR_TRIG|IVIDIGITIZER_VAL_TRIGGER_SOURCE_PXI_SYNC; // 默认触发源
-    std::string channelName = "0,1";                                        // 默认通道
-    ViUInt32 times = 20;                                                     // 默认数据包数
-    ViUInt32 syncTriggerChannel = 0xFF;                                      // 默认同步触发通道设置
-    ViInt32 triggerEdgetype = 0x01;                                          // 默认触发边沿类型
-    ViInt32 chTriggerEdgetype = 0x01;                                        // 默认通道触发边沿类型
+    ViUInt32 triggerSource = IVIDIGITIZER_VAL_TRIGGER_SOURCE_PXI_STAR_TRIG|IVIDIGITIZER_VAL_TRIGGER_SOURCE_PXI_SYNC; // Default trigger source
+    std::string channelName = "0,1";                                        // Default channels
+    ViUInt32 times = 20;                                                     // Default number of data packets
+    ViUInt32 syncTriggerChannel = 0xFF;                                      // Default sync trigger channel setting
+    ViInt32 triggerEdgetype = 0x01;                                          // Default trigger edge type
+    ViInt32 chTriggerEdgetype = 0x01;                                        // Default channel trigger edge type
 
 
-    ViInt32 mode;                                                               // 声明工作模式变量
-    s = IviDigitizer_GetAttributeViInt32(iviDigitizer_vi, "0", IVIDIGITIZER_ATTR_SAMPLE_WORK_MODE, &mode);  // 获取数字化仪的采样工作模式
-    if (mode != IVIDIGITIZER_VAL_WORK_MODE_RING_BUFFER) {                      // 检查工作模式是否为环形缓冲区模式
-        std::cout << "Error: The Digitizer Work Mode is not RingBuffer!" << std::endl;  // 输出工作模式错误信息
-        isFAIL(IviDigitizer_Close(iviDigitizer_vi));                           // 关闭数字化仪会话
-        isFAIL(IviSUATools_Close(iviSUATools_vi));                             // 关闭SUA工具会话
-        delete iviDigitizer_vi;                                                 // 删除数字化仪对象
-        delete iviSUATools_vi;                                                  // 删除SUA工具对象
-        return 0;                                                               // 退出程序返回0
+    ViInt32 mode;                                                               // Declare work mode variable
+    s = IviDigitizer_GetAttributeViInt32(iviDigitizer_vi, "0", IVIDIGITIZER_ATTR_SAMPLE_WORK_MODE, &mode);  // Get the sampling work mode of the digitizer
+    if (mode != IVIDIGITIZER_VAL_WORK_MODE_RING_BUFFER) {                      // Check if the work mode is ring buffer mode
+        std::cout << "Error: The Digitizer Work Mode is not RingBuffer!" << std::endl;  // Output work mode error message
+        isFAIL(IviDigitizer_Close(iviDigitizer_vi));                           // Close digitizer session
+        isFAIL(IviSUATools_Close(iviSUATools_vi));                             // Close SUA tools session
+        delete iviDigitizer_vi;                                                 // Delete digitizer object
+        delete iviSUATools_vi;                                                  // Delete SUA tools object
+        return 0;                                                               // Exit program and return 0
     }
 
-    std::cout << "\n=== LSDADC Config ===" << std::endl;                       // 输出LSDADC配置标题
-    s = preDAQ(iviDigitizer_vi);                                               // 调用预DAQ配置函数
+    std::cout << "\n=== LSDADC Config ===" << std::endl;                       // Output LSDADC configuration title
+    s = preDAQ(iviDigitizer_vi);                                               // Call pre-DAQ configuration function
 
-    std::cout << "\n=== RF Config ===" << std::endl;                           // 输出射频配置标题
-    s = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIBASE_ATTR_OFFLINE_WORK, 1);  // 设置数字化仪离线工作模式为启用
-    s = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIBASE_ATTR_RF_CONFIG, 0);     // 设置射频配置参数为0
+    std::cout << "\n=== RF Config ===" << std::endl;                           // Output RF configuration title
+    s = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIBASE_ATTR_OFFLINE_WORK, 1);  // Set digitizer offline work mode to enabled
+    s = IviDigitizer_SetAttributeViUInt32(iviDigitizer_vi, "0", IVIBASE_ATTR_RF_CONFIG, 0);     // Set RF configuration parameter to 0
 
     // Set trigger mode
     ViUInt32 triggerSourcemask = syncTriggerChannel; // Use command line parameter to set sync trigger channel
@@ -261,7 +227,6 @@ int main(int argc, char *argv[]){
     ViUInt32 triggerHoldOffTime = 0;
     ViConstString triggerEdgechannelName = "-1";
     ViInt32 triggerEdgeSet = 32768;
-    s = triggerConfigAWG(iviFgen_vi, IVIFGEN_VAL_TRIGGER_SOURCE_INTERNAL);
     s = triggerConfigDAQ(iviDigitizer_vi, IVIFGEN_VAL_TRIGGER_SOURCE_INTERNAL);
     s = internaltriggerConfigDAQ(iviDigitizer_vi, triggerPulseWidth, triggerRepetSize, triggerPeriod, triggerDelay, triggerEdgeType, triggerHoldOffTime, triggerEdgechannelName, triggerEdgeSet);
 
@@ -276,63 +241,63 @@ int main(int argc, char *argv[]){
     }
 
     std::cout << "\n=== Sample Config ===" << std::endl;                       // Output sample configuration title
-    ViConstString sampleEnableChannel = "-1";                                  // Set sample enable channel to "-1" (represents all channels)
-    ViInt32 sampleEnable = 1;                                                  // Set sample enable flag to 1 (enabled)
-    ViConstString sampleStrageDepthChannel = "-1";                            // Set sample storage depth channel to "-1" (represents all channels)
-    ViUInt32 sampleStrageDepth = 65536;                                        // Set sample storage depth to 65536 sample points
-    ViConstString sampleLenPreChannel = "-1";                                 // Set sample pre-trigger length channel to "-1" (represents all channels)
-    ViUInt32 sampleLenPre = 32768;                                             // Set sample pre-trigger length to 32768 sample points
-    ViConstString sampleTimesChannel = "-1";                                  // Set sample times channel to "-1" (represents all channels)
-    ViUInt32 sampleTimes = 4294967295;                                         // Set sample times to maximum value (continuous sampling)
-    ViConstString sampleLogicalExtractionMultipleChannel = "-1";              // Set logical extraction multiple channel to "-1" (represents all channels)
-    ViUInt32 sampleLogicalExtractionMultiple = 1;                             // Set logical extraction multiple to 1
-    ViConstString sampleCollectDataTruncationChannel = "-1";                  // Set data collection truncation channel to "-1" (represents all channels)
-    ViUInt32 sampleCollectDataTruncation = 0;                                  // Set data collection truncation to 0 (no truncation)
-    ViConstString sampleCollectDataTypeChannel = "-1";                        // Set data collection type channel to "-1" (represents all channels)
-    ViUInt32 sampleCollectDataType = 0;                                        // Set data collection type to 0
-    sampleConfigDAQ(iviDigitizer_vi,                                          // Call sample configuration function with the following parameters:
-                    sampleEnableChannel, sampleEnable,                                    // Sample enable channel and enable flag
-                    sampleStrageDepthChannel, sampleStrageDepth,                         // Storage depth channel and depth value
-                    sampleLenPreChannel, sampleLenPre,                                   // Pre-trigger length channel and length value
-                    sampleTimesChannel, sampleTimes,                                     // Sample times channel and times value
-                    sampleLogicalExtractionMultipleChannel, sampleLogicalExtractionMultiple,  // Logical extraction multiple channel and multiple value
-                    sampleCollectDataTruncationChannel, sampleCollectDataTruncation,     // Data truncation channel and truncation setting
-                    sampleCollectDataTypeChannel, sampleCollectDataType);               // Data type channel and type setting
+    ViConstString sampleEnableChannel = "-1";                                  // Sample enable channel "-1" (all channels)
+    ViInt32 sampleEnable = 1;                                                  // Sample enable flag 1 (enabled)
+    ViConstString sampleStrageDepthChannel = "-1";                            // Sample storage depth channel "-1" (all channels)
+    ViUInt32 sampleStrageDepth = 65536;                                        // Sample storage depth 65536 points
+    ViConstString sampleLenPreChannel = "-1";                                 // Sample pre-trigger length channel "-1" (all channels)
+    ViUInt32 sampleLenPre = 32768;                                             // Sample pre-trigger length 32768 points
+    ViConstString sampleTimesChannel = "-1";                                  // Sample times channel "-1" (all channels)
+    ViUInt32 sampleTimes = 4294967295;                                         // Sample times maximum value (continuous sampling)
+    ViConstString sampleLogicalExtractionMultipleChannel = "-1";              // Logical extraction multiple channel "-1" (all channels)
+    ViUInt32 sampleLogicalExtractionMultiple = 1;                             // Logical extraction multiple 1
+    ViConstString sampleCollectDataTruncationChannel = "-1";                  // Data collection truncation channel "-1" (all channels)
+    ViUInt32 sampleCollectDataTruncation = 0;                                  // Data collection truncation 0 (no truncation)
+    ViConstString sampleCollectDataTypeChannel = "-1";                        // Data collection type channel "-1" (all channels)
+    ViUInt32 sampleCollectDataType = 0;                                        // Data collection type 0
+    sampleConfigDAQ(iviDigitizer_vi,                                          // Call sample configuration function:
+                    sampleEnableChannel, sampleEnable,                                    // Sample enable channel and flag
+                    sampleStrageDepthChannel, sampleStrageDepth,                         // Storage depth channel and value
+                    sampleLenPreChannel, sampleLenPre,                                   // Pre-trigger length channel and value
+                    sampleTimesChannel, sampleTimes,                                     // Sample times channel and value
+                    sampleLogicalExtractionMultipleChannel, sampleLogicalExtractionMultiple,  // Logical extraction multiple channel and value
+                    sampleCollectDataTruncationChannel, sampleCollectDataTruncation,     // Data truncation channel and value
+                    sampleCollectDataTypeChannel, sampleCollectDataType);               // Data type channel and value
 
     auto now = std::chrono::system_clock::now();                              // Get current system time
     std::time_t currentTime = std::chrono::system_clock::to_time_t(now);       // Convert system time to time_t type
 
-    std::tm* localTime = std::localtime(&currentTime);                        // Convert time_t to local time structure
-    std::ostringstream oss;                                                    // Create string output stream object
-    oss << std::put_time(localTime, "%Y%m%d%H%M%S");                          // Format time as YYYYMMDDHHMMSS format
+    std::tm* localTime = std::localtime(&currentTime);                        // Convert to local time structure
+    std::ostringstream oss;                                                    // String output stream object
+    oss << std::put_time(localTime, "%Y%m%d%H%M%S");                          // Format time as YYYYMMDDHHMMSS
 
-    std::string directoryPath = "./DAQ-14Bit-" + oss.str();                   // Create data storage directory path with timestamp
+    std::string directoryPath = "./DAQ-14Bit-" + oss.str();                   // Data storage directory path with timestamp
     if (!std::filesystem::exists(directoryPath)) {                            // Check if directory exists
         std::filesystem::create_directories(directoryPath);                    // Create directory if it doesn't exist
     }
 
-    std::unordered_map<int, Deque> chnl_Deque;                               // Create channel queue mapping table
-    std::unordered_map<int, std::ofstream> chnl_outF;                        // Create channel file stream mapping table
-    std::unordered_map<int, std::mutex> chnl_mutex;                          // Create channel mutex mapping table
-    std::unordered_map<int, std::thread> chnl_up_trd;                        // Create channel upload thread mapping table
-    std::unordered_map<int, std::thread> chnl_write_trd;                     // Create channel write file thread mapping table
+    std::unordered_map<int, Deque> chnl_Deque;                               // Channel queue mapping table
+    std::unordered_map<int, std::ofstream> chnl_outF;                        // Channel file stream mapping table
+    std::unordered_map<int, std::mutex> chnl_mutex;                          // Channel mutex mapping table
+    std::unordered_map<int, std::thread> chnl_up_trd;                        // Channel upload thread mapping table
+    std::unordered_map<int, std::thread> chnl_write_trd;                     // Channel write file thread mapping table
 
     std::cout << "\n=== Config ===" << std::endl;                            // Output configuration title
-    ViUInt32 waveformArraySize = sampleStrageDepth + 16;                       // Alternative waveform array size (commented)
+    ViUInt32 waveformArraySize = sampleStrageDepth + 16;                       // Waveform array size
 
-    ViReal64 maximumTime_s = 0.1;                                             // Set maximum wait time to 0.1 seconds
+    ViReal64 maximumTime_s = 0.1;                                             // Maximum wait time 0.1 seconds
     // times and channelName are now obtained from command line arguments
 
-    ViInt32 numChannel;                                                        // Define channel number variable
+    ViInt32 numChannel;                                                        // Channel number variable
     std::vector<std::string> channels = split(channelName, ',');              // Split channel name string by comma
     for (const auto &channel: channels) {                                     // Iterate through each channel
 
         string2int(channel.data(), numChannel, 10)                            // Convert channel name string to integer
 
-        if (chnl_Deque.find(numChannel) == chnl_Deque.end()) {               // If channel does not exist in channel queue
+        if (chnl_Deque.find(numChannel) == chnl_Deque.end()) {               // If channel does not exist in queue
             s = IviDigitizer_ConfigureChannelDataDepthInt16(iviDigitizer_vi, channel, waveformArraySize);  // Configure channel data depth
             for (int i=0; i<10; i++) {
-                auto mem = reinterpret_cast<nsuMemory_p>(IviDigitizer_CreateMemInt16(iviDigitizer_vi, waveformArraySize));  // Create 16-bit integer memory buffer
+                auto mem = reinterpret_cast<ViMem>(IviDigitizer_CreateMemInt16(iviDigitizer_vi, waveformArraySize));  // Create 16-bit integer memory buffer
                 chnl_Deque[numChannel].empty.Push(mem);                       // Push memory buffer into empty queue
             }
         }
@@ -341,8 +306,7 @@ int main(int argc, char *argv[]){
         chnl_write_trd.emplace(numChannel, std::thread(write_file_thread, iviDigitizer_vi, &chnl_Deque[numChannel], channel, waveformArraySize, directoryPath +"/up-res-14Bit_", &chnl_mutex[numChannel]));  // Create write file thread
     }
 
-    std::cout << "\n=== RingBuffer Start Get the Data ===" << std::endl;      // Output ring buffer data acquisition start information
-    s = IviFgen_InitiateGeneration(iviFgen_vi);
+    std::cout << "\n=== RingBuffer Start Get the Data ===" << std::endl;      // Start ring buffer data acquisition
     s = IviDigitizer_InitiateAcquisition(iviDigitizer_vi);
 
     for (const auto &channel: channels) {                                     // Iterate through each channel
@@ -353,8 +317,7 @@ int main(int argc, char *argv[]){
         chnl_write_trd[numChannel].join();                                    // Wait for write file thread to complete
     }
 
-    std::cout << "\n=== RingBuffer Stop Get the Data ===" << std::endl;       // Output ring buffer data acquisition end information
-    s = IviFgen_AbortGeneration(iviFgen_vi);
+    std::cout << "\n=== RingBuffer Stop Get the Data ===" << std::endl;       // Stop ring buffer data acquisition
     s = IviDigitizer_Abort(iviDigitizer_vi);
 
     for (const auto &channel: channels) {                                     // Iterate through each channel

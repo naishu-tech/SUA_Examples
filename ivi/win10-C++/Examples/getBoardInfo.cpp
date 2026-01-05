@@ -1,20 +1,11 @@
 # include "iostream"
 # include "IviBase.h"
 # include "tool_config.h"
-# include "../deps/jsoncpp/json/json.h"
 
 
 int main(int argc, char *argv[]){
 
-//    if (argc != 2) {
-//        std::cout << "Unsupported parameter passing method" << std::endl;
-//        // sudo ./RF Sim
-//        // sudo ./RF XDMA
-//        std::cout << argv[0] << " {logicalName}" << std::endl;
-//        return 1;
-//    }
-
-    std::string resource_db_path = "./resourceDB.json";
+    std::string resource_db_path = "C:/Program Files/IVI Foundation/IVI/RIGOL/file/resourceDB.json";
     std::string logicalName = "PXI::0::INSTR";
 
     auto vi = new iviBase_ViSession;

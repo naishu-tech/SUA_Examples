@@ -37,13 +37,10 @@ endif()
 # ===============================================================================
 # 包含目录配置
 # ===============================================================================
-include_directories(./include)
-include_directories(./deps)
-include_directories(./deps/ivi)
-include_directories(./src)
-if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-    include_directories(./deps/nsukitcpp)
-    link_directories(/lib/)
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+    # Use installed IVI libraries
+    include_directories("C:/Program Files/IVI Foundation/IVI/RIGOL/include")
+    link_directories("C:/Program Files/IVI Foundation/IVI/RIGOL/lib")
 elseif(CMAKE_SYSTEM_NAME MATCHES "Windows")
     # Use installed IVI libraries
     include_directories("C:/Program Files/IVI Foundation/IVI/RIGOL/include")
@@ -69,12 +66,6 @@ set(COMMON_LIBRARIES
         ivi
         NSUKit
         xdma_api
-)
-
-set(JSONCPP_SOURCES
-        ./deps/jsoncpp/lib_json/json_reader.cpp
-        ./deps/jsoncpp/lib_json/json_value.cpp
-        ./deps/jsoncpp/lib_json/json_writer.cpp
 )
 
 set(THREADED_LIBRARIES
@@ -109,52 +100,11 @@ add_simple_test(ReadRingBufferDAQ "DAQ_read_RingBuffer.cpp" "tool_config.h")
 # ===============================================================================
 # 两收两发 测试
 # ===============================================================================
-add_simple_test(testCombined "AWG_DAQ_Combined.cpp")
-add_simple_test(startCombined "AWG_DAQ_Start.cpp")
-add_simple_test(stopCombined "AWG_DAQ_Stop.cpp")
-
-## ===============================================================================
-## getBoardInfo 获取业务卡的逻辑版本号
-## =================================
-#add_executable(getBoardInfo "getBoardInfo.cpp" ${JSONCPP_SOURCES})
-#target_link_libraries(getBoardInfo ${COMMON_LIBRARIES})
+add_simple_test(testCombined "AWG_DAQ_Combined.cpp" "tool_config.h")
+add_simple_test(startCombined "AWG_DAQ_Start.cpp" "tool_config.h")
+add_simple_test(stopCombined "AWG_DAQ_Stop.cpp" "tool_config.h")
 
 # ===============================================================================
-# 构建信息输出
+# 板卡信息查询 测试
 # ===============================================================================
-message(STATUS "=== IVI Test Configuration ===")
-message(STATUS "Total test programs: ~50+")
-message(STATUS "Python tests option: ${ENABLE_PYTHON_TESTS}")
-message(STATUS "Python support available: ${PYTHON_SUPPORT_AVAILABLE}")
-message(STATUS "Threading support: ${Threads_FOUND}")
-if(PYTHON_SUPPORT_AVAILABLE)
-    message(STATUS "Python version: ${Python_VERSION}")
-    message(STATUS "pybind11 version: ${pybind11_VERSION}")
-endif()
-message(STATUS "===============================")
-
-# ===============================================================================
-# 可选：创建测试组
-# ===============================================================================
-# 为了方便运行特定类型的测试，可以创建自定义目标
-
-# AWG 测试组
-add_custom_target(test_awg_all
-        COMMENT "Build all AWG tests"
-        DEPENDS
-        QIPlayAWG sequencePlayAWG wfmPlayAWG
-)
-
-# DAQ 测试组
-add_custom_target(test_daq_all
-        COMMENT "Build all DAQ tests"
-        DEPENDS
-        QIRingBufferDAQ RingbufferDAQ StreamDAQ workModeSwitchDAQ
-)
-
-# SUATools 测试组
-add_custom_target(test_all
-        COMMENT "Build SUATools tests"
-        DEPENDS
-        getInfoSUATools syncSUATools syncSUATools runSUATools stopSUATools
-)
+add_simple_test(getBoardInfo "getBoardInfo.cpp" "tool_config.h")
