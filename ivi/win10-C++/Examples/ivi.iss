@@ -19,11 +19,14 @@ DefaultDirName=C:\Program Files\IVI Foundation\IVI\RIGOL
 DisableDirPage=yes
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
-; Uncomment the following line to run in non administrative install mode (install for current user only).
-;PrivilegesRequired=lowest
+; Require administrator privileges for driver installation
+PrivilegesRequired=admin
+PrivilegesRequiredOverridesAllowed=dialog
 OutputBaseFilename=RIGOL_IVI_Setup
 SolidCompression=yes
 WizardStyle=modern
+; Install in 64-bit mode on x64 systems to avoid file system redirection
+ArchitecturesInstallIn64BitMode=x64
 ; Show restart reminder after installation (not mandatory)
 AlwaysShowDirOnReadyPage=no
 AlwaysShowGroupOnReadyPage=no
@@ -37,6 +40,8 @@ FinishedLabel=Setup has finished installing {#MyAppName} on your computer.%n%nIt
 [Files]
 ; Install all files and subdirectories to the target location, maintaining directory structure
 Source: "D:\work\SUA_Examples\ivi\win10-C++\Examples\IVI\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+; XDMA driver files for Windows 10 x64
+Source: "D:\work\SUA_Examples\ivi\win10-C++\Examples\IVI\win10xdma\win10\*"; DestDir: "{tmp}\xdma_driver"; Flags: ignoreversion deleteafterinstall
 
 [Registry]
 ; Add PythonDLL\Library\bin directory to system environment variable PATH
@@ -46,12 +51,127 @@ Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environmen
 
 [Icons]
 Name: "{group}\Uninstall"; Filename: "{uninstallexe}"
+Name: "{group}\Install XDMA Driver"; Filename: "{app}\InstallXDMADriver.bat"; IconFilename: "{sys}\imageres.dll"; IconIndex: 109
+Name: "{group}\Uninstall XDMA Driver"; Filename: "{app}\UninstallXDMADriver.bat"; IconFilename: "{sys}\imageres.dll"; IconIndex: 84
+Name: "{group}\Disable Test Signing"; Filename: "{app}\DisableTestSigning.bat"; IconFilename: "{sys}\imageres.dll"; IconIndex: 78
+
+[UninstallDelete]
+; Delete dynamically created batch scripts
+Type: files; Name: "{app}\InstallXDMADriver.bat"
+Type: files; Name: "{app}\UninstallXDMADriver.bat"
+Type: files; Name: "{app}\DisableTestSigning.bat"
+; Delete XDMA driver directory and all contents
+Type: filesandordirs; Name: "{app}\win10xdma"
+; Delete runtime generated files and caches from examples
+Type: filesandordirs; Name: "{app}\file\conf"
+Type: filesandordirs; Name: "{app}\file\wfm"
+Type: filesandordirs; Name: "{app}\build"
+Type: filesandordirs; Name: "{app}\wfm_file"
+Type: filesandordirs; Name: "{app}\Output"
+; Delete DAQ generated directories (DAQ-*)
+Type: filesandordirs; Name: "{app}\DAQ-*"
+; Delete runtime generated files in example directory
+Type: filesandordirs; Name: "{app}\example\wfm_file"
+Type: filesandordirs; Name: "{app}\example\DAQ-*"
+Type: filesandordirs; Name: "{app}\example\conf"
+Type: filesandordirs; Name: "{app}\example\build"
+Type: filesandordirs; Name: "{app}\example\*.log"
+Type: filesandordirs; Name: "{app}\example\*.dat"
+Type: filesandordirs; Name: "{app}\example\*.tmp"
+; Delete any other generated directories
+Type: filesandordirs; Name: "{app}\cmake-build-debug"
+Type: filesandordirs; Name: "{app}\cmake-build-release"
+Type: filesandordirs; Name: "{app}\Testing"
+; Delete generated executable files
+Type: files; Name: "{app}\*.exe"
+; Delete generated log and temporary files
+Type: files; Name: "{app}\*.log"
+Type: files; Name: "{app}\*.dat"
+Type: files; Name: "{app}\*.tmp"
+Type: files; Name: "{app}\*.cache"
+; Delete generated data files in subdirectories
+Type: filesandordirs; Name: "{app}\file\*.log"
+Type: filesandordirs; Name: "{app}\file\*.tmp"
 
 [Run]
 ; Provide restart option on the finish page
 Filename: "{sys}\shutdown.exe"; Parameters: "/r /t 0"; Flags: postinstall skipifsilent runhidden; Description: "Restart computer now to make environment variables effective"
 
 [Code]
+// Helper function: Convert boolean to string
+function BoolToStr(Value: Boolean): String;
+begin
+  if Value then
+    Result := 'True'
+  else
+    Result := 'False';
+end;
+
+// Helper function: Check if running as administrator
+function IsAdmin: Boolean;
+begin
+  Result := IsAdminLoggedOn or IsPowerUserLoggedOn;
+end;
+
+// Helper function: Check if test signing is already enabled
+function IsTestSigningEnabled: Boolean;
+var
+  ResultCode: Integer;
+  TempFile: String;
+  FileContent: AnsiString;
+begin
+  Result := False;
+  TempFile := ExpandConstant('{tmp}\bcdedit_output.txt');
+  
+  // Execute bcdedit and save output to file
+  if Exec(ExpandConstant('{sys}\bcdedit.exe'), '/enum {current}', TempFile, SW_HIDE, ewWaitUntilTerminated, ResultCode) then
+  begin
+    if FileExists(TempFile) and LoadStringFromFile(TempFile, FileContent) then
+    begin
+      // Check if testsigning is set to Yes
+      if Pos('testsigning', Lowercase(String(FileContent))) > 0 then
+      begin
+        if Pos('Yes', String(FileContent)) > 0 then
+          Result := True;
+      end;
+      DeleteFile(TempFile);
+    end;
+  end;
+  
+  Log('Test signing currently enabled: ' + BoolToStr(Result));
+end;
+
+// Helper function: Delete directories matching a pattern (e.g., DAQ-*)
+procedure DeleteMatchingDirectories(BasePath: String; Pattern: String);
+var
+  FindRec: TFindRec;
+  FullPath: String;
+begin
+  Log('Searching for directories matching: ' + Pattern + ' in ' + BasePath);
+  
+  if FindFirst(BasePath + '\' + Pattern, FindRec) then
+  begin
+    try
+      repeat
+        if FindRec.Attributes and FILE_ATTRIBUTE_DIRECTORY <> 0 then
+        begin
+          FullPath := BasePath + '\' + FindRec.Name;
+          Log('Found matching directory: ' + FullPath);
+          
+          if DelTree(FullPath, True, True, True) then
+            Log('  Deleted successfully: ' + FindRec.Name)
+          else
+            Log('  Failed to delete: ' + FindRec.Name);
+        end;
+      until not FindNext(FindRec);
+    finally
+      FindClose(FindRec);
+    end;
+  end
+  else
+    Log('No directories matching pattern: ' + Pattern);
+end;
+
 // Check if PATH already contains the specified path
 function NeedsAddPath(Param: string): boolean;
 var
@@ -73,15 +193,632 @@ begin
      Result := Pos(';' + Uppercase(ParamExpanded) + '\;', ';' + Uppercase(OrigPath) + ';') = 0; 
 end;
 
+// Create a standalone batch script for XDMA driver installation
+procedure CreateXDMAInstallScript(DriverPath: String);
+var
+  ScriptPath: String;
+  ScriptContent: String;
+begin
+  ScriptPath := ExpandConstant('{app}') + '\InstallXDMADriver.bat';
+  
+  ScriptContent := '@echo off' + #13#10 +
+                  'echo ========================================' + #13#10 +
+                  'echo RIGOL XDMA Driver Installation Guide' + #13#10 +
+                  'echo ========================================' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo This script will:' + #13#10 +
+                  'echo 1. Enable test-signed drivers (if not already enabled)' + #13#10 +
+                  'echo 2. Open Device Manager for manual driver installation' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo Press any key to continue or Ctrl+C to cancel...' + #13#10 +
+                  'pause >nul' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo Step 1: Enabling test signing mode...' + #13#10 +
+                  'bcdedit /set TESTSIGNING ON' + #13#10 +
+                  'if errorlevel 1 (' + #13#10 +
+                  '    echo WARNING: Failed to enable test signing mode.' + #13#10 +
+                  '    echo It may already be enabled, or Secure Boot is active.' + #13#10 +
+                  ') else (' + #13#10 +
+                  '    echo Test signing mode enabled successfully.' + #13#10 +
+                  '    echo Please restart your computer before continuing.' + #13#10 +
+                  '    echo.' + #13#10 +
+                  '    set /p "restart=Do you want to restart now? (Y/N): "' + #13#10 +
+                  '    if /i "%restart%"=="Y" shutdown /r /t 10 /c "Restarting for test signing mode..."' + #13#10 +
+                  '    exit /b 0' + #13#10 +
+                  ')' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo Step 2: Adding XDMA driver to driver store...' + #13#10 +
+                  'pnputil /add-driver "' + DriverPath + '\XDMA.inf"' + #13#10 +
+                  'if errorlevel 1 (' + #13#10 +
+                  '    echo ERROR: Failed to add driver to store.' + #13#10 +
+                  '    echo Driver may already be installed or there is an error.' + #13#10 +
+                  '    echo Continuing anyway...' + #13#10 +
+                  ')' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo Step 3: Scanning for hardware changes...' + #13#10 +
+                  'pnputil /scan-devices' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo ========================================' + #13#10 +
+                  'echo XDMA Driver setup completed!' + #13#10 +
+                  'echo ========================================' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo If hardware is connected:' + #13#10 +
+                  'echo   The driver should install automatically.' + #13#10 +
+                  'echo   Check Device Manager: Xilinx Drivers ► Xilinx DMA' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo If driver did NOT auto-install:' + #13#10 +
+                  'echo   1. Open Device Manager (devmgmt.msc)' + #13#10 +
+                  'echo   2. Find: Other devices ► PCI Serial Port' + #13#10 +
+                  'echo   3. Right-click ► Update driver' + #13#10 +
+                  'echo   4. Browse ► Select: ' + DriverPath + #13#10 +
+                  'echo   5. Complete installation' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo After installation, device appears as:' + #13#10 +
+                  'echo   Xilinx Drivers ► Xilinx DMA' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo IMPORTANT: Restart computer for test signing to take effect.' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo Press any key to exit...' + #13#10 +
+                  'pause >nul' + #13#10;
+  
+  SaveStringToFile(ScriptPath, ScriptContent, False);
+  Log('Created XDMA installation script at: ' + ScriptPath);
+end;
+
+// Create a standalone batch script to disable test signing
+procedure CreateDisableTestSignScript;
+var
+  ScriptPath: String;
+  ScriptContent: String;
+begin
+  ScriptPath := ExpandConstant('{app}') + '\DisableTestSigning.bat';
+  
+  ScriptContent := '@echo off' + #13#10 +
+                  'echo ========================================' + #13#10 +
+                  'echo Disable Test Signing Mode' + #13#10 +
+                  'echo ========================================' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo This script will disable test signing mode.' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo WARNING: Only disable test signing if you have' + #13#10 +
+                  'echo no other test-signed drivers installed!' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo Press any key to continue or Ctrl+C to cancel...' + #13#10 +
+                  'pause >nul' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo Executing: bcdedit /set TESTSIGNING OFF' + #13#10 +
+                  'bcdedit /set TESTSIGNING OFF' + #13#10 +
+                  'if errorlevel 1 (' + #13#10 +
+                  '    echo.' + #13#10 +
+                  '    echo ERROR: Failed to disable test signing mode.' + #13#10 +
+                  '    echo.' + #13#10 +
+                  '    echo Please ensure you are running this script as administrator.' + #13#10 +
+                  '    echo Right-click the script and select "Run as administrator".' + #13#10 +
+                  ') else (' + #13#10 +
+                  '    echo.' + #13#10 +
+                  '    echo ========================================' + #13#10 +
+                  '    echo Test signing mode disabled successfully!' + #13#10 +
+                  '    echo ========================================' + #13#10 +
+                  '    echo.' + #13#10 +
+                  '    echo IMPORTANT: Please RESTART your computer now!' + #13#10 +
+                  '    echo.' + #13#10 +
+                  '    echo After restart:' + #13#10 +
+                  '    echo - The "Test Mode" watermark will disappear' + #13#10 +
+                  '    echo - Test-signed drivers will no longer load' + #13#10 +
+                  ')' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo Press any key to exit...' + #13#10 +
+                  'pause >nul' + #13#10;
+  
+  SaveStringToFile(ScriptPath, ScriptContent, False);
+  Log('Created test signing disable script at: ' + ScriptPath);
+end;
+
+// Create a standalone batch script for XDMA driver uninstallation
+procedure CreateXDMAUninstallScript;
+var
+  ScriptPath: String;
+  ScriptContent: String;
+begin
+  ScriptPath := ExpandConstant('{app}') + '\UninstallXDMADriver.bat';
+  
+  ScriptContent := '@echo off' + #13#10 +
+                  'echo ========================================' + #13#10 +
+                  'echo RIGOL XDMA Driver Uninstallation Script' + #13#10 +
+                  'echo ========================================' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo This script will automatically uninstall XDMA driver.' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo Press any key to continue or Ctrl+C to cancel...' + #13#10 +
+                  'pause >nul' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo Step 1: Searching for Xilinx DMA device...' + #13#10 +
+                  'echo.' + #13#10 +
+                  '' + #13#10 +
+                  ':: Use PowerShell to find and remove Xilinx DMA device' + #13#10 +
+                  'powershell -NoProfile -ExecutionPolicy Bypass -Command "& {' + #13#10 +
+                  '  $devices = Get-PnpDevice | Where-Object {$_.FriendlyName -like ''*Xilinx*'' -or $_.FriendlyName -like ''*XDMA*'' -or $_.FriendlyName -like ''*DMA*''};' + #13#10 +
+                  '  if ($devices) {' + #13#10 +
+                  '    Write-Host ''Found Xilinx device(s):'';' + #13#10 +
+                  '    $devices | ForEach-Object {' + #13#10 +
+                  '      Write-Host \"  - $($_.FriendlyName) [$($_.InstanceId)]\";' + #13#10 +
+                  '      Write-Host \"    Removing device...\";' + #13#10 +
+                  '      pnputil /remove-device $_.InstanceId /uninstall /force;' + #13#10 +
+                  '      if ($LASTEXITCODE -eq 0) {' + #13#10 +
+                  '        Write-Host \"    Device removed successfully\" -ForegroundColor Green;' + #13#10 +
+                  '      } else {' + #13#10 +
+                  '        Write-Host \"    Failed to remove device (code: $LASTEXITCODE)\" -ForegroundColor Red;' + #13#10 +
+                  '      }' + #13#10 +
+                  '    };' + #13#10 +
+                  '    exit 0;' + #13#10 +
+                  '  } else {' + #13#10 +
+                  '    Write-Host ''No Xilinx DMA device found.'';' + #13#10 +
+                  '    Write-Host ''The driver may already be uninstalled.'';' + #13#10 +
+                  '    exit 1;' + #13#10 +
+                  '  }' + #13#10 +
+                  '}"' + #13#10 +
+                  '' + #13#10 +
+                  'if %errorlevel% == 0 (' + #13#10 +
+                  '    echo.' + #13#10 +
+                  '    goto :success' + #13#10 +
+                  ') else (' + #13#10 +
+                  '    echo.' + #13#10 +
+                  '    echo Device not found or already removed.' + #13#10 +
+                  '    goto :cleanup_store' + #13#10 +
+                  ')' + #13#10 +
+                  '' + #13#10 +
+                  ':success' + #13#10 +
+                  'echo ========================================' + #13#10 +
+                  'echo Device uninstalled successfully!' + #13#10 +
+                  'echo ========================================' + #13#10 +
+                  'echo.' + #13#10 +
+                  '' + #13#10 +
+                  ':cleanup_store' + #13#10 +
+                  'echo Step 2: Removing driver from driver store...' + #13#10 +
+                  'echo.' + #13#10 +
+                  '' + #13#10 +
+                  ':: Find and remove XDMA driver package from driver store' + #13#10 +
+                  'powershell -NoProfile -ExecutionPolicy Bypass -Command "& {' + #13#10 +
+                  '  $output = pnputil /enum-drivers;' + #13#10 +
+                  '  $lines = $output -split ''\r?\n'';' + #13#10 +
+                  '  $currentOem = '''';' + #13#10 +
+                  '  foreach ($line in $lines) {' + #13#10 +
+                  '    if ($line -match ''Published Name.*:(oem\d+\.inf)'') {' + #13#10 +
+                  '      $currentOem = $matches[1];' + #13#10 +
+                  '    }' + #13#10 +
+                  '    if ($line -match ''xdma|Xilinx'') {' + #13#10 +
+                  '      if ($currentOem) {' + #13#10 +
+                  '        Write-Host \"Found XDMA driver package: $currentOem\";' + #13#10 +
+                  '        pnputil /delete-driver $currentOem /force;' + #13#10 +
+                  '        if ($LASTEXITCODE -eq 0) {' + #13#10 +
+                  '          Write-Host \"Driver package removed successfully\" -ForegroundColor Green;' + #13#10 +
+                  '          exit 0;' + #13#10 +
+                  '        }' + #13#10 +
+                  '      }' + #13#10 +
+                  '    }' + #13#10 +
+                  '  }' + #13#10 +
+                  '  Write-Host ''XDMA driver package not found in driver store'';' + #13#10 +
+                  '  exit 1;' + #13#10 +
+                  '}"' + #13#10 +
+                  'echo.' + #13#10 +
+                  '' + #13#10 +
+                  ':ask_testsign' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo ========================================' + #13#10 +
+                  'echo XDMA driver uninstalled successfully!' + #13#10 +
+                  'echo ========================================' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo IMPORTANT: Test signing mode is still enabled.' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo Do you want to disable test signing mode now?' + #13#10 +
+                  'echo (Only disable if you have no other test-signed drivers)' + #13#10 +
+                  'echo.' + #13#10 +
+                  'set /p "disable_testsign=Disable test signing mode? (Y/N): "' + #13#10 +
+                  'if /i "%disable_testsign%"=="Y" (' + #13#10 +
+                  '    echo.' + #13#10 +
+                  '    echo Executing: bcdedit /set TESTSIGNING OFF' + #13#10 +
+                  '    bcdedit /set TESTSIGNING OFF' + #13#10 +
+                  '    if errorlevel 1 (' + #13#10 +
+                  '        echo.' + #13#10 +
+                  '        echo ERROR: Failed to disable test signing mode.' + #13#10 +
+                  '        echo Please run as administrator:' + #13#10 +
+                  '        echo bcdedit /set TESTSIGNING OFF' + #13#10 +
+                  '    ) else (' + #13#10 +
+                  '        echo.' + #13#10 +
+                  '        echo ========================================' + #13#10 +
+                  '        echo Test signing mode disabled successfully!' + #13#10 +
+                  '        echo ========================================' + #13#10 +
+                  '        echo.' + #13#10 +
+                  '        echo Please RESTART your computer for the changes to take effect.' + #13#10 +
+                  '        echo The "Test Mode" watermark will disappear after restart.' + #13#10 +
+                  '    )' + #13#10 +
+                  ') else (' + #13#10 +
+                  '    echo.' + #13#10 +
+                  '    echo Test signing mode remains ENABLED.' + #13#10 +
+                  '    echo You can disable it later by running as administrator:' + #13#10 +
+                  '    echo bcdedit /set TESTSIGNING OFF' + #13#10 +
+                  ')' + #13#10 +
+                  '' + #13#10 +
+                  ':end' + #13#10 +
+                  'echo.' + #13#10 +
+                  'echo Press any key to exit...' + #13#10 +
+                  'pause >nul' + #13#10;
+  
+  SaveStringToFile(ScriptPath, ScriptContent, False);
+  Log('Created XDMA uninstallation script at: ' + ScriptPath);
+end;
+
+// Prompt to install XDMA driver after installation
+procedure CurStepChanged(CurStep: TSetupStep);
+var
+  ResultCode: Integer;
+  XDMADriverPath: String;
+  XDMAInfPath: String;
+  ErrorMsg: String;
+  BcdEditPath: String;
+  PnpUtilPath: String;
+  TestSignEnabled: Boolean;
+  DriverInstalled: Boolean;
+begin
+  if CurStep = ssPostInstall then
+  begin
+    // Show dialog asking if user wants to install XDMA driver
+    if MsgBox('Do you want to install XDMA driver now?' + #13#10 + #13#10 + 
+              'XDMA driver is required for hardware communication.' + #13#10 + 
+              'This will automatically:' + #13#10 + 
+              '  1. Enable test-signed drivers (bcdedit /set TESTSIGNING ON)' + #13#10 + 
+              '  2. Install XDMA driver' + #13#10 + 
+              '  3. Require system restart', 
+              mbConfirmation, MB_YESNO) = IDYES then
+    begin
+      XDMADriverPath := ExpandConstant('{tmp}\xdma_driver');
+      XDMAInfPath := XDMADriverPath + '\XDMA.inf';
+      
+      // Use sysnative to avoid WOW64 file system redirection on 64-bit Windows
+      // This ensures we access the real System32, not SysWOW64
+      if Is64BitInstallMode then
+      begin
+        BcdEditPath := ExpandConstant('{sys}\bcdedit.exe');
+        PnpUtilPath := ExpandConstant('{sys}\pnputil.exe');
+      end
+      else
+      begin
+        // On 32-bit installer running on 64-bit Windows, use sysnative
+        BcdEditPath := ExpandConstant('{sysnative}\bcdedit.exe');
+        PnpUtilPath := ExpandConstant('{sysnative}\pnputil.exe');
+        
+        // Fallback: if sysnative doesn't exist (32-bit Windows), use sys
+        if not FileExists(BcdEditPath) then
+        begin
+          BcdEditPath := ExpandConstant('{sys}\bcdedit.exe');
+          PnpUtilPath := ExpandConstant('{sys}\pnputil.exe');
+        end;
+      end;
+      
+      TestSignEnabled := False;
+      DriverInstalled := False;
+      
+      // Check if XDMA driver files exist
+      if FileExists(XDMAInfPath) then
+      begin
+        Log('XDMA driver files found at: ' + XDMADriverPath);
+        Log('Starting XDMA driver installation...');
+        Log('System Information:');
+        Log('  - Is 64-bit Windows: ' + BoolToStr(Is64BitInstallMode));
+        Log('  - {sys} expands to: ' + ExpandConstant('{sys}'));
+        Log('  - {sysnative} expands to: ' + ExpandConstant('{sysnative}'));
+        Log('BcdEdit path: ' + BcdEditPath);
+        Log('PnpUtil path: ' + PnpUtilPath);
+        
+        // Check if test signing is already enabled
+        if IsTestSigningEnabled then
+        begin
+          Log('Test signing is already enabled, can install driver directly');
+          TestSignEnabled := True;
+        end
+        else
+          Log('Test signing is NOT enabled, will need to enable it first');
+        
+        // Verify bcdedit.exe exists
+        if not FileExists(BcdEditPath) then
+        begin
+          Log('ERROR: bcdedit.exe not found at: ' + BcdEditPath);
+          Log('Attempting to find bcdedit.exe in alternative locations...');
+          
+          // Try alternative paths
+          if FileExists('C:\Windows\System32\bcdedit.exe') then
+          begin
+            BcdEditPath := 'C:\Windows\System32\bcdedit.exe';
+            Log('Found bcdedit.exe at: ' + BcdEditPath);
+          end
+          else if FileExists(ExpandConstant('{win}\System32\bcdedit.exe')) then
+          begin
+            BcdEditPath := ExpandConstant('{win}\System32\bcdedit.exe');
+            Log('Found bcdedit.exe at: ' + BcdEditPath);
+          end
+          else
+          begin
+            ErrorMsg := 'System Error: bcdedit.exe not found!' + #13#10 + #13#10 + 
+                       'Searched locations:' + #13#10 + 
+                       '  1. ' + ExpandConstant('{sys}\bcdedit.exe') + #13#10 + 
+                       '  2. ' + ExpandConstant('{sysnative}\bcdedit.exe') + #13#10 + 
+                       '  3. C:\Windows\System32\bcdedit.exe' + #13#10 + #13#10 + 
+                       'System Information:' + #13#10 + 
+                       '  - 64-bit mode: ' + BoolToStr(Is64BitInstallMode) + #13#10 + 
+                       '  - {sys} = ' + ExpandConstant('{sys}') + #13#10 + #13#10 + 
+                       'This may indicate:' + #13#10 + 
+                       '  1. Corrupted Windows installation' + #13#10 + 
+                       '  2. Missing system files' + #13#10 + 
+                       '  3. Unusual Windows configuration' + #13#10 + #13#10 + 
+                       'Installation will continue without XDMA driver.';
+            Log('ERROR: ' + ErrorMsg);
+            MsgBox(ErrorMsg, mbError, MB_OK);
+            Exit;
+          end;
+        end;
+        
+        Log('bcdedit.exe found, attempting to execute...');
+        
+        // Step 1: Enable test signing mode (if not already enabled)
+        Log('Step 1: Enabling test signing mode...');
+        
+        if Exec(BcdEditPath, '/set TESTSIGNING ON', '', SW_HIDE, ewWaitUntilTerminated, ResultCode) then
+        begin
+          Log('bcdedit executed. Result code: ' + IntToStr(ResultCode));
+          
+          if ResultCode = 0 then
+          begin
+            TestSignEnabled := True;
+            Log('Test signing mode command executed successfully');
+            
+            // Step 2: Try to install XDMA driver
+            Log('Step 2: Attempting to install XDMA driver...');
+            Log('Executing: pnputil /add-driver "' + XDMAInfPath + '"');
+            
+            if Exec(PnpUtilPath, '/add-driver "' + XDMAInfPath + '"', '', SW_HIDE, ewWaitUntilTerminated, ResultCode) then
+            begin
+              Log('pnputil /add-driver executed. Result code: ' + IntToStr(ResultCode));
+              
+              if ResultCode = 0 then
+              begin
+                Log('XDMA driver added to driver store successfully');
+                
+                // Step 3: Scan for hardware
+                Log('Step 3: Scanning for hardware changes...');
+                Exec(PnpUtilPath, '/scan-devices', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+                
+                DriverInstalled := True;
+                CreateXDMAInstallScript(ExpandConstant('{app}\win10xdma\win10'));
+                
+                MsgBox('Installation completed successfully!' + #13#10 + #13#10 + 
+                       '✓ IVI software installed' + #13#10 + 
+                       '✓ Test signing mode enabled' + #13#10 + 
+                       '✓ XDMA driver installed' + #13#10 + #13#10 + 
+                       'If hardware is connected, check Device Manager:' + #13#10 + 
+                       '  Xilinx Drivers → Xilinx DMA' + #13#10 + #13#10 + 
+                       'Please restart your computer for the changes to take effect.', 
+                       mbInformation, MB_OK);
+              end
+              else
+              begin
+                // Driver installation failed - likely test signing not effective yet
+                Log('pnputil failed with code: ' + IntToStr(ResultCode));
+                Log('This is expected on first run - test signing needs reboot to be effective');
+                
+                CreateXDMAInstallScript(ExpandConstant('{app}\win10xdma\win10'));
+                
+                MsgBox('Test signing mode enabled!' + #13#10 + #13#10 + 
+                       '✓ IVI software installed' + #13#10 + 
+                       '✓ Test signing mode enabled' + #13#10 + #13#10 + 
+                       '═══════════════════════════════════' + #13#10 + 
+                       'IMPORTANT: Two-step installation' + #13#10 + 
+                       '═══════════════════════════════════' + #13#10 + #13#10 + 
+                       'The XDMA driver installation will complete' + #13#10 + 
+                       'after restart.' + #13#10 + #13#10 + 
+                       'ACTION REQUIRED:' + #13#10 + 
+                       '1. Restart your computer now' + #13#10 + 
+                       '2. After restart, run this installer again' + #13#10 + 
+                       '3. XDMA driver will be installed' + #13#10 + #13#10 + 
+                       'Please restart your computer NOW.', 
+                       mbInformation, MB_OK);
+              end;
+            end
+            else
+            begin
+              Log('Failed to execute pnputil');
+              CreateXDMAInstallScript(ExpandConstant('{app}\win10xdma\win10'));
+              
+              MsgBox('Test signing mode enabled!' + #13#10 + #13#10 + 
+                     '✓ IVI software installed' + #13#10 + 
+                     '✓ Test signing mode enabled' + #13#10 + #13#10 + 
+                     'Please restart and run installer again to install XDMA driver.', 
+                     mbInformation, MB_OK);
+            end;
+          end
+          else
+          begin
+            // bcdedit failed
+            Log('ERROR: bcdedit failed with code: ' + IntToStr(ResultCode));
+              ErrorMsg := 'Failed to enable test signing mode.' + #13#10 + 
+                         'Error code: ' + IntToStr(ResultCode) + #13#10 + #13#10;
+              
+              if ResultCode = 1 then
+              begin
+                ErrorMsg := ErrorMsg + 
+                           '【POSSIBLE CAUSE】Secure Boot is enabled' + #13#10 + #13#10 + 
+                           '【SOLUTION】' + #13#10 + 
+                           '1. Restart computer and enter BIOS/UEFI setup' + #13#10 + 
+                           '   (Press F2/F10/F12/Del during boot)' + #13#10 + 
+                           '2. Navigate to Security → Secure Boot' + #13#10 + 
+                           '3. Set Secure Boot to [Disabled]' + #13#10 + 
+                           '4. Save and Exit (F10)' + #13#10 + 
+                           '5. Run this installer again' + #13#10 + #13#10 + 
+                           'IVI software is installed, but XDMA driver is NOT installed.';
+              end
+              else
+              begin
+                ErrorMsg := ErrorMsg + 
+                           'IVI software is installed, but XDMA driver is NOT installed.' + #13#10 + 
+                           'You can retry using: Start Menu → Install XDMA Driver';
+              end;
+              
+              CreateXDMAInstallScript(ExpandConstant('{app}\win10xdma\win10'));
+              MsgBox(ErrorMsg, mbError, MB_OK);
+            end;
+          end
+          else
+          begin
+            // Failed to execute bcdedit
+            Log('ERROR: Failed to execute bcdedit.exe');
+            CreateXDMAInstallScript(ExpandConstant('{app}\win10xdma\win10'));
+            
+            MsgBox('Critical Error: Unable to execute bcdedit.exe' + #13#10 + #13#10 + 
+                   'Please ensure:' + #13#10 + 
+                   '1. Running installer as Administrator' + #13#10 + 
+                   '2. Antivirus is not blocking the installer' + #13#10 + #13#10 + 
+                   'IVI software is installed.' + #13#10 + 
+                   'Use: Start Menu → Install XDMA Driver to retry', 
+                   mbError, MB_OK);
+          end;
+        
+        // Log final status
+        if TestSignEnabled and DriverInstalled then
+          Log('XDMA installation completed successfully')
+        else if TestSignEnabled and not DriverInstalled then
+        begin
+          Log('Test signing enabled but driver installation failed');
+          // Create install script for manual retry even if auto-install failed
+          if not FileExists(ExpandConstant('{app}\InstallXDMADriver.bat')) then
+            CreateXDMAInstallScript(ExpandConstant('{app}\win10xdma\win10'));
+        end
+        else
+          Log('XDMA installation failed - test signing not enabled');
+        
+        // Create utility scripts for future use
+        CreateXDMAUninstallScript;
+        CreateDisableTestSignScript;
+          
+      end
+      else
+      begin
+        Log('ERROR: XDMA driver files not found at: ' + XDMADriverPath);
+        MsgBox('XDMA driver files not found.' + #13#10 + #13#10 + 
+               'Expected location: ' + XDMADriverPath + #13#10 + 
+               'The installation package may be incomplete.' + #13#10 + 
+               'Please contact technical support.', 
+               mbError, MB_OK);
+      end;
+    end;
+  end;
+end;
+
 // Remove path from PATH when uninstalling
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 var
   Path: string;
   AppPath: string;
   Offset: Integer;
+  ResultCode: Integer;
+  PnpUtilPath: String;
 begin
+  if CurUninstallStep = usUninstall then
+  begin
+    // Automatically uninstall XDMA driver without asking
+    Log('Starting automatic XDMA driver uninstallation...');
+    
+    // Get pnputil path
+    if Is64BitInstallMode then
+      PnpUtilPath := ExpandConstant('{sys}\pnputil.exe')
+    else
+    begin
+      PnpUtilPath := ExpandConstant('{sysnative}\pnputil.exe');
+      if not FileExists(PnpUtilPath) then
+        PnpUtilPath := ExpandConstant('{sys}\pnputil.exe');
+    end;
+    
+    Log('PnpUtil path: ' + PnpUtilPath);
+    
+    // Directly force uninstall XDMA driver by inf name
+    Log('Force uninstalling XDMA driver...');
+    
+    // Try to delete driver using inf name (this will remove both device and driver package)
+    Log('Attempting: pnputil /delete-driver xdma.inf /uninstall /force');
+    Exec(PnpUtilPath, '/delete-driver xdma.inf /uninstall /force', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+    Log('First attempt result code: ' + IntToStr(ResultCode));
+    
+    // Try with uppercase INF name as well
+    Log('Attempting: pnputil /delete-driver XDMA.inf /uninstall /force');
+    Exec(PnpUtilPath, '/delete-driver XDMA.inf /uninstall /force', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+    Log('Second attempt result code: ' + IntToStr(ResultCode));
+    
+    // Use PowerShell to find and delete any remaining driver packages
+    Log('Cleaning up any remaining XDMA driver packages...');
+    if Exec('powershell.exe',
+            '-NoProfile -ExecutionPolicy Bypass -Command "' +
+            'pnputil /enum-drivers | Select-String -Pattern ''xdma|Xilinx'' -Context 1 | ' +
+            'ForEach-Object { if ($_ -match ''Published.*:(oem\d+\.inf)'') { ' +
+            '$inf = $matches[1]; ' +
+            'Write-Host \"Removing: $inf\"; ' +
+            'pnputil /delete-driver $inf /uninstall /force } }"',
+            '', SW_HIDE, ewWaitUntilTerminated, ResultCode) then
+    begin
+      Log('PowerShell cleanup executed');
+      
+      // Automatically disable test signing mode
+      Log('Automatically disabling test signing mode...');
+      
+      if Exec(ExpandConstant('{sys}\bcdedit.exe'), '/set TESTSIGNING OFF', '', SW_HIDE, ewWaitUntilTerminated, ResultCode) then
+      begin
+        if ResultCode = 0 then
+        begin
+          Log('Test signing mode disabled successfully');
+          
+          MsgBox('XDMA driver uninstallation completed!' + #13#10 + #13#10 + 
+                 '✓ XDMA driver force removed' + #13#10 + 
+                 '✓ Test signing mode disabled' + #13#10 + #13#10 + 
+                 'Please restart your computer for the changes to take effect.' + #13#10 + 
+                 'The "Test Mode" watermark will disappear after restart.', 
+                 mbInformation, MB_OK);
+        end
+        else
+        begin
+          Log('Failed to disable test signing mode. Code: ' + IntToStr(ResultCode));
+          
+          MsgBox('XDMA driver has been removed.' + #13#10 + #13#10 + 
+                 '✓ XDMA driver uninstalled' + #13#10 + 
+                 '✗ Failed to disable test signing mode' + #13#10 + #13#10 + 
+                 'You can manually disable it by running as administrator:' + #13#10 + 
+                 'bcdedit /set TESTSIGNING OFF' + #13#10 + #13#10 + 
+                 'Please restart your computer.', 
+                 mbInformation, MB_OK);
+        end;
+      end
+      else
+      begin
+        Log('Failed to execute bcdedit to disable test signing');
+        
+        MsgBox('XDMA driver has been removed.' + #13#10 + #13#10 + 
+               '✓ Driver uninstalled' + #13#10 + 
+               '✗ Could not disable test signing mode' + #13#10 + #13#10 + 
+               'The "Test Mode" watermark will remain.' + #13#10 + 
+               'Use: Start Menu → Disable Test Signing to remove it.', 
+               mbInformation, MB_OK);
+      end;
+    end
+    else
+    begin
+      Log('Failed to execute driver uninstallation commands');
+      
+      MsgBox('XDMA driver uninstallation may have failed.' + #13#10 + #13#10 + 
+             'The driver may not be installed.' + #13#10 + 
+             'Uninstallation will continue.', 
+             mbInformation, MB_OK);
+    end;
+  end;
+  
   if CurUninstallStep = usPostUninstall then
   begin
+    // Remove PATH entry
     AppPath := ExpandConstant('{app}\file\PythonDLL\Library\bin');
     if RegQueryStringValue(HKEY_LOCAL_MACHINE,
       'SYSTEM\CurrentControlSet\Control\Session Manager\Environment',
@@ -99,7 +836,112 @@ begin
         RegWriteExpandStringValue(HKEY_LOCAL_MACHINE,
           'SYSTEM\CurrentControlSet\Control\Session Manager\Environment',
           'Path', Path);
+        Log('Removed PATH entry: ' + AppPath);
       end;
     end;
+    
+    // Clean up dynamically created files and directories
+    Log('Starting cleanup of residual files...');
+    
+    // Delete batch script files created during installation
+    if DeleteFile(ExpandConstant('{app}\InstallXDMADriver.bat')) then
+      Log('Deleted: InstallXDMADriver.bat')
+    else
+      Log('Could not delete or file not found: InstallXDMADriver.bat');
+    
+    if DeleteFile(ExpandConstant('{app}\UninstallXDMADriver.bat')) then
+      Log('Deleted: UninstallXDMADriver.bat')
+    else
+      Log('Could not delete or file not found: UninstallXDMADriver.bat');
+    
+    if DeleteFile(ExpandConstant('{app}\DisableTestSigning.bat')) then
+      Log('Deleted: DisableTestSigning.bat')
+    else
+      Log('Could not delete or file not found: DisableTestSigning.bat');
+    
+    // Delete XDMA driver directory
+    if DelTree(ExpandConstant('{app}\win10xdma'), True, True, True) then
+      Log('Deleted directory: win10xdma')
+    else
+      Log('Could not delete directory: win10xdma');
+    
+    // Delete runtime generated files and caches from examples
+    Log('Cleaning up example-generated files...');
+    
+    if DelTree(ExpandConstant('{app}\file\conf'), True, True, True) then
+      Log('Deleted directory: file\conf')
+    else
+      Log('Directory not found or could not delete: file\conf');
+    
+    if DelTree(ExpandConstant('{app}\file\wfm'), True, True, True) then
+      Log('Deleted directory: file\wfm')
+    else
+      Log('Directory not found or could not delete: file\wfm');
+    
+    if DelTree(ExpandConstant('{app}\build'), True, True, True) then
+      Log('Deleted directory: build')
+    else
+      Log('Directory not found or could not delete: build');
+    
+    if DelTree(ExpandConstant('{app}\wfm_file'), True, True, True) then
+      Log('Deleted directory: wfm_file')
+    else
+      Log('Directory not found or could not delete: wfm_file');
+    
+    // Delete DAQ-* directories (DAQ generated caches) using pattern matching
+    DeleteMatchingDirectories(ExpandConstant('{app}'), 'DAQ-*');
+    
+    // Delete runtime generated files in example directory
+    Log('Cleaning up example directory generated files...');
+    
+    if DelTree(ExpandConstant('{app}\example\wfm_file'), True, True, True) then
+      Log('Deleted directory: example\wfm_file')
+    else
+      Log('Directory not found or could not delete: example\wfm_file');
+    
+    // Delete DAQ-* directories in example directory
+    DeleteMatchingDirectories(ExpandConstant('{app}\example'), 'DAQ-*');
+    
+    if DelTree(ExpandConstant('{app}\example\conf'), True, True, True) then
+      Log('Deleted directory: example\conf')
+    else
+      Log('Directory not found or could not delete: example\conf');
+    
+    if DelTree(ExpandConstant('{app}\example\build'), True, True, True) then
+      Log('Deleted directory: example\build')
+    else
+      Log('Directory not found or could not delete: example\build');
+    
+    if DelTree(ExpandConstant('{app}\Output'), True, True, True) then
+      Log('Deleted directory: Output')
+    else
+      Log('Directory not found or could not delete: Output');
+    
+    if DelTree(ExpandConstant('{app}\cmake-build-debug'), True, True, True) then
+      Log('Deleted directory: cmake-build-debug')
+    else
+      Log('Directory not found or could not delete: cmake-build-debug');
+    
+    if DelTree(ExpandConstant('{app}\cmake-build-release'), True, True, True) then
+      Log('Deleted directory: cmake-build-release')
+    else
+      Log('Directory not found or could not delete: cmake-build-release');
+    
+    if DelTree(ExpandConstant('{app}\Testing'), True, True, True) then
+      Log('Deleted directory: Testing')
+    else
+      Log('Directory not found or could not delete: Testing');
+    
+    // Note: Additional wildcard file deletion is handled by [UninstallDelete] section
+    Log('Additional cleanup performed by UninstallDelete section');
+    
+    // Try to remove the main installation directory if empty
+    // This will succeed if all subdirectories have been deleted
+    if RemoveDir(ExpandConstant('{app}')) then
+      Log('Deleted installation directory successfully')
+    else
+      Log('Installation directory not completely empty - this is normal if subdirectories remain');
+      
+    Log('Cleanup completed');
   end;
 end;
